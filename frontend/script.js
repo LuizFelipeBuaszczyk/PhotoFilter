@@ -1,6 +1,8 @@
 import { Canvas } from './canvas.js';
 import { createOption } from './utils.js';
 
+import Range from './components/range.js'; 
+
 // Eventos
 
 document.getElementById('inputImage')
@@ -41,9 +43,12 @@ function manageSelectFeature(selectedFeature) {
     const selectOperations = document.getElementById('selectFeatures');
     selectOperations.options.length = 0;
 
+    const parameterSection = document.getElementById('parameterSection');
+    parameterSection.replaceChildren();
+
     switch (selectedFeature) {
         case 'arithmetic':
-            showArithmeticOperations(selectOperations);
+            showArithmeticOperations(selectOperations, parameterSection);
             break;
         case 'invert':
             showInvertOperations(selectOperations);
@@ -65,13 +70,16 @@ function manageSelectFeature(selectedFeature) {
 }
 
 
-function showArithmeticOperations(selectOperations){
+function showArithmeticOperations(selectOperations, parameterSection){
     const className = 'valueRange';
 
     selectOperations.add(createOption('addValue', className, 'Adicionar'));
     selectOperations.add(createOption('subtValue', className, 'Subtrair'));
     selectOperations.add(createOption('multValue', className, 'Multiplicação'));
     selectOperations.add(createOption('divValue', className, 'Divisão'));
+    
+    const range = Range('rangeForm', 0, 255, 1, 'Valor: 128');
+    parameterSection.append(range);
 }
 
 function showInvertOperations(selectOperations) {
