@@ -1,5 +1,4 @@
 
-
 export function createOption(value, className, text){
 
     const option = document.createElement('option');
@@ -23,13 +22,25 @@ export function createRange(id, min, max, step, onInput) {
     return range;
 }
 
-export function createLabel(id, className, text) {
+export function createLabel(id, className, text, forLabel) {
 
     const label = document.createElement('label');
 
     label.id = id;
     label.className = className;
     label.textContent = text;
+    label.for = forLabel;
 
     return label;
+}
+
+export function createInput(id, type, value, name) {
+    const input = document.createElement('input');
+    
+    input.id = id;
+    input.type = type;
+    input.value = value;
+    input.name = name;
+
+    return input;
 }

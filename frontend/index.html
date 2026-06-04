@@ -25,14 +25,23 @@
                     <canvas id="showInputImage2" class="imgStyle" width="250" height="250"></canvas>
                 </div>
             </div>
-            <section>
-                <form class="featureButtons" id="featureButtons">
-                    <button value="arithmetic" id="arithmeticButton" class="featureButton">Aritmética</button>
-                    <button value="invert" id="invertButton" class="featureButton">Inverção</button>
-                    <button value="convolutional" id="convolutionalButton" class="featureButton">Convolução</button>
-                    <button value="borderDetection" id="borderDetectionButton" class="featureButton">Bordas</button>
-                    <button value="morphological" id="morphologicalButton" class="featureButton">Operações morfológicas</button>
-                </form>
+            <section id="sectionFeature">
+                <fieldset class="featureButtons" id="featureButtons">
+                    <input type="radio" value="arithmetic" id="arithmeticButton" name="featureButtons" checked>
+                    <label for="arithmeticButton">Aritmética</label>
+
+                    <input type="radio" value="invert" id="invertButton" name="featureButtons">
+                    <label for="invertButton">Inverção</label>
+
+                    <input type="radio"value="convolutional" id="convolutionalButton" name="featureButtons">
+                    <label for="convolutionalButton">Convolução</label>
+
+                    <input type="radio" value="borderDetection" id="borderDetectionButton" name="featureButtons">
+                    <label for="borderDetectionButton">Bordas</label>
+
+                    <input type="radio" value="morphological" id="morphologicalButton" name="featureButtons">
+                    <label for="morphologicalButton">Operações Morfológicas</label>
+                </fieldset>
                 <div class="operations">
                     <div id="divEnable2Images">
                         <input type= "checkbox" id="enable2Images">

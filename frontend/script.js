@@ -3,34 +3,29 @@ import { createOption } from './utils.js';
 
 import Range from './components/range.js'; 
 import SelectMorphologicalFeature from './components/SelectMorphologicalFeature.js';
-import ButtonFeature from './components/ButtonFeature.js';
+import FieldsetFeature from './components/FieldsetFeature.js';
 
 // Eventos
 
 document.getElementById('inputImage')
     .addEventListener('change', (event) => {
     loadImageToCanvas(event.target.files[0], 'showInputImage')    
-})
+});
 
 document.getElementById('inputImage2')
     .addEventListener('change', (event) => {
     loadImageToCanvas(event.target.files[0], 'showInputImage2')    
-})
+});
 
 document.getElementById('enable2Images')
     .addEventListener('change', (event) => {
     activeOperationsBetweenTwoImages(event.target.checked)
-})
+});
 
-
-const featureButtons = document.querySelectorAll('.featureButton');
-
-featureButtons.forEach(button => {
-    button.addEventListener('click', function (event) {
-        event.preventDefault();
-        manageSelectFeature(event.target.value);
-    });
-})
+document.getElementById('featureButtons')
+    .addEventListener('change', (event) => {
+    manageSelectFeature(event.target.value)
+});
 
 function loadImageToCanvas(file, canvasId) {
     if (!file) throw "File é obrigatório";
@@ -48,38 +43,85 @@ function loadImageToCanvas(file, canvasId) {
 }
 
 function activeOperationsBetweenTwoImages(active){
-    const section = document.getElementById('featureButtons');
-    section.replaceChildren();
+    const fieldset = document.getElementById('featureButtons');
+    fieldset.replaceChildren();
 
     if (active) {
-        showButtonsFeatureBetweenImages(section);        
+        showButtonsFeatureBetweenImages(fieldset);        
     } else {
-        showButtonsFeatureOneImage(section);
+        showButtonsFeatureOneImage(fieldset);
     }
-
-    // Atribuindo eventos
-    for (const button of section) {
-        button.addEventListener('click', (event) => {
-            event.preventDefault();
-            manageSelectFeature(event.target.value);
-        })
-    }
+     
 }
 
-function showButtonsFeatureOneImage(section){
-    section.append(ButtonFeature('arithmeticButton', 'arithmetic', 'Aritmética'));
-    section.append(ButtonFeature('invertButton', 'invert', 'Inverção'));
-    section.append(ButtonFeature('convolutionalButton', 'convolutional', 'Convolução'));
-    section.append(ButtonFeature('borderDetectionButton', 'borderDetection', 'Bordas'));
-    section.append(ButtonFeature('morphologicalButton', 'morphological', 'Operações Morfológicas'));
+function showButtonsFeatureOneImage(fieldset){
+    const radioButtons = [];
+
+    radioButtons.push({
+        'id': 'arithmeticButton',
+        'value':'arithmetic',
+        'labelText': 'Aritmética',
+        'selected': true,
+    });
+
+    radioButtons.push({
+        'id': 'invertButton',
+        'value':'invert',
+        'labelText': 'Inverção'
+    });
+
+    radioButtons.push({
+        'id': 'convolutionalButton',
+        'value':'convolutional',
+        'labelText': 'Convolução'
+    });
+
+    radioButtons.push({
+        'id': 'borderDetectionButton',
+        'value':'borderDetection',
+        'labelText': 'Bordas'
+    });
+
+    radioButtons.push({
+        'id': 'morphologicalButton',
+        'value':'morphological',
+        'labelText': 'Operações Morfológicas'
+    });
+
+    FieldsetFeature(fieldset, radioButtons);
 }
 
-// TODO Aplicar eventos click 
-function showButtonsFeatureBetweenImages(section) {
-    section.append(ButtonFeature('arithmeticButton', 'arithmetic', 'Aritmética'));
-    section.append(ButtonFeature('logicButton', 'logic', 'Lógica'));
-    section.append(ButtonFeature('diffButton', 'diff', 'Diferença'));
-    section.append(ButtonFeature('linearButton', 'linear', 'Linear'));
+function showButtonsFeatureBetweenImages(fieldset) {
+    const radioButtons = [];
+
+    radioButtons.push({
+        'id': 'arithmeticButton',
+        'value': 'arithmetic',
+        'labelText': 'Aritmética',
+        'selected': true
+    });
+
+    radioButtons.push({
+        'id': 'logicButton',
+        'value': 'logic',
+        'labelText': 'Lógica'
+    });
+
+
+    radioButtons.push({
+        'id': 'diffButton',
+        'value': 'diff',
+        'labelText': 'Diferença'
+    });
+
+
+    radioButtons.push({
+        'id': 'linearButton',
+        'value': 'linear',
+        'labelText': 'Linear'
+    });
+
+    FieldsetFeature(fieldset, radioButtons);
 }
 
 function manageSelectFeature(selectedFeature) {
@@ -206,3 +248,4 @@ function showLinearButton(selectOperations) {
     selectOperations.add(createOption('averageValue', className, 'Média'));
     selectOperations.add(createOption('blendingValue', className, 'Média'));
 }
+
