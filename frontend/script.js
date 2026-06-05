@@ -1,9 +1,10 @@
 import { Canvas } from './canvas.js';
-import { createOption } from './utils.js';
+import { createOption, drawImage } from './utils.js';
 
 import Range from './components/range.js'; 
 import SelectMorphologicalFeature from './components/SelectMorphologicalFeature.js';
 import FieldsetFeature from './components/FieldsetFeature.js';
+import ImageProcessingController from './ImageProcessingController.js' ;
 
 // Eventos
 
@@ -26,6 +27,9 @@ document.getElementById('featureButtons')
     .addEventListener('change', (event) => {
     manageSelectFeature(event.target.value)
 });
+
+document.getElementById('proccessButton')
+    .addEventListener('click', proccessImage)
 
 function loadImageToCanvas(file, canvasId) {
     if (!file) throw "File é obrigatório";
@@ -249,3 +253,13 @@ function showLinearButton(selectOperations) {
     selectOperations.add(createOption('blendingValue', className, 'Média'));
 }
 
+async function proccessImage(){
+    const gateway = new ImageProcessingController(); 
+
+    try {
+        const response = await gateway.proccess();
+        await drawImage(response, 'canvas');
+    } catch (error) {
+        console.log(error);
+    }
+}
