@@ -34,13 +34,14 @@ export function createLabel(id, className, text, forLabel) {
     return label;
 }
 
-export function createInput(id, type, value, name) {
+export function createInput(id, type, value, name, max) {
     const input = document.createElement('input');
     
     input.id = id;
     input.type = type;
     input.value = value;
     input.name = name;
+    input.max = max;
 
     return input;
 }

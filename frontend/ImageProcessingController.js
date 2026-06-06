@@ -25,7 +25,6 @@ export default class ImageProcessingController {
                 throw "Opção inválida";
         }
 
-        // Tratar response
         return response;
     }
 
@@ -67,7 +66,10 @@ export default class ImageProcessingController {
         const option = document.getElementById('selectFeatures').value;
         const imageCanva = document.getElementById('showInputImage');
         const kernelSize = document.getElementById('range').value;
+
         
+        const inputValue = document.getElementById('inputValue') ? document.getElementById('inputValue').value : null;
+
         // TODO conservative smoothing e order precisam de mais um valor.
         switch (option) {
             case 'meanValue':
@@ -79,11 +81,11 @@ export default class ImageProcessingController {
             case 'medianValue':
                 return this.engine.convolutionMedian(imageCanva, kernelSize);
             case 'orderValue':
-                return this.engine.convolutionOrder(imageCanva, kernelSize);
+                return this.engine.convolutionOrder(imageCanva, kernelSize, inputValue);
             case 'conservativeSomoothingValue':
                 return this.engine.convolutionConservativeSuavization(imageCanva, kernelSize);
             case 'gaussianValue':
-                return this.engine.convolutionGaussian(imageCanva, kernelSize); 
+                return this.engine.convolutionGaussian(imageCanva, kernelSize, inputValue); 
             default:
                 throw `Opção inválida para convolução: ${option}`;
         }

@@ -1,13 +1,16 @@
 import { Canvas } from './canvas.js';
-import { createOption, drawImage } from './utils.js';
+import { createInput, createOption, drawImage } from './utils.js';
 
 import Range from './components/range.js'; 
 import SelectMorphologicalFeature from './components/SelectMorphologicalFeature.js';
 import FieldsetFeature from './components/FieldsetFeature.js';
 import ImageProcessingController from './ImageProcessingController.js' ;
 
-// Eventos
+// GLOBAIS
+let SELECTED_FEATURE = 'arithmetic';
+let SELECTED_OPTION = 'addValue';
 
+// Eventos
 document.getElementById('inputImage')
     .addEventListener('change', (event) => {
     loadImageToCanvas(event.target.files[0], 'showInputImage')    
@@ -26,6 +29,11 @@ document.getElementById('enable2Images')
 document.getElementById('featureButtons')
     .addEventListener('change', (event) => {
     manageSelectFeature(event.target.value)
+});
+
+document.getElementById('selectFeatures')
+    .addEventListener('change', (event) => {
+    manageSelectParameters(event.target.value)
 });
 
 document.getElementById('proccessButton')
@@ -129,6 +137,8 @@ function showButtonsFeatureBetweenImages(fieldset) {
 }
 
 function manageSelectFeature(selectedFeature) {
+    SELECTED_FEATURE = selectedFeature;
+
     const selectOperations = document.getElementById('selectFeatures');
     selectOperations.options.length = 0;
     selectOperations.hidden = false;
@@ -136,18 +146,16 @@ function manageSelectFeature(selectedFeature) {
     const parameterSection = document.getElementById('parameterSection');
     parameterSection.replaceChildren();
 
-    switch (selectedFeature) {
+    switch (SELECTED_FEATURE) {
         case 'arithmetic':
             showArithmeticOperations(selectOperations, parameterSection);
             break;
         case 'invert':
             showInvertOperations(selectOperations);
             break;
-
         case 'convolutional':
             showConvolutionalOperations(selectOperations);
             break;
-
         case 'borderDetection':
             showBorderDetectionOperations(selectOperations);
             break;
@@ -167,7 +175,6 @@ function manageSelectFeature(selectedFeature) {
             throw "Invalid selectFeature"
     }
 }
-
 
 // 1 Image Operations
 function showArithmeticOperations(selectOperations, parameterSection){
@@ -253,6 +260,44 @@ function showLinearButton(selectOperations) {
     selectOperations.add(createOption('blendingValue', className, 'Média'));
 }
 
+function manageSelectParameters(selectedOption) {
+    SELECTED_OPTION = selectedOption
+    const parameterSection = document.getElementById('parameterSection');
+    parameterSection.replaceChildren();
+
+    console.log(SELECTED_FEATURE);
+    switch (SELECTED_FEATURE) {
+        case 'arithmetic':
+            showArithmeticParameters(parameterSection);
+            break;
+        case 'invert':
+            break;
+        case 'convolutional':
+            showConvolutionalParameters(parameterSection);
+    } 
+}
+
+function showArithmeticParameters(parameterSection) {
+    const range = Range('rangeForm', 0, 255, 1, 'Valor: 128');
+    parameterSection.append(range);   
+}
+
+function showConvolutionalParameters(parameterSection) {
+    const range = Range('rangeForm', 3, 29, 1, 'Valor: 17');
+    parameterSection.append(range);   
+    
+    switch (SELECTED_OPTION){
+        case 'orderValue':
+            const inputOrderValue = createInput('inputValue', 'number', null, 5);
+            parameterSection.append(inputOrderValue);
+            break;
+        case 'gaussianValue':
+            const inputGaussianValue = createInput('inputValue', 'number', null, 100);
+            parameterSection.append(inputGaussianValue);
+            break;
+    }
+}
+
 async function proccessImage(){
     const gateway = new ImageProcessingController(); 
 
@@ -260,6 +305,6 @@ async function proccessImage(){
         const response = await gateway.proccess();
         await drawImage(response, 'canvas');
     } catch (error) {
-        console.log(error);
+        console.log(error)
     }
 }
