@@ -9,7 +9,7 @@
 </head>
 <body>
     <header>
-        <h1>Trabalho final de Processamento de Imagens</h1>
+        <h1>PhotoFilter</h1>
     </header>
 
     <main>
@@ -41,6 +41,10 @@
 
                     <input type="radio" value="morphological" id="morphologicalButton" name="featureButtons">
                     <label for="morphologicalButton">Operações Morfológicas</label>
+
+                    <input type="radio" value="convert" id="convertButton" name="featureButtons">
+                    <label for="convertButton">Conversão de Escala</label>
+
                 </fieldset>
                 <div class="operations">
                     <div id="divEnable2Images">
@@ -63,16 +67,7 @@
                 <button id="saveImage">Salvar Imagem</button>
             </div>
         </div>
-        <div>
-            <p>Opções para converter a primeira imagem</p>
-            <select name="selectConvertion" id="selectConvertion">
-                <option value="grayScale">Converter para 8 bit</option>
-                <option value="1bit">Converter para 1 bit</option>
-            </select>
-            <form id="rangeThreshold"> </form>
-            <button id="convertButton">Converter</button>
-        </div>
-        <div>
+       <div>
             <button id="equalizeHistogramButton">Equalizar Histograma</button>
             <button id="openModalButton">Visualizar Kernel Utilizado</button>
             <canvas id="originalHistogram"  width="600" height="400"></canvas>

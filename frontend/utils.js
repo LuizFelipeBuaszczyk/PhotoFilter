@@ -107,13 +107,12 @@ export function drawImage(imageData, canvasId){
         for(let x = 0; x < width; x++){
             let pixel = imageData[y][x];
             imageDataObj.data[i++] = pixel[0]; // Red
-            imageDataObj.data[i++] = pixel[1]; // Green
-            imageDataObj.data[i++] = pixel[2]; // Blue
-            imageDataObj.data[i++] = pixel[3]; // Alpha
+            imageDataObj.data[i++] = pixel[1] ? pixel[1] : pixel[0]; // Green
+            imageDataObj.data[i++] = pixel[2] ? pixel[2] : pixel[0]; // Blue
+            imageDataObj.data[i++] = pixel[3] ? pixel[3] : 255; // Alpha
         }
     }
 
     ctx.putImageData(imageDataObj, 0, 0);   
 }
-
 

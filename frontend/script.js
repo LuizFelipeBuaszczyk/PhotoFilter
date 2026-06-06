@@ -1,5 +1,5 @@
 import { Canvas } from './canvas.js';
-import { createInput, createOption, drawImage } from './utils.js';
+import { createInput, createOption, drawImage, } from './utils.js';
 
 import Range from './components/range.js'; 
 import SelectMorphologicalFeature from './components/SelectMorphologicalFeature.js';
@@ -37,7 +37,7 @@ document.getElementById('selectFeatures')
 });
 
 document.getElementById('proccessButton')
-    .addEventListener('click', proccessImage)
+    .addEventListener('click', proccessImage);
 
 function loadImageToCanvas(file, canvasId) {
     if (!file) throw "File é obrigatório";
@@ -99,6 +99,12 @@ function showButtonsFeatureOneImage(fieldset){
         'value':'morphological',
         'labelText': 'Operações Morfológicas'
     });
+    
+    radioButtons.push({
+        'id' : 'convertButton',
+        'value': 'convert',
+        'labelText': 'Conversão de Escala'
+    })
 
     FieldsetFeature(fieldset, radioButtons);
 }
@@ -161,6 +167,9 @@ function manageSelectFeature(selectedFeature) {
             break;
         case 'morphological':
             showMorphologicalOperations(selectOperations);
+            break;
+        case 'convert':
+            showConvertOperations(selectOperations);
             break;
         case 'logic':
             showLogicOperations(selectOperations);
@@ -236,6 +245,13 @@ function showMorphologicalOperations (selectOperations) {
 
     const selectMorphologicalFeatures = SelectMorphologicalFeature('selectFeatureOptions', null);
     parameterSection.append(selectMorphologicalFeatures); 
+}
+
+function showConvertOperations(selectOperations) {
+    const className = 'valueRange';
+
+    selectOperations.add(createOption('grayScaleValue', className, 'Escala de Cinza'));
+    selectOperations.add(createOption('binaryScaleValue', className, 'Escala Binária'));
 }
 
 // 2 Image operations
@@ -316,6 +332,6 @@ async function proccessImage(){
         const response = await gateway.proccess();
         await drawImage(response, 'canvas');
     } catch (error) {
-        console.log(error)
+        console.log(error);
     }
 }

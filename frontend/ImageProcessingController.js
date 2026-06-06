@@ -10,28 +10,22 @@ export default class ImageProcessingController {
     async proccess(){
         const feature = document.querySelector('#featureButtons :checked').value;
        
-        let response = undefined;
         switch (feature) {
             case 'arithmetic':
-                response = await this._arithmetic();
-                break;
+                return await this._arithmetic();
             case 'invert':
-                response = await this._invert();
-                break;
+                return await this._invert();
             case 'convolutional':
-                response = await this._convolutional();
-                break;
+                return await this._convolutional();
             case 'border':
-                response = await this._border();
-                break;
+                return await this._border();
             case 'morphological':
-                response = await this._morphological();
-                break;
+                return await this._morphological();
+            case 'convert':
+                return await this._convert();
             default:
                 throw "Opção inválida";
         }
-
-        return response;
     }
 
     _arithmetic() {
@@ -129,6 +123,20 @@ export default class ImageProcessingController {
                 return this.engine.morphologicalOutline(imageCanva, kernelSize, type);
             default:
                 throw `Opção inválida para operação morfológica: ${option}`;
+        }
+    }
+
+    _convert() {
+        const option = document.getElementById('selectFeatures').value;
+        const imageCanva = document.getElementById('showInputImage');
+        
+        switch (option) {
+            case 'grayScaleValue':
+                return this.engine.convertToGrayScale(imageCanva);
+            case 'binaryScaleValue':
+                return this.engine.convertToBinaryScale(imageCanva);
+            default:
+                throw `Opção inválida para conversão de escala: ${option}`;
         }
     }
 }

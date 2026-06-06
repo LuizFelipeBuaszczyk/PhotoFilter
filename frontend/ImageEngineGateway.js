@@ -114,6 +114,14 @@ export default class ImageEngineGateway {
         return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
 
     }
+    
+    convertToGrayScale(image){
+        const endpoint = `${this.endpoint}/convert/8bit`;
+        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
+    }
 
-
+    convertToBinaryScale(image){
+        const endpoint = `${this.endpoint}/convert/1bit`;
+        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
+    }
 }
