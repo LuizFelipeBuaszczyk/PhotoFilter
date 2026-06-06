@@ -90,7 +90,7 @@ function showButtonsFeatureOneImage(fieldset){
 
     radioButtons.push({
         'id': 'borderDetectionButton',
-        'value':'borderDetection',
+        'value':'border',
         'labelText': 'Bordas'
     });
 
@@ -156,7 +156,7 @@ function manageSelectFeature(selectedFeature) {
         case 'convolutional':
             showConvolutionalOperations(selectOperations);
             break;
-        case 'borderDetection':
+        case 'border':
             showBorderDetectionOperations(selectOperations);
             break;
         case 'morphological':
@@ -235,7 +235,7 @@ function showMorphologicalOperations (selectOperations) {
     parameterSection.append(range);
 
     const selectMorphologicalFeatures = SelectMorphologicalFeature('selectFeatureOptions', null);
-   parameterSection.append(selectMorphologicalFeatures); 
+    parameterSection.append(selectMorphologicalFeatures); 
 }
 
 // 2 Image operations
@@ -265,7 +265,6 @@ function manageSelectParameters(selectedOption) {
     const parameterSection = document.getElementById('parameterSection');
     parameterSection.replaceChildren();
 
-    console.log(SELECTED_FEATURE);
     switch (SELECTED_FEATURE) {
         case 'arithmetic':
             showArithmeticParameters(parameterSection);
@@ -274,6 +273,10 @@ function manageSelectParameters(selectedOption) {
             break;
         case 'convolutional':
             showConvolutionalParameters(parameterSection);
+            break;
+        case 'morphological':
+            showMorphologicalParameters(parameterSection);
+            break;
     } 
 }
 
@@ -296,6 +299,14 @@ function showConvolutionalParameters(parameterSection) {
             parameterSection.append(inputGaussianValue);
             break;
     }
+}
+
+function showMorphologicalParameters(parameterSection) {
+    const range = Range('rangeForm', 0, 255, 1, 'Valor: 128');
+    parameterSection.append(range);   
+
+    const selectMorphologicalFeatures = SelectMorphologicalFeature('selectFeatureOptions', null);
+    parameterSection.append(selectMorphologicalFeatures); 
 }
 
 async function proccessImage(){

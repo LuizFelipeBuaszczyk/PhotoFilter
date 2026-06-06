@@ -71,4 +71,49 @@ export default class ImageEngineGateway {
         const endpoint = `${this.endpoint}/convolutional/gaussian?kernel=${kernelSize}&sigma=${sigma}`;
         return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
     }
+
+    borderPrewit(image) {
+        const endpoint = `${this.endpoint}/borderDetection/prewit`;
+        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
+    } 
+
+    borderSobel(image) {
+        const endpoint = `${this.endpoint}/borderDetection/sobel`;
+        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
+    }
+
+    borderLaplacian(image) {
+        const endpoint = `${this.endpoint}/borderDetection/laplacian`;
+        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
+    }
+
+    morphologicalDilatation (image, kernelSize, kernelFormat){
+        const endpoint = `${this.endpoint}/morphological/dilation?kernel=${kernelSize}&type=${kernelFormat}`;
+        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
+    }
+
+    morphologicalErosion (image, kernelSize, kernelFormat){
+        const endpoint = `${this.endpoint}/morphological/erosion?kernel=${kernelSize}&type=${kernelFormat}`;
+        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
+    }
+
+    morphologicalOpening (image, kernelSize, kernelFormat){
+        const endpoint = `${this.endpoint}/morphological/opening?kernel=${kernelSize}&type=${kernelFormat}`;
+        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
+
+    }
+
+    morphologicalClosing (image, kernelSize, kernelFormat){
+        const endpoint = `${this.endpoint}/morphological/closing?kernel=${kernelSize}&type=${kernelFormat}`;
+        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
+
+    }
+
+    morphologicalOutline (image, kernelSize, kernelFormat){
+        const endpoint = `${this.endpoint}/morphological/outline?kernel=${kernelSize}&type=${kernelFormat}`;
+        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
+
+    }
+
+
 }

@@ -21,6 +21,12 @@ export default class ImageProcessingController {
             case 'convolutional':
                 response = await this._convolutional();
                 break;
+            case 'border':
+                response = await this._border();
+                break;
+            case 'morphological':
+                response = await this._morphological();
+                break;
             default:
                 throw "Opção inválida";
         }
@@ -66,11 +72,8 @@ export default class ImageProcessingController {
         const option = document.getElementById('selectFeatures').value;
         const imageCanva = document.getElementById('showInputImage');
         const kernelSize = document.getElementById('range').value;
-
-        
         const inputValue = document.getElementById('inputValue') ? document.getElementById('inputValue').value : null;
 
-        // TODO conservative smoothing e order precisam de mais um valor.
         switch (option) {
             case 'meanValue':
                 return this.engine.convolutionAverage(imageCanva, kernelSize);
@@ -88,6 +91,44 @@ export default class ImageProcessingController {
                 return this.engine.convolutionGaussian(imageCanva, kernelSize, inputValue); 
             default:
                 throw `Opção inválida para convolução: ${option}`;
+        }
+    }
+
+    _border() {
+        const option = document.getElementById('selectFeatures').value;
+        const imageCanva = document.getElementById('showInputImage');
+    
+        switch (option) {
+            case 'prewitValue':
+                return this.engine.borderPrewit(imageCanva);
+            case 'sobelValue':
+                return this.engine.borderSobel(imageCanva);
+            case 'laplacianValue':
+                return this.engine.borderLaplacian(imageCanva);
+            default:
+                throw `Opção inválida para detecção de borda: ${option}`;
+        }
+    }
+
+    _morphological() {
+        const option = document.getElementById('selectFeatures').value;
+        const imageCanva = document.getElementById('showInputImage');
+        const kernelSize = document.getElementById('range').value;
+        const type = document.getElementById('selectFeatureOptions').value;
+
+        switch (option) {
+            case 'dilationValue':
+                return this.engine.morphologicalDilatation(imageCanva, kernelSize, type);
+            case 'erosionValue':
+                return this.engine.morphologicalErosion(imageCanva, kernelSize, type);
+            case 'openingValue':
+                return this.engine.morphologicalOpening(imageCanva, kernelSize, type);
+            case 'closingValue':
+                return this.engine.morphologicalClosing(imageCanva, kernelSize, type);
+            case 'outlineValue':
+                return this.engine.morphologicalOutline(imageCanva, kernelSize, type);
+            default:
+                throw `Opção inválida para operação morfológica: ${option}`;
         }
     }
 }
