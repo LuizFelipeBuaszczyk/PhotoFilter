@@ -9,6 +9,7 @@ import ImageProcessingController from './ImageProcessingController.js' ;
 // GLOBAIS
 let SELECTED_FEATURE = 'arithmetic';
 let SELECTED_OPTION = 'addValue';
+let OPERATION_WITH_2_IMAGES = false;
 
 // Eventos
 document.getElementById('inputImage')
@@ -57,8 +58,10 @@ function loadImageToCanvas(file, canvasId) {
 function activeOperationsBetweenTwoImages(active){
     const fieldset = document.getElementById('featureButtons');
     fieldset.replaceChildren();
+    
+    OPERATION_WITH_2_IMAGES = active;
 
-    if (active) {
+    if (OPERATION_WITH_2_IMAGES) {
         showButtonsFeatureBetweenImages(fieldset);        
     } else {
         showButtonsFeatureOneImage(fieldset);
@@ -107,6 +110,7 @@ function showButtonsFeatureOneImage(fieldset){
     })
 
     FieldsetFeature(fieldset, radioButtons);
+    manageSelectFeature(SELECTED_FEATURE);
 }
 
 function showButtonsFeatureBetweenImages(fieldset) {
@@ -140,6 +144,7 @@ function showButtonsFeatureBetweenImages(fieldset) {
     });
 
     FieldsetFeature(fieldset, radioButtons);
+    manageSelectFeature(SELECTED_FEATURE);
 }
 
 function manageSelectFeature(selectedFeature) {
@@ -187,15 +192,18 @@ function manageSelectFeature(selectedFeature) {
 
 // 1 Image Operations
 function showArithmeticOperations(selectOperations, parameterSection){
-    const check = document.getElementById('enable2Images').checked; 
     const className = 'valueRange';
+    
+    if (OPERATION_WITH_2_IMAGES) {
+        selectOperations.add(createOption('addImages', className, 'Adicionar'));
+        selectOperations.add(createOption('subtImages', className, 'Subtrair'));
 
-    selectOperations.add(createOption('addValue', className, 'Adicionar'));
-    selectOperations.add(createOption('subtValue', className, 'Subtrair'));
-    selectOperations.add(createOption('multValue', className, 'Multiplicação'));
-    selectOperations.add(createOption('divValue', className, 'Divisão'));
+    } else {
+        selectOperations.add(createOption('addValue', className, 'Adicionar'));
+        selectOperations.add(createOption('subtValue', className, 'Subtrair'));
+        selectOperations.add(createOption('multValue', className, 'Multiplicação'));
+        selectOperations.add(createOption('divValue', className, 'Divisão'));
    
-    if (!check) {
         const range = Range('rangeForm', 0, 255, 1, 'Valor: 128');
         parameterSection.append(range);
     }
@@ -297,8 +305,11 @@ function manageSelectParameters(selectedOption) {
 }
 
 function showArithmeticParameters(parameterSection) {
-    const range = Range('rangeForm', 0, 255, 1, 'Valor: 128');
-    parameterSection.append(range);   
+
+    if (!OPERATION_WITH_2_IMAGES) {
+        const range = Range('rangeForm', 0, 255, 1, 'Valor: 128');
+        parameterSection.append(range);
+    }
 }
 
 function showConvolutionalParameters(parameterSection) {

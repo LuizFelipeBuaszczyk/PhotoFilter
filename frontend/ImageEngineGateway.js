@@ -124,4 +124,19 @@ export default class ImageEngineGateway {
         const endpoint = `${this.endpoint}/convert/1bit`;
         return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
     }
+
+    // 2 Images
+    addImages(image1, image2) {
+        const endpoint = `${this.endpoint}/add`;
+
+        const body = transformIMGtoMATRIX(image1) + '\n' + 'S' + transformIMGtoMATRIX(image2);
+        return fetchAPI(endpoint, 'POST', body);
+    }
+
+    subtImages(image1, image2) {
+        const endpoint = `${this.endpoint}/subt`;
+
+        const body = transformIMGtoMATRIX(image1) + '\n' + 'S' + transformIMGtoMATRIX(image2);
+        return fetchAPI(endpoint, 'POST', body);
+    }
 }

@@ -31,17 +31,22 @@ export default class ImageProcessingController {
     _arithmetic() {
         const option = document.getElementById('selectFeatures').value;
         const imageCanva = document.getElementById('showInputImage');
-        const value = document.getElementById('range').value;
+        const value = document.getElementById('range') ? document.getElementById('range').value : 0;
+        const imageCanva2 = document.getElementById('showInputImage2');
     
         switch (option) {
             case 'addValue':
-                return this.engine.addValue(imageCanva, value);
+                    return this.engine.addValue(imageCanva, value);
             case 'subtValue':
                 return this.engine.subtValue(imageCanva, value);
             case 'multValue':
                 return this.engine.multiplyValue(imageCanva, value);
             case 'divValue':
                 return this.engine.divValue(imageCanva, value);
+            case 'addImages':
+                return this.engine.addImages(imageCanva, imageCanva2);
+            case 'subtImages':
+                return this.engine.subtImages(imageCanva, imageCanva2);
             default:
                 throw `Opção inválida para aritmética: ${option}`;
         }
