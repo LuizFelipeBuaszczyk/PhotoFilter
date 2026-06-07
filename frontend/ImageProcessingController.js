@@ -3,39 +3,38 @@ import ImageEngineGateway from "./ImageEngineGateway.js";
 export default class ImageProcessingController {
     
     constructor (){
-        this.sectionFeature = sectionFeature;
         this.engine = new ImageEngineGateway();
     }
     
-    async proccess(){
-        const feature = document.querySelector('#featureButtons :checked').value;
+    async proccess(feature, option){
        
         switch (feature) {
             case 'arithmetic':
-                return await this._arithmetic();
+                return await this._arithmetic(option);
             case 'invert':
-                return await this._invert();
+                return await this._invert(option);
             case 'convolutional':
-                return await this._convolutional();
+                return await this._convolutional(option);
             case 'border':
-                return await this._border();
+                return await this._border(option);
             case 'morphological':
-                return await this._morphological();
+                return await this._morphological(option);
             case 'convert':
-                return await this._convert();
+                return await this._convert(option);
             case 'logic':
-                return await this._logic();
+                return await this._logic(option);
             case 'diference':
                 return await this._diference();
             case 'linear':
-                return await this._linear();
+                return await this._linear(option);
+            case 'histogram':
+                return await this._histogram(option);
             default:
                 throw `Opção inválida: ${feature}`;
         }
     }
 
-    _arithmetic() {
-        const option = document.getElementById('selectFeatures').value;
+    _arithmetic(option) {
         const imageCanva = document.getElementById('showInputImage');
         const value = document.getElementById('range') ? document.getElementById('range').value : 0;
         const imageCanva2 = document.getElementById('showInputImage2');
@@ -59,8 +58,7 @@ export default class ImageProcessingController {
        
     }
 
-    _invert() {
-        const option = document.getElementById('selectFeatures').value;
+    _invert(option) {
         const imageCanva = document.getElementById('showInputImage');
         
         switch (option) {
@@ -73,8 +71,7 @@ export default class ImageProcessingController {
         }
     }
 
-    _convolutional() {
-        const option = document.getElementById('selectFeatures').value;
+    _convolutional(option) {
         const imageCanva = document.getElementById('showInputImage');
         const kernelSize = document.getElementById('range').value;
         const inputValue = document.getElementById('inputValue') ? document.getElementById('inputValue').value : null;
@@ -99,8 +96,7 @@ export default class ImageProcessingController {
         }
     }
 
-    _border() {
-        const option = document.getElementById('selectFeatures').value;
+    _border(opton) {
         const imageCanva = document.getElementById('showInputImage');
     
         switch (option) {
@@ -115,8 +111,7 @@ export default class ImageProcessingController {
         }
     }
 
-    _morphological() {
-        const option = document.getElementById('selectFeatures').value;
+    _morphological(option) {
         const imageCanva = document.getElementById('showInputImage');
         const kernelSize = document.getElementById('range').value;
         const type = document.getElementById('selectFeatureOptions').value;
@@ -137,8 +132,7 @@ export default class ImageProcessingController {
         }
     }
 
-    _convert() {
-        const option = document.getElementById('selectFeatures').value;
+    _convert(option) {
         const imageCanva = document.getElementById('showInputImage');
         
         switch (option) {
@@ -151,8 +145,7 @@ export default class ImageProcessingController {
         }
     }
 
-    _logic() {
-        const option = document.getElementById('selectFeatures').value;
+    _logic(option) {
         const imageCanva = document.getElementById('showInputImage');
         const imageCanva2 = document.getElementById('showInputImage2');
 
@@ -177,8 +170,7 @@ export default class ImageProcessingController {
         return this.engine.diferenceImages(imageCanva, imageCanva2);
     }
 
-    _linear() {
-        const option = document.getElementById('selectFeatures').value;
+    _linear(option) {
         const imageCanva = document.getElementById('showInputImage');
         const imageCanva2 = document.getElementById('showInputImage2');
         const inputValue = document.getElementById('inputValue') ? document.getElementById('inputValue').value : null;
@@ -190,6 +182,19 @@ export default class ImageProcessingController {
                 return this.engine.linearBlending(imageCanva, imageCanva2, inputValue);
             default: 
                 throw `Opção inválida para operação linear: ${option}`;
+        }
+    }
+
+    _histogram(option) {
+        const imageCanva = document.getElementById('showInputImage');
+
+        switch (option) {
+            case 'equalizeHistogramValue':
+                return this.engine.equalizeHistogram(imageCanva); 
+            case 'visualizeHistogramValue':
+                return this.engine.visualizeHistogram(imageCanva);
+            default:
+                throw `Opção inválida para operação de histograma: ${option}`
         }
     }
 }

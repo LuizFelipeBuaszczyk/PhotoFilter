@@ -187,4 +187,14 @@ export default class ImageEngineGateway {
         const body = transformIMGtoMATRIX(image1) + '\n' + 'S' + transformIMGtoMATRIX(image2);
         return fetchAPI(endpoint, 'POST', body);       
     }
+
+    equalizeHistogram(image) {
+        const endpoint = `${this.endpoint}/histogram/equalize`;
+        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
+    }
+
+    visualizeHistogram(image) {
+        const endpoint = `${this.endpoint}/histogram`;
+        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
+    }
 }

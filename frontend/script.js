@@ -1,5 +1,5 @@
 import { Canvas } from './canvas.js';
-import { createInput, createOption, drawImage, } from './utils.js';
+import { createInput, createOption, drawImage, drawHistogram } from './utils.js';
 
 import Range from './components/range.js'; 
 import SelectMorphologicalFeature from './components/SelectMorphologicalFeature.js';
@@ -50,9 +50,22 @@ function loadImageToCanvas(file, canvasId) {
         image.onload = function () {
             const canvas = new Canvas(canvasId, 250, 250);
             canvas.drawImageCanvas(image);
+            loadImageHistogram() // TODO ajuste para carregar histograma das duas imagens
         }
     }
     reader.readAsDataURL(file);
+}
+
+async function loadImageHistogram() {
+    const engine = new ImageProcessingController();
+
+    try {
+        const histogram = await engine.proccess('histogram', 'visualizeHistogramValue');
+        const labels = Array.from({length: 256}, (_, i) => i);
+        await drawHistogram('originalHistogram', labels, histogram);
+    } catch (error){
+        console.log(error);
+    }
 }
 
 function activeOperationsBetweenTwoImages(active){
@@ -113,6 +126,12 @@ function showButtonsFeatureOneImage(fieldset){
         'id': 'logicButton',
         'value': 'logic',
         'labelText': 'Lógica'
+    });
+
+    radioButtons.push({
+        'id': 'histogramButton',
+        'value': 'histogram',
+        'labelText': 'Histograma'
     });
 
     FieldsetFeature(fieldset, radioButtons);
@@ -188,7 +207,10 @@ function manageSelectFeature(selectedFeature) {
             showDiffOperations(selectOperations);
             break;
         case 'linear':
-            showLinearButton(selectOperations);
+            showLinearOperations(selectOperations);
+            break;
+        case 'histogram':
+            showHistogramOperations(selectOperations);
             break;
         default:
             throw "Invalid selectFeature"
@@ -267,6 +289,12 @@ function showConvertOperations(selectOperations) {
     selectOperations.add(createOption('binaryScaleValue', className, 'Escala Binária'));
 }
 
+function showHistogramOperations(selectOperations) {
+    const className = 'valueRange';
+
+    selectOperations.add(createOption('equalizeHistogramValue', className, 'Equalizar'));
+}
+
 // 2 Image operations
 function showLogicOperations(selectOperations) {
     const className = 'valueRange';    
@@ -286,7 +314,7 @@ function showDiffOperations(selectOperations) {
     return; 
 }
 
-function showLinearButton(selectOperations) {
+function showLinearOperations(selectOperations) {
     const className = 'valueRange';
 
     selectOperations.add(createOption('averageValue', className, 'Média'));
@@ -360,10 +388,13 @@ function showLinearParameters(parameterSection) {
 
 async function proccessImage(){
     const gateway = new ImageProcessingController(); 
+    const feature = document.querySelector('#featureButtons :checked').value;
+    const option = document.getElementById('selectFeatures').value;
 
     try {
-        const response = await gateway.proccess();
-        await drawImage(response, 'canvas');
+        const response = await gateway.proccess(feature, option);
+        // TODO -- Adaptação para o endpoint de histogram, será corrigido no refactor do backend
+        await drawImage(response.image ? response.image : response, 'canvas');
     } catch (error) {
         console.log(error);
     }

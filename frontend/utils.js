@@ -116,3 +116,36 @@ export function drawImage(imageData, canvasId){
     ctx.putImageData(imageDataObj, 0, 0);   
 }
 
+export function drawHistogram(histogram, labels, values) {
+    const canvas = document.getElementById(histogram);
+    const ctx = canvas.getContext("2d");
+
+    const width = canvas.width;
+    const height = canvas.height;
+    const margin = 40;
+    const barLarge = (width - 2 * margin) / labels.length;
+
+    const maxValue = Math.max(...values);
+    const heightScale = (height - 2 * margin) / maxValue;
+
+    ctx.clearRect(0, 0, width, height);
+
+    ctx.beginPath();
+    ctx.moveTo(margin, margin);
+    ctx.lineTo(margin, height - margin);
+    ctx.lineTo(width - margin, height - margin);
+    ctx.stroke();
+
+    labels.forEach((label, i) => {
+        const x = margin + i * barLarge;
+        const h = values[i] * heightScale;
+        const y = height - margin - h;
+
+        ctx.fillStyle = "#2196f3";
+        ctx.fillRect(x, y, barLarge, h);
+  
+        ctx.fillStyle = "#000";
+        ctx.fillText(label, x + barLarge / 4, height - margin + 12);
+    });
+
+}
