@@ -165,4 +165,26 @@ export default class ImageEngineGateway {
         const endpoint = `${this.endpoint}/logic/not`;
         return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
     }
+    
+    diferenceImages(image1, image2) {
+        const endpoint = `${this.endpoint}/diference`;
+
+        const body = transformIMGtoMATRIX(image1) + '\n' + 'S' + transformIMGtoMATRIX(image2);
+        return fetchAPI(endpoint, 'POST', body);
+    }
+
+    linearAverage(image1, image2) {
+        const endpoint = `${this.endpoint}/linear/average`;
+
+        const body = transformIMGtoMATRIX(image1) + '\n' + 'S' + transformIMGtoMATRIX(image2);
+        return fetchAPI(endpoint, 'POST', body);       
+
+    }
+
+    linearBlending(image1, image2, value) {
+        const endpoint = `${this.endpoint}/linear/blending?value=${value}`;
+
+        const body = transformIMGtoMATRIX(image1) + '\n' + 'S' + transformIMGtoMATRIX(image2);
+        return fetchAPI(endpoint, 'POST', body);       
+    }
 }

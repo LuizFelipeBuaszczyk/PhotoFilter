@@ -137,7 +137,7 @@ function showButtonsFeatureBetweenImages(fieldset) {
 
     radioButtons.push({
         'id': 'diffButton',
-        'value': 'diff',
+        'value': 'diference',
         'labelText': 'Diferença'
     });
 
@@ -184,7 +184,7 @@ function manageSelectFeature(selectedFeature) {
         case 'logic':
             showLogicOperations(selectOperations);
             break;
-        case 'diff':
+        case 'diference':
             showDiffOperations(selectOperations);
             break;
         case 'linear':
@@ -290,7 +290,7 @@ function showLinearButton(selectOperations) {
     const className = 'valueRange';
 
     selectOperations.add(createOption('averageValue', className, 'Média'));
-    selectOperations.add(createOption('blendingValue', className, 'Média'));
+    selectOperations.add(createOption('blendingValue', className, 'Blending'));
 }
 
 function manageSelectParameters(selectedOption) {
@@ -309,6 +309,9 @@ function manageSelectParameters(selectedOption) {
             break;
         case 'morphological':
             showMorphologicalParameters(parameterSection);
+            break;
+        case 'linear':
+            showLinearParameters(parameterSection);
             break;
     } 
 }
@@ -344,6 +347,16 @@ function showMorphologicalParameters(parameterSection) {
     const selectMorphologicalFeatures = SelectMorphologicalFeature('selectFeatureOptions', null);
     parameterSection.append(selectMorphologicalFeatures); 
 }
+
+function showLinearParameters(parameterSection) {
+    
+    switch (SELECTED_OPTION) {
+        case 'blendingValue':
+            const inputBlendingValue = createInput('inputValue', 'number', null, 5);
+            parameterSection.append(inputBlendingValue);
+            break;
+    }
+} 
 
 async function proccessImage(){
     const gateway = new ImageProcessingController(); 

@@ -25,8 +25,12 @@ export default class ImageProcessingController {
                 return await this._convert();
             case 'logic':
                 return await this._logic();
+            case 'diference':
+                return await this._diference();
+            case 'linear':
+                return await this._linear();
             default:
-                throw "Opção inválida";
+                throw `Opção inválida: ${feature}`;
         }
     }
 
@@ -163,6 +167,29 @@ export default class ImageProcessingController {
                 return this.engine.logicNOT(imageCanva);
             default:
                 throw `Opção inválida para operação lógica: ${option}`;
+        }
+    }
+
+    _diference() {
+        const imageCanva = document.getElementById('showInputImage');
+        const imageCanva2 = document.getElementById('showInputImage2');
+        
+        return this.engine.diferenceImages(imageCanva, imageCanva2);
+    }
+
+    _linear() {
+        const option = document.getElementById('selectFeatures').value;
+        const imageCanva = document.getElementById('showInputImage');
+        const imageCanva2 = document.getElementById('showInputImage2');
+        const inputValue = document.getElementById('inputValue') ? document.getElementById('inputValue').value : null;
+
+        switch (option) {
+            case 'averageValue':
+                return this.engine.linearAverage(imageCanva, imageCanva2);
+            case 'blendingValue':
+                return this.engine.linearBlending(imageCanva, imageCanva2, inputValue);
+            default: 
+                throw `Opção inválida para operação linear: ${option}`;
         }
     }
 }
