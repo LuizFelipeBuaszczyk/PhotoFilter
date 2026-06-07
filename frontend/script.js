@@ -109,6 +109,12 @@ function showButtonsFeatureOneImage(fieldset){
         'labelText': 'Conversão de Escala'
     })
 
+    radioButtons.push({
+        'id': 'logicButton',
+        'value': 'logic',
+        'labelText': 'Lógica'
+    });
+
     FieldsetFeature(fieldset, radioButtons);
     manageSelectFeature(SELECTED_FEATURE);
 }
@@ -128,7 +134,6 @@ function showButtonsFeatureBetweenImages(fieldset) {
         'value': 'logic',
         'labelText': 'Lógica'
     });
-
 
     radioButtons.push({
         'id': 'diffButton',
@@ -266,10 +271,14 @@ function showConvertOperations(selectOperations) {
 function showLogicOperations(selectOperations) {
     const className = 'valueRange';    
 
-    selectOperations.add(createOption('andValue', className, 'AND'));
-    selectOperations.add(createOption('orValue', className, 'OR'));
-    selectOperations.add(createOption('xorValue', className, 'XOR'));
-    selectOperations.add(createOption('notValue', className, 'NOT'));
+    if (OPERATION_WITH_2_IMAGES) {
+        selectOperations.add(createOption('andValue', className, 'AND'));
+        selectOperations.add(createOption('orValue', className, 'OR'));
+        selectOperations.add(createOption('xorValue', className, 'XOR'));
+    }
+    else {
+        selectOperations.add(createOption('notValue', className, 'NOT'));
+    }
 }
 
 function showDiffOperations(selectOperations) {

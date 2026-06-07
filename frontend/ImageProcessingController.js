@@ -23,6 +23,8 @@ export default class ImageProcessingController {
                 return await this._morphological();
             case 'convert':
                 return await this._convert();
+            case 'logic':
+                return await this._logic();
             default:
                 throw "Opção inválida";
         }
@@ -142,6 +144,25 @@ export default class ImageProcessingController {
                 return this.engine.convertToBinaryScale(imageCanva);
             default:
                 throw `Opção inválida para conversão de escala: ${option}`;
+        }
+    }
+
+    _logic() {
+        const option = document.getElementById('selectFeatures').value;
+        const imageCanva = document.getElementById('showInputImage');
+        const imageCanva2 = document.getElementById('showInputImage2');
+
+        switch (option) {
+            case 'andValue':
+                return this.engine.logicAND(imageCanva, imageCanva2);
+            case 'orValue':
+                return this.engine.logicOR(imageCanva, imageCanva2);
+            case 'xorValue':
+                return this.engine.logicXOR(imageCanva, imageCanva2);
+            case 'notValue':
+                return this.engine.logicNOT(imageCanva);
+            default:
+                throw `Opção inválida para operação lógica: ${option}`;
         }
     }
 }

@@ -139,4 +139,30 @@ export default class ImageEngineGateway {
         const body = transformIMGtoMATRIX(image1) + '\n' + 'S' + transformIMGtoMATRIX(image2);
         return fetchAPI(endpoint, 'POST', body);
     }
+
+    logicAND(image1, image2) {
+        const endpoint = `${this.endpoint}/logic/and`;
+
+        const body = transformIMGtoMATRIX(image1) + '\n' + 'S' + transformIMGtoMATRIX(image2);
+        return fetchAPI(endpoint, 'POST', body);
+    }
+
+    logicOR(image1, image2) {
+        const endpoint = `${this.endpoint}/logic/or`;
+
+        const body = transformIMGtoMATRIX(image1) + '\n' + 'S' + transformIMGtoMATRIX(image2);
+        return fetchAPI(endpoint, 'POST', body);
+    }
+
+    logicXOR(image1, image2) {
+        const endpoint = `${this.endpoint}/logic/xor`;
+
+        const body = transformIMGtoMATRIX(image1) + '\n' + 'S' + transformIMGtoMATRIX(image2);
+        return fetchAPI(endpoint, 'POST', body);
+    }
+
+    logicNOT(image) {
+        const endpoint = `${this.endpoint}/logic/not`;
+        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
+    }
 }
