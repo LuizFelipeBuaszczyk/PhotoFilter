@@ -1,4 +1,4 @@
-import { createLabel, createInput } from "../utils.js";
+import { createLabel, createInput } from "../utils/utils.js";
 
 /*
   RadioButton = {

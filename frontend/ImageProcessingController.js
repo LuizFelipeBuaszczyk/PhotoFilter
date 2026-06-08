@@ -96,7 +96,7 @@ export default class ImageProcessingController {
         }
     }
 
-    _border(opton) {
+    _border(option) {
         const imageCanva = document.getElementById('showInputImage');
     
         switch (option) {

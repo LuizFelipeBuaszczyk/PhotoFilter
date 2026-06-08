@@ -1,4 +1,4 @@
-import { transformIMGtoMATRIX, fetchAPI } from "./utils.js";
+import { transformIMGtoMATRIX, fetchAPI } from "./utils/utils.js";
 
 
 export default class ImageEngineGateway {

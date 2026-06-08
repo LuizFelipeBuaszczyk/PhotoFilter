@@ -1,4 +1,4 @@
-import { createRange, createLabel } from '../utils.js';
+import { createRange, createLabel } from '../utils/utils.js';
 
 function updateLabel(value) {
     const label = document.getElementById('labelRange');

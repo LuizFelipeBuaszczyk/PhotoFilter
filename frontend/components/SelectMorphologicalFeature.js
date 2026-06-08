@@ -1,5 +1,4 @@
-
-import { createOption } from '../utils.js'
+import { createOption } from '../utils/utils.js'
 
 export default function SelectMorphologicalFeature(id, className) {
     const select = document.createElement('select');

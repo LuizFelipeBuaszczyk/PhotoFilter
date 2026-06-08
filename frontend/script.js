@@ -1,5 +1,5 @@
-import { Canvas } from './canvas.js';
-import { createInput, createOption, drawImage, drawHistogram } from './utils.js';
+import { Canvas } from './components/canvas.js';
+import { createInput, createOption, drawImage, drawHistogram } from './utils/utils.js';
 
 import Range from './components/range.js'; 
 import SelectMorphologicalFeature from './components/SelectMorphologicalFeature.js';
