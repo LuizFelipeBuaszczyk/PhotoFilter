@@ -40,6 +40,9 @@ document.getElementById('selectFeatures')
 document.getElementById('proccessButton')
     .addEventListener('click', proccessImage);
 
+document.getElementById('saveImageButton')
+    .addEventListener('click', saveImage);
+
 function loadImageToCanvas(file, canvasId) {
     if (!file) throw "File é obrigatório";
 
@@ -398,4 +401,14 @@ async function proccessImage(){
     } catch (error) {
         console.log(error);
     }
+}
+
+function saveImage() {
+    const canvas = document.getElementById('canvas');
+    const imagemDataURL = canvas.toDataURL('image/png');
+
+    const link = document.createElement('a');
+    link.href = imagemDataURL;
+    link.download = 'imagem_canvas.png'; 
+    link.click(); 
 }
