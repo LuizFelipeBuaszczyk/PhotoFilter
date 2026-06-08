@@ -1,920 +1,414 @@
-var rgb = {r: 0, g: 0, b: 0, a:255}
-var selectedFeature;
+import { Canvas } from './components/canvas.js';
+import { createInput, createOption, drawImage, drawHistogram } from './utils/utils.js';
 
-document.getElementById('inputImage').addEventListener('change', loadImageToCanvas('inputImage','showInputImage'));
+import Range from './components/range.js'; 
+import SelectMorphologicalFeature from './components/SelectMorphologicalFeature.js';
+import FieldsetFeature from './components/FieldsetFeature.js';
+import ImageProcessingController from './ImageProcessingController.js' ;
 
-document.getElementById('inputImage2').addEventListener('change', loadImageToCanvas('inputImage2','showInputImage2'));
+// GLOBAIS
+let SELECTED_FEATURE = 'arithmetic';
+let SELECTED_OPTION = 'addValue';
+let OPERATION_WITH_2_IMAGES = false;
 
-document.getElementById('rangeForm').innerHTML = `  <label class = "label" id = "labelRange">Valor: 128</label>
-                                                    <input type= "range" id="range" min="0" max="255">`;
+// Eventos
+document.getElementById('inputImage')
+    .addEventListener('change', (event) => {
+    loadImageToCanvas(event.target.files[0], 'showInputImage')    
+});
 
-document.getElementById('selectConvertion').addEventListener('change', showThresholdRange);
-document.getElementById('selectFeatures').addEventListener('change', updateRange);
+document.getElementById('inputImage2')
+    .addEventListener('change', (event) => {
+    loadImageToCanvas(event.target.files[0], 'showInputImage2')    
+});
 
+document.getElementById('enable2Images')
+    .addEventListener('change', (event) => {
+    activeOperationsBetweenTwoImages(event.target.checked)
+});
 
-function loadImageToCanvas(inputId, canvasId) {
-    document.getElementById(inputId).addEventListener('change', function(event) {
-        var file = event.target.files[0];
-        if (file) {
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                var img = new Image();
-                img.onload = function() {
-                    var canvas = document.getElementById(canvasId);
-                    var ctx = canvas.getContext('2d');
+document.getElementById('featureButtons')
+    .addEventListener('change', (event) => {
+    manageSelectFeature(event.target.value)
+});
 
-                    // Ajusta o tamanho do canvas para a imagem
-                    canvas.width = 250;
-                    canvas.height = 250;
+document.getElementById('selectFeatures')
+    .addEventListener('change', (event) => {
+    manageSelectParameters(event.target.value)
+});
 
-                    // Desenha a imagem no canvas
-                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+document.getElementById('proccessButton')
+    .addEventListener('click', proccessImage);
 
-                    if(inputId == 'inputImage'){
-                        getHistogram('showInputImage', 'originalHistogram');
-                    }
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
+document.getElementById('saveImageButton')
+    .addEventListener('click', saveImage);
+
+function loadImageToCanvas(file, canvasId) {
+    if (!file) throw "File é obrigatório";
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const image = new Image();
+        image.src = e.target.result;
+        image.onload = function () {
+            const canvas = new Canvas(canvasId, 250, 250);
+            canvas.drawImageCanvas(image);
         }
-    });
-
+    }
+    reader.readAsDataURL(file);
 }
 
-document.getElementById("processButton").addEventListener("click", executeFeature);
-document.getElementById("convertButton").addEventListener("click", executeConvert);
-document.getElementById('equalizeHistogramButton').addEventListener('click', equalizeHistogram);
+// TODO Pensar em uma melhor visualização do histograma das imagens
+async function loadImageHistogram() {
+    const engine = new ImageProcessingController();
 
-document.getElementById("enable2Images").addEventListener("change", function(){
-    updateButtons();
-    updateFeature('arithmeticButton');
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll('.featureButton').forEach(button => {
-        button.addEventListener('click',function(event){
-            event.preventDefault();
-            selectedFeature = event.target.id.replace('ButtonSelect','')
-            updateFeature(selectedFeature);
-        });
-    });
-});
-
-if(document.getElementById('range')){
-    document.getElementById('range').addEventListener('input', () => {
-        document.getElementById('labelRange').textContent = "Valor: " + document.getElementById('range').value;
-    });
+    try {
+        const histogram = await engine.proccess('histogram', 'visualizeHistogramValue');
+        const labels = Array.from({length: 256}, (_, i) => i);
+        await drawHistogram('imageHistogram', labels, histogram);
+    } catch (error){
+        console.log(error);
+    }
 }
 
-document.getElementById('saveImage').addEventListener('click', function(){
-    saveImage();
-});
+function activeOperationsBetweenTwoImages(active){
+    const fieldset = document.getElementById('featureButtons');
+    fieldset.replaceChildren();
+    
+    OPERATION_WITH_2_IMAGES = active;
 
-document.getElementById('selectFeatureOptions').style.display = 'none';
+    if (OPERATION_WITH_2_IMAGES) {
+        showButtonsFeatureBetweenImages(fieldset);        
+    } else {
+        showButtonsFeatureOneImage(fieldset);
+    }
+     
+}
 
-document.getElementById('openModalButton').addEventListener('click', () => {
-    document.getElementById('imageModal').showModal();
-})
+function showButtonsFeatureOneImage(fieldset){
+    const radioButtons = [];
 
-document.getElementById('exit-kernel-modal').addEventListener('click', () => {
-    document.getElementById('imageModal').close();
-})
+    radioButtons.push({
+        'id': 'arithmeticButton',
+        'value':'arithmetic',
+        'labelText': 'Aritmética',
+        'selected': true,
+    });
 
-// Função para salvar imagens
-function saveImage(){
+    radioButtons.push({
+        'id': 'invertButton',
+        'value':'invert',
+        'labelText': 'Inverção'
+    });
+
+    radioButtons.push({
+        'id': 'convolutionalButton',
+        'value':'convolutional',
+        'labelText': 'Convolução'
+    });
+
+    radioButtons.push({
+        'id': 'borderDetectionButton',
+        'value':'border',
+        'labelText': 'Bordas'
+    });
+
+    radioButtons.push({
+        'id': 'morphologicalButton',
+        'value':'morphological',
+        'labelText': 'Operações Morfológicas'
+    });
+    
+    radioButtons.push({
+        'id' : 'convertButton',
+        'value': 'convert',
+        'labelText': 'Conversão de Escala'
+    })
+
+    radioButtons.push({
+        'id': 'logicButton',
+        'value': 'logic',
+        'labelText': 'Lógica'
+    });
+
+    radioButtons.push({
+        'id': 'histogramButton',
+        'value': 'histogram',
+        'labelText': 'Histograma'
+    });
+
+    FieldsetFeature(fieldset, radioButtons);
+    manageSelectFeature(SELECTED_FEATURE);
+}
+
+function showButtonsFeatureBetweenImages(fieldset) {
+    const radioButtons = [];
+
+    radioButtons.push({
+        'id': 'arithmeticButton',
+        'value': 'arithmetic',
+        'labelText': 'Aritmética',
+        'selected': true
+    });
+
+    radioButtons.push({
+        'id': 'logicButton',
+        'value': 'logic',
+        'labelText': 'Lógica'
+    });
+
+    radioButtons.push({
+        'id': 'diffButton',
+        'value': 'diference',
+        'labelText': 'Diferença'
+    });
+
+
+    radioButtons.push({
+        'id': 'linearButton',
+        'value': 'linear',
+        'labelText': 'Linear'
+    });
+
+    FieldsetFeature(fieldset, radioButtons);
+    manageSelectFeature(SELECTED_FEATURE);
+}
+
+function manageSelectFeature(selectedFeature) {
+    SELECTED_FEATURE = selectedFeature;
+
+    const selectOperations = document.getElementById('selectFeatures');
+    selectOperations.options.length = 0;
+    selectOperations.hidden = false;
+
+    const parameterSection = document.getElementById('parameterSection');
+    parameterSection.replaceChildren();
+
+    switch (SELECTED_FEATURE) {
+        case 'arithmetic':
+            showArithmeticOperations(selectOperations, parameterSection);
+            break;
+        case 'invert':
+            showInvertOperations(selectOperations);
+            break;
+        case 'convolutional':
+            showConvolutionalOperations(selectOperations);
+            break;
+        case 'border':
+            showBorderDetectionOperations(selectOperations);
+            break;
+        case 'morphological':
+            showMorphologicalOperations(selectOperations);
+            break;
+        case 'convert':
+            showConvertOperations(selectOperations);
+            break;
+        case 'logic':
+            showLogicOperations(selectOperations);
+            break;
+        case 'diference':
+            showDiffOperations(selectOperations);
+            break;
+        case 'linear':
+            showLinearOperations(selectOperations);
+            break;
+        case 'histogram':
+            showHistogramOperations(selectOperations);
+            break;
+        default:
+            throw "Invalid selectFeature"
+    }
+}
+
+// 1 Image Operations
+function showArithmeticOperations(selectOperations, parameterSection){
+    const className = 'valueRange';
+    
+    if (OPERATION_WITH_2_IMAGES) {
+        selectOperations.add(createOption('addImages', className, 'Adicionar'));
+        selectOperations.add(createOption('subtImages', className, 'Subtrair'));
+
+    } else {
+        selectOperations.add(createOption('addValue', className, 'Adicionar'));
+        selectOperations.add(createOption('subtValue', className, 'Subtrair'));
+        selectOperations.add(createOption('multValue', className, 'Multiplicação'));
+        selectOperations.add(createOption('divValue', className, 'Divisão'));
+   
+        const range = Range('rangeForm', 0, 255, 1, 'Valor: 128');
+        parameterSection.append(range);
+    }
+}
+
+function showInvertOperations(selectOperations) {
+    const className = 'valueRange';
+
+    selectOperations.add(createOption('horizontalValue', className, 'Horizontal'));
+    selectOperations.add(createOption('verticleValue', className, 'Vertical'));
+}
+
+function showConvolutionalOperations(selectOperations) {
+    const className = 'valueRange';
+
+    selectOperations.add(createOption('meanValue', className, 'Média'));
+    selectOperations.add(createOption('minValue', className, 'Mínimo'));
+    selectOperations.add(createOption('maxValue', className, 'Máximo'));
+    selectOperations.add(createOption('medianValue', className, 'Mediana'));
+    selectOperations.add(createOption('orderValue', className, 'Ordem'));
+    selectOperations.add(createOption('conservativeSomoothingValue', className, 'Suavização Conservativa'));
+    selectOperations.add(createOption('gaussianValue', className, 'Gaussiano'));
+
+    const range = Range('rangeForm', 3, 29, 2, 'Valor: 17');
+    parameterSection.append(range);
+}
+
+function showBorderDetectionOperations(selectOperations) {
+    const className = 'valueRange';
+
+    selectOperations.add(createOption('prewitValue', className, 'Prewit'));
+    selectOperations.add(createOption('sobelValue', className, 'Sobel'));
+    selectOperations.add(createOption('laplacianValue', className, 'Laplaciano'));
+}
+
+function showMorphologicalOperations (selectOperations) {
+    const className = 'valueRange';
+
+    selectOperations.add(createOption('dilationValue', className, 'Dilatação'));
+    selectOperations.add(createOption('erosionValue', className, 'Erosão'));
+    selectOperations.add(createOption('openingValue', className, 'Abertura'));
+    selectOperations.add(createOption('closingValue', className, 'Fechamento'));
+    selectOperations.add(createOption('outlineValue', className, 'Contorno'));
+
+    const range = Range('rangeForm', 0, 255, 1, 'Valor: 128');
+    parameterSection.append(range);
+
+    const selectMorphologicalFeatures = SelectMorphologicalFeature('selectFeatureOptions', null);
+    parameterSection.append(selectMorphologicalFeatures); 
+}
+
+function showConvertOperations(selectOperations) {
+    const className = 'valueRange';
+
+    selectOperations.add(createOption('grayScaleValue', className, 'Escala de Cinza'));
+    selectOperations.add(createOption('binaryScaleValue', className, 'Escala Binária'));
+}
+
+function showHistogramOperations(selectOperations) {
+    const className = 'valueRange';
+
+    selectOperations.add(createOption('equalizeHistogramValue', className, 'Equalizar'));
+}
+
+// 2 Image operations
+function showLogicOperations(selectOperations) {
+    const className = 'valueRange';    
+
+    if (OPERATION_WITH_2_IMAGES) {
+        selectOperations.add(createOption('andValue', className, 'AND'));
+        selectOperations.add(createOption('orValue', className, 'OR'));
+        selectOperations.add(createOption('xorValue', className, 'XOR'));
+    }
+    else {
+        selectOperations.add(createOption('notValue', className, 'NOT'));
+    }
+}
+
+function showDiffOperations(selectOperations) {
+    selectOperations.hidden = true;
+    return; 
+}
+
+function showLinearOperations(selectOperations) {
+    const className = 'valueRange';
+
+    selectOperations.add(createOption('averageValue', className, 'Média'));
+    selectOperations.add(createOption('blendingValue', className, 'Blending'));
+}
+
+function manageSelectParameters(selectedOption) {
+    SELECTED_OPTION = selectedOption
+    const parameterSection = document.getElementById('parameterSection');
+    parameterSection.replaceChildren();
+
+    switch (SELECTED_FEATURE) {
+        case 'arithmetic':
+            showArithmeticParameters(parameterSection);
+            break;
+        case 'invert':
+            break;
+        case 'convolutional':
+            showConvolutionalParameters(parameterSection);
+            break;
+        case 'morphological':
+            showMorphologicalParameters(parameterSection);
+            break;
+        case 'linear':
+            showLinearParameters(parameterSection);
+            break;
+    } 
+}
+
+function showArithmeticParameters(parameterSection) {
+
+    if (!OPERATION_WITH_2_IMAGES) {
+        const range = Range('rangeForm', 0, 255, 1, 'Valor: 128');
+        parameterSection.append(range);
+    }
+}
+
+function showConvolutionalParameters(parameterSection) {
+    const range = Range('rangeForm', 3, 29, 1, 'Valor: 17');
+    parameterSection.append(range);   
+    
+    switch (SELECTED_OPTION){
+        case 'orderValue':
+            const inputOrderValue = createInput('inputValue', 'number', null, 5);
+            parameterSection.append(inputOrderValue);
+            break;
+        case 'gaussianValue':
+            const inputGaussianValue = createInput('inputValue', 'number', null, 100);
+            parameterSection.append(inputGaussianValue);
+            break;
+    }
+}
+
+function showMorphologicalParameters(parameterSection) {
+    const range = Range('rangeForm', 0, 255, 1, 'Valor: 128');
+    parameterSection.append(range);   
+
+    const selectMorphologicalFeatures = SelectMorphologicalFeature('selectFeatureOptions', null);
+    parameterSection.append(selectMorphologicalFeatures); 
+}
+
+function showLinearParameters(parameterSection) {
+    
+    switch (SELECTED_OPTION) {
+        case 'blendingValue':
+            const inputBlendingValue = createInput('inputValue', 'number', null, 5);
+            parameterSection.append(inputBlendingValue);
+            break;
+    }
+} 
+
+async function proccessImage(){
+    const gateway = new ImageProcessingController(); 
+    const feature = document.querySelector('#featureButtons :checked').value;
+    const option = document.getElementById('selectFeatures').value;
+
+    try {
+        const response = await gateway.proccess(feature, option);
+        // TODO -- Adaptação para o endpoint de histogram, será corrigido no refactor do backend
+        await drawImage(response.image ? response.image : response, 'canvas');
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+function saveImage() {
     const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-
-      
     const imagemDataURL = canvas.toDataURL('image/png');
 
     const link = document.createElement('a');
     link.href = imagemDataURL;
     link.download = 'imagem_canvas.png'; 
     link.click(); 
-}
-
-function showThresholdRange(){
-    const selected = document.getElementById('selectConvertion').value;
-
-    if(selected == '1bit'){
-        document.getElementById('rangeThreshold').innerHTML = ` <label class = "label" id= "labelRangeConvertion">Valor: 128</label>
-                                                                <input type= "range" id="rangeConvertion" min="0" max="255" oninput="updateConvertLabelValue()">`
-    }else{
-        document.getElementById('rangeThreshold').innerHTML = ``;
-    }
-}
-
-function updateConvertLabelValue(){
-    document.getElementById('labelRangeConvertion').textContent = "Valor: " + document.getElementById('rangeConvertion').value; 
-}
-
-function transformIMGtoMATRIX(canvas) {
-    var ctx = canvas.getContext('2d');
-
-    // Aguardar a imagem ser carregada antes de processá-la
-    var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        var data = imageData.data;
-
-        // Criar a matriz
-        var matrix = [];
-        for (var y = 0; y < canvas.height; y++) {
-            var row = [];
-            for (var x = 0; x < canvas.width; x++) {
-                // Cada pixel é representado por um array [r, g, b, a]
-                var index = (y * canvas.width + x) * 4;
-                var rgba = [
-                    data[index],     
-                    data[index + 1], 
-                    data[index + 2], 
-                    data[index + 3]  
-                ];
-                row.push(rgba);
-            }
-            matrix.push(row);
-        }
-
-        // Exibir a matriz no formato JSON 
-        matrixJSON = JSON.stringify(matrix, null, 2);
-        return matrixJSON;
-        //JSON ordem: [WIDTH][HEIGHT]
-}
-
-function drawImage(imageData){
-    var canvas = document.getElementById('canvas');
-    var ctx = canvas.getContext('2d');
-
-    const height = imageData.length;
-    const width = imageData[0].length;
-    canvas.width = width;
-    canvas.height = height;
-
-    const imageDataObj = ctx.createImageData(width, height);
-
-    let i = 0;
-    for(let y = 0; y < height; y++){
-        for(let x = 0; x < width; x++){
-            let pixel = imageData[y][x];
-            imageDataObj.data[i++] = pixel[0]; // Red
-            imageDataObj.data[i++] = pixel[1]; // Green
-            imageDataObj.data[i++] = pixel[2]; // Blue
-            imageDataObj.data[i++] = pixel[3]; // Alpha
-        }
-    }
-
-    ctx.putImageData(imageDataObj, 0, 0);   
-}
-
-function drawKernelImage(kernelData){
-    console.log(kernelData);
-    const canvas = document.getElementById('canvasImageModal');
-    const ctx = canvas.getContext('2d');
-
-    const height = kernelData.length;
-    const width = kernelData[0].length;
-    canvas.width = width;
-    canvas.height = height;
-
-    const imageDataObj = ctx.createImageData(width, height);
-
-    let i = 0;
-    for(let y = 0; y < height; y++){
-        for(let x = 0; x < width; x++){
-            let pixel = kernelData[y][x];
-            imageDataObj.data[i++] = pixel; // Red
-            imageDataObj.data[i++] = pixel; // Green
-            imageDataObj.data[i++] = pixel; // Blue
-            imageDataObj.data[i++] = 255; // Alpha
-        }
-    }
-
-    ctx.putImageData(imageDataObj, 0, 0);   
-}
-
-function draw8bitImage(imageData){
-    var canvas = document.getElementById('canvas');
-    var ctx = canvas.getContext('2d');
-
-    const height = imageData.length;
-    const width = imageData[0].length;
-    canvas.width = width;
-    canvas.height = height;
-
-    const imageDataObj = ctx.createImageData(width, height);
-
-    let i = 0;
-    for(let y = 0; y < height; y++){
-        for(let x = 0; x < width; x++){
-            let pixel = imageData[y][x];
-            imageDataObj.data[i++] = pixel;
-            imageDataObj.data[i++] = pixel; 
-            imageDataObj.data[i++] = pixel; 
-            imageDataObj.data[i++] = 255;  
-        }
-    }
-
-    ctx.putImageData(imageDataObj, 0, 0);   
-}
-
-function drawHistogram(histogram, labels, values){
-    const canvas = document.getElementById(histogram);
-    const ctx = canvas.getContext("2d");
-
-    const width = canvas.width;
-    const height = canvas.height;
-    const margin = 40;
-    const barLarge = (width - 2 * margin) / labels.length;
-
-    const maxValue = Math.max(...values);
-    const heightScale = (height - 2 * margin) / maxValue;
-
-    ctx.clearRect(0, 0, width, height);
-
-    ctx.beginPath();
-    ctx.moveTo(margin, margin);
-    ctx.lineTo(margin, height - margin);
-    ctx.lineTo(width - margin, height - margin);
-    ctx.stroke();
-
-    labels.forEach((label, i) => {
-        const x = margin + i * barLarge;
-        const h = values[i] * heightScale;
-        const y = height - margin - h;
-
-        ctx.fillStyle = "#2196f3";
-        ctx.fillRect(x, y, barLarge, h);
-  
-        ctx.fillStyle = "#000";
-        ctx.fillText(label, x + barLarge / 4, height - margin + 12);
-    });
-}
-
-function updateButtons(){
-    const selected = document.getElementById("enable2Images").checked;
-    
-    if(selected){
-         document.getElementById("featureButtons").innerHTML = ` <button value="arithmetic" id="arithmeticButton" class="featureButton">Aritmética</button>
-                                                                 <button value="logic" id="logicButton" class="featureButton">Lógica</button>
-                                                                 <button value="diff" id="diffButton" class="featureButton">Diferença</button>
-                                                                 <button value="linear" id="linearButton" class="featureButton">Linear</button>`;
-    }else{
-        document.getElementById("featureButtons").innerHTML = `  <button value="arithmetic" id="arithmeticButton" class="featureButton">Aritmética</button>
-                                                                 <button value="invert" id="invertButton" class="featureButton">Inverção</button>
-                                                                 <button value="convolutional" id="convolutionalButton" class="featureButton">Convolução</button>
-                                                                 <button value="borderDetection" id="borderDetectionButton" class="featureButton">Bordas</button>
-                                                                 <button value="morphological" id="morphologicalButton" class="featureButton">Operações morfológicas</button>`;
-    }
-
-    document.querySelectorAll('.featureButton').forEach(button => {
-        button.addEventListener('click',function(event){
-            event.preventDefault();
-            selectedFeature = event.target.id.replace('ButtonSelect','')
-            updateFeature(selectedFeature);
-        });
-    });
-
-}
-
-
-function updateFeature(selectedOption){
-    const selectOptions = document.getElementById("selectFeatures");
-    const checked = document.getElementById("enable2Images").checked;
-    selectOptions.style.display = 'flex';
-
-
-    if (checked){
-        switch(selectedFeature){
-            case 'arithmeticButton':
-                showRange(false);
-                showConvolutionRange(false);
-                selectOptions.innerHTML     =   `   <option value="addValue">Adicionar</option>
-                                                    <option value="subtValue">Subtrair</option>`;
-                break;
-            case 'logicButton':
-                    showRange(false);
-                    showConvolutionRange(false);
-                    selectOptions.innerHTML =  `    <option value="and">AND</option>
-                                                    <option value="or">OR</option>
-                                                    <option value="xor">XOR</option>
-                                                    <option value="not">NOT</option>`;
-    
-                break;
-            case 'diffButton':
-                showRange(false);
-                showConvolutionRange(false);
-                selectOptions.style.display = 'none';
-                break;
-            case 'linearButton':
-                showRange(true);
-                showConvolutionRange(false);
-                selectOptions.innerHTML =  `<option value="average">Média</option>
-                                            <option value="blending" class="percentRange">Blending</option>`;
-                break;
-        }
-    } else{
-        switch(selectedFeature){
-            case 'arithmeticButton':
-                showRange(true);
-                showMorphoTypeOptions(false);
-                selectOptions.innerHTML =  `<option value="addValue" class="valueRange">Adicionar</option>
-                                            <option value="subtValue" class="valueRange">Subtrair</option>
-                                            <option value="multValue" class="valueRange">Multiplicação</option>
-                                            <option value="divValue" class="valueRange">Divisão</option>`;
-                break;
-            case 'invertButton':
-                showRange(false);
-                showConvolutionRange(false);
-                showMorphoTypeOptions(false);
-                selectOptions.innerHTML =  `<option value="horizontal">Horizontal</option>
-                                            <option value="vertical">Vertical</option>`;
-                break;
-            
-            case 'convolutionalButton':
-                showConvolutionRange(true);
-                showMorphoTypeOptions(false);
-                selectOptions.innerHTML =  `<option value="mean" class="convolutional">MEAN</option>
-                                            <option value="min" class="convolutional">MIN</option>
-                                            <option value="max" class="convolutional">MAX</option>
-                                            <option value="median" class="convolutional">MEDIANA</option>
-                                            <option value="order" class="convolutional">ORDEM</option>
-                                            <option value="conservativeSmoothing" class="convolutional">SUAVIZAÇÃOO CONSERVATIVA</option>
-                                            <option value="gaussian" class="convolutional">Gaussiano</option>`;
-                break;
-            case 'borderDetectionButton':
-                showRange(false);
-                showConvolutionRange(false);
-                showMorphoTypeOptions(false);
-                selectOptions.innerHTML =  `<option value="prewit">Prewit</option>
-                                            <option value="sobel">Sobel</option>
-                                            <option value="laplacian">Laplaciano</option>`;
-                break;
-            case 'morphologicalButton':
-                showConvolutionRange(true);
-                showMorphoTypeOptions(true);
-                selectOptions.innerHTML =  `<option value="dilation" class="convolutional">Dilatação</option>
-                                            <option value="erosion" class="convolutional">Erosão</option>
-                                            <option value="opening" class="convolutional">Abertura</option>
-                                            <option value="closing" class="convolutional">Fechamento</option>
-                                            <option value="outline" class="convolutional">Contorno</option>`;
-                break;
-        }
-
-    }
-}
-
-function showMorphoTypeOptions(show){
-    const selectFeatureOptions = document.getElementById('selectFeatureOptions');
-
-    if (show){
-        selectFeatureOptions.innerHTML =    `
-                                            <option value="1">Quadrado</option>
-                                            <option value="2">Diamante</option>
-                                            <option value="3">Linha Horizontal</option>
-                                            <option value="4">Linha Vertical</option>
-                                            `;
-        selectFeatureOptions.style.display = 'flex';
-    }else {
-        selectFeatureOptions.innerHTML = '';
-        selectFeatureOptions.style.display = 'none';
-    }
-}
-
-function updateRangeLabel(){
-    document.getElementById("labelRange").innerHTML= `<label class = "label" id= "labelRange">Valor: ${document.getElementById("range").value}</label>`
-}
-
-function updateRange() {
-    const selectElement = document.getElementById('selectFeatures');
-    const selectedOption = selectElement.options[selectElement.selectedIndex];
-    const selectedClass = selectedOption.className;
-
-    switch (selectedClass) {
-        case 'valueRange':
-            showRange(true);
-            break;
-        case 'convolutional':
-            showConvolutionRange(true);
-            break;
-        case 'percentRange':
-            showRange(true);
-            break;
-        default:
-            showRange(false);
-    }
-}
-
-function showRange(show){
-    if (show){
-        document.getElementById('rangeForm').innerHTML = `  <label class = "label" id= "labelRange">Valor: 128</label>
-                                                            <input type= "range" id="range" min="0" max="255" oninput="updateRangeLabel()">`;   
-    }else {
-        document.getElementById('rangeForm').innerHTML = ``;                                 
-    }
-}
-
-function showConvolutionRange(show){
-    selected = document.getElementById('selectFeatures').value;
-
-    if (show) {
-        let html = `<label class = "label" id= "labelRange">Valor: 17</label>
-                    <input type= "range" id="range" min="3" max="29" step="2" oninput="updateRangeLabel()">`;
-       
-        if (selected == 'order'){
-            html += `<input type="number" name="number" id="inputValue" max="5">`;   
-        }
-
-        if (selected == 'gaussian'){
-            html += `<input type="number" name="number" id="inputValue" max="100" step="0.01">`
-        }
-                    
-        document.getElementById('rangeForm').innerHTML = html;
-    }else {
-        document.getElementById('rangeForm').innerHTML = ``;                                 
-    }
-}
-
-function executeFeature(){
-    const selected = document.getElementById("selectFeatures").value;
-
-    switch(selectedFeature){
-        case 'arithmeticButton':
-            const arithmeticWith2images = document.getElementById("enable2Images").checked;
-            if(arithmeticWith2images){
-                switch (selected) {
-                    case('addValue'):
-                        operationWith2Images('+');
-                        break;
-                    case('subtValue'):
-                        subtImages('-');
-                        break;
-                }
-            }else {
-                const value = document.getElementById('range').value;
-
-                switch(selected){
-                    case('addValue'):
-                        operationValueToIMG('+', value);
-                        break;
-                    case('subtValue'):
-                        operationValueToIMG('-', value);
-                        break;
-                    case('multValue'):
-                        operationValueToIMG('*', value);
-                        break;
-                    case('divValue'):
-                        operationValueToIMG('/', value);
-                        break;
-                }
-            }
-            break;
-        case 'logicButton':
-            logic(selected);
-            break;
-        case 'invertButton':
-            switch(selected){
-                case('horizontal'):
-                    invertImage('h');
-                    break;
-                case('vertical'):
-                    invertImage('v')
-                    break;
-            }
-            break;
-        case 'diffButton':
-            operationWith2Images('d');
-            break;
-        case 'linearButton':
-            switch(selected){
-                case('blending'):
-                    linear('b');
-                    break;
-                case('average'):
-                    linear('a');
-                    break;
-            }
-            break;  
-        
-        case 'convolutionalButton': 
-            convolutional(selected);
-            break;
-        case 'borderDetectionButton':
-            borderDetection(selected);
-            break;
-        case 'morphologicalButton':
-            morphological(selected);
-            break;
-    }       
-}
-
-function executeConvert(){
-    const selected = document.getElementById("selectConvertion").value;
-    
-    switch(selected){
-        case('grayScale'):
-            convertIMGtoGrayScale()
-            break;
-        case('1bit'):
-            convertIMGto1Bit()
-            break;
-    }
-}
-
-function operationValueToIMG(op, value){
-    matrixJSON = transformIMGtoMATRIX(document.getElementById('showInputImage'));
-
-    if(false){
-
-    } else{
-        let endpoint;
-
-        switch (op) {//Verify operation
-            case '+':
-                endpoint = `http://localhost:8080/process/add?value=${value}`;
-                break;
-            case '-':
-                endpoint = `http://localhost:8080/process/subt?value=${value}`;
-                break;
-            case '*':
-                endpoint = `http://localhost:8080/process/mult?value=${value}`;
-                break;
-            case '/':
-                endpoint = `http://localhost:8080/process/div?value=${value}`;
-                break;
-            default:
-                endpoint = undefined;
-        }
-
-        if(endpoint){
-            fetch(endpoint, {
-                method: 'POST',
-                body: matrixJSON
-            })
-            .then(response => response.json())
-            .then(data => {
-                drawImage(data);
-            })
-            .catch(error => {
-                console.error('Erro:', error);
-            });
-        }
-    }
-}
-
-function convertIMGtoGrayScale(){
-    matrixJSON = transformIMGtoMATRIX(document.getElementById('showInputImage'));
-    const value = 100;
-
-    if(false){
-
-    } else{
-        fetch(`http://localhost:8080/convert/8bit`, {
-            method: 'POST',
-            body: matrixJSON
-        })
-        .then(response => response.json())
-        .then(data => {
-            draw8bitImage(data);
-        })
-        .catch(error => {
-            console.error('Erro:', error);
-        });
-    }
-}
-
-function convertIMGto1Bit(){
-    matrixJSON = transformIMGtoMATRIX(document.getElementById('showInputImage'));
-    const value = document.getElementById('rangeConvertion').value;
-
-    if(false){
-
-    } else{
-        fetch(`http://localhost:8080/convert/1bit?value=${value}`, {
-            method: 'POST',
-            body: matrixJSON
-        })
-        .then(response => response.json())
-        .then(data => {
-            draw8bitImage(data);
-        })
-        .catch(error => {
-            console.error('Erro:', error);
-        });
-    }
-}
-
-function invertImage(op){
-    matrixJSON = transformIMGtoMATRIX(document.getElementById('showInputImage'));
-
-    if(false){
-
-    } else{
-        endpoint = op == 'h' ? `http://localhost:8080/invert/horizontal` : `http://localhost:8080/invert/vertical`; 
-        fetch(endpoint, {
-            method: 'POST',
-            body: matrixJSON
-        })
-        .then(response => response.json())
-        .then(data => {
-            drawImage(data);
-        })
-        .catch(error => {
-            console.error('Erro: ', error);
-        });
-    }
-}
-
-function addImages(){
-    const matrixJSON = transformIMGtoMATRIX(document.getElementById('showInputImage'));
-    const matrixJSON2 = transformIMGtoMATRIX(document.getElementById('showInputImage2'));
-    json = matrixJSON + '\n' + 'S' + matrixJSON2;
-
-
-    if(false){
-
-    } else{
-        fetch(`http://localhost:8080/add`, {
-            method: 'POST',
-            body: json
-        })
-        .then(response => response.json())
-        .then(data => {
-            drawImage(data);
-        })
-        .catch(error => {
-            console.error('Erro: ', error);
-        });
-    }
-}
-
-function subtImages(){
-    const matrixJSON = transformIMGtoMATRIX(document.getElementById('showInputImage'));
-    const matrixJSON2 = transformIMGtoMATRIX(document.getElementById('showInputImage2'));
-    json = matrixJSON + '\n' + 'S' + matrixJSON2;
-
-    if(false){
-
-    } else{
-        fetch(`http://localhost:8080/subt`, {
-            method: 'POST',
-            body: json
-        })
-        .then(response => response.json())
-        .then(data => {
-            drawImage(data);
-        })
-        .catch(error => {
-            console.error('Erro:', error);
-        });
-    }
-}
-
-function operationWith2Images(op){
-    const matrixJSON = transformIMGtoMATRIX(document.getElementById('showInputImage'));
-    const matrixJSON2 = transformIMGtoMATRIX(document.getElementById('showInputImage2'));
-    json = matrixJSON + '\n' + 'S' + matrixJSON2;
-
-    if(false){
-
-    }else{
-        let endpoint;
-        
-        switch (op){
-            case '+':
-                endpoint = `http://localhost:8080/add`;
-                break;
-            case '-':
-                endpoint = `http://localhost:8080/subt`;
-                break;
-            case 'd':
-                endpoint = `http://localhost:8080/diference`
-                break;
-            default:
-                endpoint = undefined;
-        }
-
-        if(endpoint) {
-            fetch(endpoint, {
-                method: 'POST',
-                body: json
-            })
-            .then(response => response.json())
-            .then(data => {
-                drawImage(data);
-            })
-            .catch(error => {
-                console.error('Erro:', error);
-            });
-        }        
-    }
-}
-
-
-function logic(op){
-    const matrixJSON = transformIMGtoMATRIX(document.getElementById('showInputImage'));
-    if(op!= 'not'){
-        const matrixJSON2 = transformIMGtoMATRIX(document.getElementById('showInputImage2'));
-        json = matrixJSON + '\n' + 'S' + matrixJSON2;
-    }else{
-        json = matrixJSON;
-    }
-    if(false){
-
-    }else{
-        let endpoint;
-        
-        endpoint = `http://localhost:8080/logic/` + op;
-
-        if(endpoint) {
-            fetch(endpoint, {
-                method: 'POST',
-                body: json
-            })
-            .then(response => response.json())
-            .then(data => {
-                draw8bitImage(data);
-            })
-            .catch(error => {
-                console.error('Erro:', error);
-            });
-        }        
-    }
-}
-
-function linear(op){
-    const matrixJSON = transformIMGtoMATRIX(document.getElementById('showInputImage'));
-    const matrixJSON2 = transformIMGtoMATRIX(document.getElementById('showInputImage2'));
-    json = matrixJSON + '\n' + 'S' + matrixJSON2;
-
-    if(false){
-
-    }else{
-        let endpoint;
-        
-        switch (op){
-            case 'b': //Valor personalizado
-                let value = document.getElementById("range").value;
-                endpoint = `http://localhost:8080/linear/blending?value=${value}`;
-                break;
-            case 'a':
-                endpoint = `http://localhost:8080/linear/average`;
-                break;
-            default:
-                endpoint = undefined;
-        }
-
-        if(endpoint) {
-            fetch(endpoint, {
-                method: 'POST',
-                body: json
-            })
-            .then(response => response.json())
-            .then(data => {
-                drawImage(data);
-            })
-            .catch(error => {
-                console.error('Erro:', error);
-            });
-        }        
-    }
-}
-
-function getHistogram(img, histogram){
-    matrixJSON = transformIMGtoMATRIX(document.getElementById(img));
-
-    endpoint = `http://localhost:8080/histogram`;
-    fetch(endpoint, {
-        method: 'POST',
-        body: matrixJSON
-    })
-    .then(response => response.json())
-    .then(data => {
-        const labels = Array.from({length: 256}, (_,i) => i);
-        drawHistogram(histogram, labels, data);
-    })
-    .catch(error =>{
-        console.error('Erro: ', error);
-    })
-
-}
-
-function  convolutional(option){
-    const matrixJSON = transformIMGtoMATRIX(document.getElementById('showInputImage'));
-    const kernel = document.getElementById('range').value;
-    let invalid = false;
-    let msgError = '';
-
-    if (option == 'order'){
-        const inputValue = document.getElementById('inputValue').value;
-        invalid = !verifityValueIsInRange(inputValue, 1, kernel*kernel);
-        msgError += `\nInsira um valor dentro do range (1, ${kernel*kernel})`;
-    }
-
-    if(invalid){
-        alert(msgError);
-    } else {
-        endpoint = `http://localhost:8080/convolutional/${option}?kernel=${kernel}`; 
-        if (option == 'order'){
-            endpoint += `&selectedvalue=${document.getElementById('inputValue').value}`;
-        }
-        else if (option == 'gaussian'){
-            const value = document.getElementById('inputValue').value.replace(",", ".");
-            endpoint += `&sigma=${value}`;
-        }
-        
-        fetch(endpoint, {
-            method: 'POST',
-            body: matrixJSON
-        })
-        .then(response => response.json())
-        .then(data => {     
-            if (option == 'gaussian'){
-                drawImage(data.image);
-                drawKernelImage(data.kernelModel);
-            } 
-            else{
-                drawImage(data);
-            }
-        })
-        .catch(error => {
-            console.error('Erro: ', error);
-        });
-    }
-}
-
-function borderDetection(option){
-    const matrixJSON = transformIMGtoMATRIX(document.getElementById('showInputImage'));
-
-
-    if(false){
-        
-    } else {
-        endpoint = `http://localhost:8080/borderDetection/${option}`; 
-        
-        fetch(endpoint, {
-            method: 'POST',
-            body: matrixJSON
-        })
-        .then(response => response.json())
-        .then(data => {     
-            draw8bitImage(data);
-        })
-        .catch(error => {
-            console.error('Erro: ', error);
-        });
-    }
-}
-
-function morphological(option){
-    const matrixJSON = transformIMGtoMATRIX(document.getElementById('showInputImage'));
-    const kernel = document.getElementById('range').value;
-    const type = document.getElementById('selectFeatureOptions').value;
-
-    if(false){
-        
-    } else {
-        endpoint = `http://localhost:8080/morphological/${option}?kernel=${kernel}&type=${type}`; 
-        
-        fetch(endpoint, {
-            method: 'POST',
-            body: matrixJSON
-        })
-        .then(response => response.json())
-        .then(data => {     
-            draw8bitImage(data);
-        })
-        .catch(error => {
-            console.error('Erro: ', error);
-        });
-    }
-}
-
-
-function equalizeHistogram(){
-    matrixJSON = transformIMGtoMATRIX(document.getElementById('showInputImage'));
-
-    if(false){
-
-    } else{
-        endpoint = `http://localhost:8080/histogram/equalize`; 
-        fetch(endpoint, {
-            method: 'POST',
-            body: matrixJSON
-        })
-        .then(response => response.json())
-        .then(data => {
-            draw8bitImage(data.image);
-            const labels = Array.from({length: 256}, (_,i) => i);
-            drawHistogram('equalizedHistogram', labels, data.histogram);
-        })
-        .catch(error => {
-            console.error('Erro: ', error);
-        });
-    }
-}
-
-
-/// Verificações
-function verifityValueIsInRange(value, min, max){
-    return ((value<=max) && (value>=min));
 }

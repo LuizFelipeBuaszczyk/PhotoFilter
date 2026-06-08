@@ -1,0 +1,200 @@
+import ImageEngineGateway from "./ImageEngineGateway.js";
+
+export default class ImageProcessingController {
+    
+    constructor (){
+        this.engine = new ImageEngineGateway();
+    }
+    
+    async proccess(feature, option){
+       
+        switch (feature) {
+            case 'arithmetic':
+                return await this._arithmetic(option);
+            case 'invert':
+                return await this._invert(option);
+            case 'convolutional':
+                return await this._convolutional(option);
+            case 'border':
+                return await this._border(option);
+            case 'morphological':
+                return await this._morphological(option);
+            case 'convert':
+                return await this._convert(option);
+            case 'logic':
+                return await this._logic(option);
+            case 'diference':
+                return await this._diference();
+            case 'linear':
+                return await this._linear(option);
+            case 'histogram':
+                return await this._histogram(option);
+            default:
+                throw `Opção inválida: ${feature}`;
+        }
+    }
+
+    _arithmetic(option) {
+        const imageCanva = document.getElementById('showInputImage');
+        const value = document.getElementById('range') ? document.getElementById('range').value : 0;
+        const imageCanva2 = document.getElementById('showInputImage2');
+    
+        switch (option) {
+            case 'addValue':
+                    return this.engine.addValue(imageCanva, value);
+            case 'subtValue':
+                return this.engine.subtValue(imageCanva, value);
+            case 'multValue':
+                return this.engine.multiplyValue(imageCanva, value);
+            case 'divValue':
+                return this.engine.divValue(imageCanva, value);
+            case 'addImages':
+                return this.engine.addImages(imageCanva, imageCanva2);
+            case 'subtImages':
+                return this.engine.subtImages(imageCanva, imageCanva2);
+            default:
+                throw `Opção inválida para aritmética: ${option}`;
+        }
+       
+    }
+
+    _invert(option) {
+        const imageCanva = document.getElementById('showInputImage');
+        
+        switch (option) {
+            case 'horizontalValue':
+                return this.engine.invertHorizontal(imageCanva);
+            case 'verticleValue':
+                return this.engine.invertVerticle(imageCanva);
+            default:
+                throw `Opção inválida para inverção: ${option}`;
+        }
+    }
+
+    _convolutional(option) {
+        const imageCanva = document.getElementById('showInputImage');
+        const kernelSize = document.getElementById('range').value;
+        const inputValue = document.getElementById('inputValue') ? document.getElementById('inputValue').value : null;
+
+        switch (option) {
+            case 'meanValue':
+                return this.engine.convolutionAverage(imageCanva, kernelSize);
+            case 'minValue':
+                return this.engine.convolutionMin(imageCanva, kernelSize);
+            case 'maxValue':
+                return this.engine.convolutionMax(imageCanva, kernelSize);
+            case 'medianValue':
+                return this.engine.convolutionMedian(imageCanva, kernelSize);
+            case 'orderValue':
+                return this.engine.convolutionOrder(imageCanva, kernelSize, inputValue);
+            case 'conservativeSomoothingValue':
+                return this.engine.convolutionConservativeSuavization(imageCanva, kernelSize);
+            case 'gaussianValue':
+                return this.engine.convolutionGaussian(imageCanva, kernelSize, inputValue); 
+            default:
+                throw `Opção inválida para convolução: ${option}`;
+        }
+    }
+
+    _border(option) {
+        const imageCanva = document.getElementById('showInputImage');
+    
+        switch (option) {
+            case 'prewitValue':
+                return this.engine.borderPrewit(imageCanva);
+            case 'sobelValue':
+                return this.engine.borderSobel(imageCanva);
+            case 'laplacianValue':
+                return this.engine.borderLaplacian(imageCanva);
+            default:
+                throw `Opção inválida para detecção de borda: ${option}`;
+        }
+    }
+
+    _morphological(option) {
+        const imageCanva = document.getElementById('showInputImage');
+        const kernelSize = document.getElementById('range').value;
+        const type = document.getElementById('selectFeatureOptions').value;
+
+        switch (option) {
+            case 'dilationValue':
+                return this.engine.morphologicalDilatation(imageCanva, kernelSize, type);
+            case 'erosionValue':
+                return this.engine.morphologicalErosion(imageCanva, kernelSize, type);
+            case 'openingValue':
+                return this.engine.morphologicalOpening(imageCanva, kernelSize, type);
+            case 'closingValue':
+                return this.engine.morphologicalClosing(imageCanva, kernelSize, type);
+            case 'outlineValue':
+                return this.engine.morphologicalOutline(imageCanva, kernelSize, type);
+            default:
+                throw `Opção inválida para operação morfológica: ${option}`;
+        }
+    }
+
+    _convert(option) {
+        const imageCanva = document.getElementById('showInputImage');
+        
+        switch (option) {
+            case 'grayScaleValue':
+                return this.engine.convertToGrayScale(imageCanva);
+            case 'binaryScaleValue':
+                return this.engine.convertToBinaryScale(imageCanva);
+            default:
+                throw `Opção inválida para conversão de escala: ${option}`;
+        }
+    }
+
+    _logic(option) {
+        const imageCanva = document.getElementById('showInputImage');
+        const imageCanva2 = document.getElementById('showInputImage2');
+
+        switch (option) {
+            case 'andValue':
+                return this.engine.logicAND(imageCanva, imageCanva2);
+            case 'orValue':
+                return this.engine.logicOR(imageCanva, imageCanva2);
+            case 'xorValue':
+                return this.engine.logicXOR(imageCanva, imageCanva2);
+            case 'notValue':
+                return this.engine.logicNOT(imageCanva);
+            default:
+                throw `Opção inválida para operação lógica: ${option}`;
+        }
+    }
+
+    _diference() {
+        const imageCanva = document.getElementById('showInputImage');
+        const imageCanva2 = document.getElementById('showInputImage2');
+        
+        return this.engine.diferenceImages(imageCanva, imageCanva2);
+    }
+
+    _linear(option) {
+        const imageCanva = document.getElementById('showInputImage');
+        const imageCanva2 = document.getElementById('showInputImage2');
+        const inputValue = document.getElementById('inputValue') ? document.getElementById('inputValue').value : null;
+
+        switch (option) {
+            case 'averageValue':
+                return this.engine.linearAverage(imageCanva, imageCanva2);
+            case 'blendingValue':
+                return this.engine.linearBlending(imageCanva, imageCanva2, inputValue);
+            default: 
+                throw `Opção inválida para operação linear: ${option}`;
+        }
+    }
+
+    _histogram(option) {
+        const imageCanva = document.getElementById('showInputImage');
+
+        switch (option) {
+            case 'equalizeHistogramValue':
+                return this.engine.equalizeHistogram(imageCanva); 
+            case 'visualizeHistogramValue':
+                return this.engine.visualizeHistogram(imageCanva);
+            default:
+                throw `Opção inválida para operação de histograma: ${option}`
+        }
+    }
+}
