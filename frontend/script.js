@@ -50,19 +50,19 @@ function loadImageToCanvas(file, canvasId) {
         image.onload = function () {
             const canvas = new Canvas(canvasId, 250, 250);
             canvas.drawImageCanvas(image);
-            loadImageHistogram() // TODO ajuste para carregar histograma das duas imagens
         }
     }
     reader.readAsDataURL(file);
 }
 
+// TODO Pensar em uma melhor visualização do histograma das imagens
 async function loadImageHistogram() {
     const engine = new ImageProcessingController();
 
     try {
         const histogram = await engine.proccess('histogram', 'visualizeHistogramValue');
         const labels = Array.from({length: 256}, (_, i) => i);
-        await drawHistogram('originalHistogram', labels, histogram);
+        await drawHistogram('imageHistogram', labels, histogram);
     } catch (error){
         console.log(error);
     }
