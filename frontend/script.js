@@ -10,6 +10,7 @@ import ImageProcessingController from './ImageProcessingController.js' ;
 let SELECTED_FEATURE = 'arithmetic';
 let SELECTED_OPTION = 'addValue';
 let OPERATION_WITH_2_IMAGES = false;
+const GATEWAY = new ImageProcessingController(); 
 
 // Eventos
 document.getElementById('inputImage')
@@ -60,10 +61,9 @@ function loadImageToCanvas(file, canvasId) {
 
 // TODO Pensar em uma melhor visualização do histograma das imagens
 async function loadImageHistogram() {
-    const engine = new ImageProcessingController();
 
     try {
-        const histogram = await engine.proccess('histogram', 'visualizeHistogramValue');
+        const histogram = await GATEWAY.proccess('histogram', 'visualizeHistogramValue');
         const labels = Array.from({length: 256}, (_, i) => i);
         await drawHistogram('imageHistogram', labels, histogram);
     } catch (error){
@@ -390,12 +390,11 @@ function showLinearParameters(parameterSection) {
 } 
 
 async function proccessImage(){
-    const gateway = new ImageProcessingController(); 
     const feature = document.querySelector('#featureButtons :checked').value;
     const option = document.getElementById('selectFeatures').value;
 
     try {
-        const response = await gateway.proccess(feature, option);
+        const response = await GATEWAY.proccess(feature, option);
         // TODO -- Adaptação para o endpoint de histogram, será corrigido no refactor do backend
         await drawImage(response.image ? response.image : response, 'canvas');
     } catch (error) {

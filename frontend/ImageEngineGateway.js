@@ -1,13 +1,21 @@
 import { transformIMGtoMATRIX, fetchAPI } from "./utils/utils.js";
 
-
 export default class ImageEngineGateway {
 
     constructor() {
         this.endpoint = 'http://localhost:8080';
+
+        WebAssembly.instantiateStreaming(fetch("engine.wasm"))
+            .then(response => this._set_engine(response.instance));
+    }
+
+    _set_engine (instance) {
+        this.engine = instance
     }
 
     addValue(image, value) {
+        //console.log(this.engine.exports.addValues(100, value));
+        
         const endpoint = `${this.endpoint}/process/add?value=${value}`;
         return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
     }
