@@ -15,14 +15,12 @@ const GATEWAY = new ImageProcessingController();
 // Eventos
 document.getElementById('inputImage')
     .addEventListener('change', (event) => {
-    loadImageToCanvas(event.target.files[0], 'showInputImage')    
-    loadImageToArrayBuffer(event.target.files[0], GATEWAY.set_first_image.bind(GATEWAY));
+    loadImageToCanvas(event.target.files[0], 'showInputImage', GATEWAY.set_first_image.bind(GATEWAY)); 
 });
 
 document.getElementById('inputImage2')
     .addEventListener('change', (event) => {
-    loadImageToCanvas(event.target.files[0], 'showInputImage2')    
-    SECOND_IMAGE_BUFFER = loadImageToArrayBuffer(event.target.files[0], GATEWAY.set_second_image.bind(GATEWAY)); 
+    loadImageToCanvas(event.target.files[0], 'showInputImage2', GATEWAY.set_second_image.bind(GATEWAY));    
 });
 
 document.getElementById('enable2Images')
@@ -46,19 +44,7 @@ document.getElementById('proccessButton')
 document.getElementById('saveImageButton')
     .addEventListener('click', saveImage);
 
-function loadImageToArrayBuffer (file, set_function) {
-    if (!file) throw "File é obrigatório";
-    
-    set_function.cal
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        const buffer =  e.target.result;
-        set_function(buffer);
-    }
-    reader.readAsArrayBuffer(file);
-}
-
-function loadImageToCanvas(file, canvasId) {
+function loadImageToCanvas(file, canvasId, set_function) {
     if (!file) throw "File é obrigatório";
 
     const reader = new FileReader();
@@ -68,6 +54,7 @@ function loadImageToCanvas(file, canvasId) {
         image.onload = function () {
             const canvas = new Canvas(canvasId, 250, 250);
             canvas.drawImageCanvas(image);
+            set_function(canvas.pixels.data);
         }
     }
     reader.readAsDataURL(file);

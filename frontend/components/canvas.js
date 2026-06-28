@@ -20,6 +20,7 @@ export class Canvas {
         canvas.height = this.height;
 
         ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+        this.pixels = ctx.getImageData(0,0,canvas.width,canvas.height);
     }
 }
 
