@@ -4,9 +4,12 @@ export default class ImageEngineGateway {
 
     constructor() {
         this.endpoint = 'http://localhost:8080';
-
-        WebAssembly.instantiateStreaming(fetch("engine.wasm"))
-            .then(response => this._set_engine(response.instance));
+        
+        this.memory = new WebAssembly.Memory({initial:32}); 
+    
+        WebAssembly.instantiateStreaming(fetch("engine.wasm"), {
+            js: {mem: this.memory}
+        }).then(response => this._set_engine(response.instance));
     }
 
     _set_engine (instance) {
@@ -14,7 +17,13 @@ export default class ImageEngineGateway {
     }
 
     addValue(image, value) {
-        //console.log(this.engine.exports.addValues(100, value));
+        const ptr = 0;
+        const image_buffer = new Uint8Array(image);
+        const buffer_length = image_buffer.length;
+        const view_image = new Uint8Array(this.memory.buffer, ptr, buffer_length);
+        view_image.set(image_buffer);
+
+        console.log(this.engine.exports.image_add_value(ptr, buffer_length, value));
         
         const endpoint = `${this.endpoint}/process/add?value=${value}`;
         return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));

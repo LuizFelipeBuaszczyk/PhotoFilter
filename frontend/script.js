@@ -16,11 +16,13 @@ const GATEWAY = new ImageProcessingController();
 document.getElementById('inputImage')
     .addEventListener('change', (event) => {
     loadImageToCanvas(event.target.files[0], 'showInputImage')    
+    loadImageToArrayBuffer(event.target.files[0], GATEWAY.set_first_image.bind(GATEWAY));
 });
 
 document.getElementById('inputImage2')
     .addEventListener('change', (event) => {
     loadImageToCanvas(event.target.files[0], 'showInputImage2')    
+    SECOND_IMAGE_BUFFER = loadImageToArrayBuffer(event.target.files[0], GATEWAY.set_second_image.bind(GATEWAY)); 
 });
 
 document.getElementById('enable2Images')
@@ -43,6 +45,18 @@ document.getElementById('proccessButton')
 
 document.getElementById('saveImageButton')
     .addEventListener('click', saveImage);
+
+function loadImageToArrayBuffer (file, set_function) {
+    if (!file) throw "File é obrigatório";
+    
+    set_function.cal
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const buffer =  e.target.result;
+        set_function(buffer);
+    }
+    reader.readAsArrayBuffer(file);
+}
 
 function loadImageToCanvas(file, canvasId) {
     if (!file) throw "File é obrigatório";
