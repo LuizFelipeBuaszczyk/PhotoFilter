@@ -95,21 +95,21 @@ export function drawImage(imageData, canvasId){
     var canvas = document.getElementById(canvasId);
     var ctx = canvas.getContext('2d');
 
-    const height = imageData.length;
-    const width = imageData[0].length;
+    const height = 250;
+    const width = 250;
     canvas.width = width;
     canvas.height = height;
-
+    
     const imageDataObj = ctx.createImageData(width, height);
-
+    
     let i = 0;
     for(let y = 0; y < height; y++){
         for(let x = 0; x < width; x++){
             let pixel = imageData[y][x];
-            imageDataObj.data[i++] = pixel[0]; // Red
-            imageDataObj.data[i++] = pixel[1] ? pixel[1] : pixel[0]; // Green
-            imageDataObj.data[i++] = pixel[2] ? pixel[2] : pixel[0]; // Blue
-            imageDataObj.data[i++] = pixel[3] ? pixel[3] : 255; // Alpha
+            imageDataObj.data[i++] = pixel.red; // Red
+            imageDataObj.data[i++] = pixel.green; // Green
+            imageDataObj.data[i++] = pixel.blue; // Blue
+            imageDataObj.data[i++] = pixel.alpha; // Alpha
         }
     }
 

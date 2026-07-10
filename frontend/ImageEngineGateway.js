@@ -1,5 +1,7 @@
 import { transformIMGtoMATRIX, fetchAPI } from "./utils/utils.js";
 
+const IMAGE_WIDTH = 250;
+
 export default class ImageEngineGateway {
 
     constructor() {
@@ -18,18 +20,44 @@ export default class ImageEngineGateway {
         this.memory = this.engine.exports.memory;
     }
 
+    _read_image_in_memory(ptr, size) {
+        const view_image = new Uint8Array(this.memory.buffer, ptr, size);
+        let image_matrix = [[]];
+        
+        let row_count = 0;
+        let column_count = 0;
+        for (let i=0; i<view_image.length; i++){
+            image_matrix[row_count][column_count] = 
+                {
+                    'red': view_image[i],
+                    'green': view_image[i++],
+                    'blue': view_image[i++],
+                    'alpha': view_image[i++],
+                };
+
+            column_count++;
+            
+            if (column_count==IMAGE_WIDTH) {
+                column_count = 0;
+                row_count++;
+                image_matrix.push([]);
+            }
+        }
+
+        return image_matrix;
+    }
+
     addValue(image, value) {
         const ptr = 0;
         const image_buffer = new Uint8Array(image);
         const buffer_length = image_buffer.length;
         const view_image = new Uint8Array(this.memory.buffer, ptr, buffer_length);
         view_image.set(image_buffer);
-        
-        console.log(this.engine.exports.image_add_value(ptr, buffer_length, value));
 
+        const result = this.engine.exports.image_add_value(ptr, buffer_length, value);
+        if (result != 0) throw "Erro ao somar valor!";
 
-        const endpoint = `${this.endpoint}/process/add?value=${value}`;
-        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
+        return this._read_image_in_memory(); 
     }
 
     subtValue(image, value) {
