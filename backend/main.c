@@ -25,7 +25,7 @@ int image_add_value(uint8_t *buffer, int size, int value) {
         px.green = &buffer[i++];
         px.blue = &buffer[i++];
         px.alpha = &buffer[i++];
-        
+    
         pixels[pixel_count++] = px;
     }
     
@@ -33,7 +33,6 @@ int image_add_value(uint8_t *buffer, int size, int value) {
     image.rows = 250;
     image.columns = 250;
     image.pixels = (Pixel *)&pixels;
-    
     return add_value(value, &image);
 }
 
