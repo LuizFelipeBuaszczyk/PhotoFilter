@@ -49,13 +49,13 @@ export default class ImageProcessingController {
 
         switch (option) {
             case 'addValue':
-                    return this.engine.addValue(this.first_image, value);
+                return this.engine.addValue(this.first_image, value);
             case 'subtValue':
-                return this.engine.subtValue(imageCanva, value);
+                return this.engine.subtValue(this.first_image, value);
             case 'multValue':
-                return this.engine.multiplyValue(imageCanva, value);
+                return this.engine.multiplyValue(this.first_image, value);
             case 'divValue':
-                return this.engine.divValue(imageCanva, value);
+                return this.engine.divValue(this.first_image, value);
             case 'addImages':
                 return this.engine.addImages(imageCanva, imageCanva2);
             case 'subtImages':

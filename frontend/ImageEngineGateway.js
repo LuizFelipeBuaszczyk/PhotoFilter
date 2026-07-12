@@ -44,7 +44,6 @@ export default class ImageEngineGateway {
                 image_matrix.push([]);
             }
         }
-
         return image_matrix;
     }
 
@@ -54,6 +53,7 @@ export default class ImageEngineGateway {
         const buffer_length = image_buffer.length;
         const view_image = new Uint8Array(this.memory.buffer, ptr, buffer_length);
         view_image.set(image_buffer);
+
         const result = this.engine.exports.image_add_value(ptr, buffer_length, value);
         if (result != 0) throw "Erro ao somar valor!";
 
@@ -61,19 +61,43 @@ export default class ImageEngineGateway {
     }
 
     subtValue(image, value) {
-        const endpoint = `${this.endpoint}/process/subt?value=${value}`;
-        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
+        const ptr = 0;
+        const image_buffer = new Uint8Array(image);
+        const buffer_length = image_buffer.length;
+        const view_image = new Uint8Array(this.memory.buffer, ptr, buffer_length);
+        view_image.set(image_buffer);
+
+        const result = this.engine.exports.image_subt_value(ptr, buffer_length, value);
+        if (result != 0) throw "Erro ao subtrair valor!";
+
+        return this._read_image_in_memory(ptr, buffer_length); 
     }
 
     multiplyValue(image, value) {
-        const endpoint = `${this.endpoint}/process/mult?value=${value}`;
-        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
+        const ptr = 0;
+        const image_buffer = new Uint8Array(image);
+        const buffer_length = image_buffer.length;
+        const view_image = new Uint8Array(this.memory.buffer, ptr, buffer_length);
+        view_image.set(image_buffer);
+
+        const result = this.engine.exports.image_multiply_value(ptr, buffer_length, value);
+        if (result != 0) throw "Erro ao multiplicar valor!";
+
+        return this._read_image_in_memory(ptr, buffer_length); 
+
     }
 
     divValue(image, value) {
-        const endpoint = `${this.endpoint}/process/div?value=${value}`;
-        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
-    }
+        const ptr = 0;
+        const image_buffer = new Uint8Array(image);
+        const buffer_length = image_buffer.length;
+        const view_image = new Uint8Array(this.memory.buffer, ptr, buffer_length);
+        view_image.set(image_buffer);
+
+        const result = this.engine.exports.image_div_value(ptr, buffer_length, value);
+        if (result != 0) throw "Erro ao dividir valor!";
+
+        return this._read_image_in_memory(ptr, buffer_length);     }
 
     invertHorizontal(image) {
         const endpoint = `${this.endpoint}/invert/horizontal`;
