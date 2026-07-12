@@ -5,7 +5,15 @@ export default class ImageProcessingController {
     constructor (){
         this.engine = new ImageEngineGateway();
     }
-    
+   
+    set_first_image(buffer) {
+        this.first_image = buffer;
+    }
+
+    set_second_image(buffer) {
+        this.second_image = buffer;
+    }
+
     async proccess(feature, option){
        
         switch (feature) {
@@ -38,16 +46,16 @@ export default class ImageProcessingController {
         const imageCanva = document.getElementById('showInputImage');
         const value = document.getElementById('range') ? document.getElementById('range').value : 0;
         const imageCanva2 = document.getElementById('showInputImage2');
-    
+
         switch (option) {
             case 'addValue':
-                    return this.engine.addValue(imageCanva, value);
+                return this.engine.addValue(this.first_image, value);
             case 'subtValue':
-                return this.engine.subtValue(imageCanva, value);
+                return this.engine.subtValue(this.first_image, value);
             case 'multValue':
-                return this.engine.multiplyValue(imageCanva, value);
+                return this.engine.multiplyValue(this.first_image, value);
             case 'divValue':
-                return this.engine.divValue(imageCanva, value);
+                return this.engine.divValue(this.first_image, value);
             case 'addImages':
                 return this.engine.addImages(imageCanva, imageCanva2);
             case 'subtImages':
