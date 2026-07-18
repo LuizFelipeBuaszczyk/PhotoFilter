@@ -67,13 +67,11 @@ export default class ImageProcessingController {
     }
 
     _invert(option) {
-        const imageCanva = document.getElementById('showInputImage');
-        
         switch (option) {
             case 'horizontalValue':
-                return this.engine.invertHorizontal(imageCanva);
+                return this.engine.invertHorizontal(this.first_image);
             case 'verticleValue':
-                return this.engine.invertVerticle(imageCanva);
+                return this.engine.invertVerticle(this.first_image);
             default:
                 throw `Opção inválida para inverção: ${option}`;
         }
