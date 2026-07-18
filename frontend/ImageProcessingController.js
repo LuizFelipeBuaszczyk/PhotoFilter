@@ -84,7 +84,7 @@ export default class ImageProcessingController {
 
         switch (option) {
             case 'meanValue':
-                return this.engine.convolutionAverage(imageCanva, kernelSize);
+                return this.engine.convolutionAverage(this.first_image, kernelSize);
             case 'minValue':
                 return this.engine.convolutionMin(imageCanva, kernelSize);
             case 'maxValue':

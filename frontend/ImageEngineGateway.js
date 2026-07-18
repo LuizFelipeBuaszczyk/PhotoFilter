@@ -119,11 +119,20 @@ export default class ImageEngineGateway {
 
         const result = this.engine.exports.image_invert_vertical(ptr, buffer_length);
         if (result == -1) throw "Erro ao inverter verticalmente!";
-        return this._read_image_in_memory(result, buffer_length);             }
+        return this._read_image_in_memory(result, buffer_length);
+    }
 
-    convolutionAverage(image, kernelSize) {
-        const endpoint = `${this.endpoint}/convolutional/mean?kernel=${kernelSize}`;
-        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
+    convolutionAverage(image, kernel_size) {
+        const ptr = 0;
+        const image_buffer = new Uint8Array(image);
+        const buffer_length = image_buffer.length;
+        const view_image = new Uint8Array(this.memory.buffer, ptr, buffer_length);
+        view_image.set(image_buffer);
+
+        const result = this.engine.exports.image_convolution_average(ptr, buffer_length, kernel_size);
+        console.log(result);
+        if (result == -1) throw "Erro ao inverter verticalmente!";
+        return this._read_image_in_memory(result, buffer_length);
     }
 
     convolutionMin(image, kernelSize) {
