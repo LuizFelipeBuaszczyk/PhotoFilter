@@ -84,7 +84,6 @@ export default class ImageEngineGateway {
         if (result != 0) throw "Erro ao multiplicar valor!";
 
         return this._read_image_in_memory(ptr, buffer_length); 
-
     }
 
     divValue(image, value) {
@@ -97,11 +96,19 @@ export default class ImageEngineGateway {
         const result = this.engine.exports.image_div_value(ptr, buffer_length, value);
         if (result != 0) throw "Erro ao dividir valor!";
 
-        return this._read_image_in_memory(ptr, buffer_length);     }
+        return this._read_image_in_memory(ptr, buffer_length);     
+    }
 
     invertHorizontal(image) {
-        const endpoint = `${this.endpoint}/invert/horizontal`;
-        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
+        const ptr = 0;
+        const image_buffer = new Uint8Array(image);
+        const buffer_length = image_buffer.length;
+        const view_image = new Uint8Array(this.memory.buffer, ptr, buffer_length);
+        view_image.set(image_buffer);
+
+        const result = this.engine.exports.image_invert_horizontal(ptr, buffer_length);
+        if (result == -1) throw "Erro ao inverter horizontalmente!";
+        return this._read_image_in_memory(buffer_length, result);         
     }
 
     invertVerticle(image) {

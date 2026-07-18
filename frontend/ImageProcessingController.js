@@ -71,7 +71,7 @@ export default class ImageProcessingController {
         
         switch (option) {
             case 'horizontalValue':
-                return this.engine.invertHorizontal(imageCanva);
+                return this.engine.invertHorizontal(this.first_image);
             case 'verticleValue':
                 return this.engine.invertVerticle(imageCanva);
             default:
