@@ -23,7 +23,6 @@ export default class ImageEngineGateway {
     _read_image_in_memory(ptr, size) {
         const view_image = new Uint8Array(this.memory.buffer, ptr, size);
         let image_matrix = [[]];
-       
         let row_count = 0;
         let column_count = 0;
         for (let i=0; i<view_image.length;){
@@ -55,9 +54,9 @@ export default class ImageEngineGateway {
         view_image.set(image_buffer);
 
         const result = this.engine.exports.image_add_value(ptr, buffer_length, value);
-        if (result != 0) throw "Erro ao somar valor!";
+        if (result == -1) throw "Erro ao somar valor!";
 
-        return this._read_image_in_memory(ptr, buffer_length); 
+        return this._read_image_in_memory(result, buffer_length); 
     }
 
     subtValue(image, value) {
@@ -68,9 +67,9 @@ export default class ImageEngineGateway {
         view_image.set(image_buffer);
 
         const result = this.engine.exports.image_subt_value(ptr, buffer_length, value);
-        if (result != 0) throw "Erro ao subtrair valor!";
+        if (result == -1) throw "Erro ao subtrair valor!";
 
-        return this._read_image_in_memory(ptr, buffer_length); 
+        return this._read_image_in_memory(result, buffer_length); 
     }
 
     multiplyValue(image, value) {
@@ -81,9 +80,9 @@ export default class ImageEngineGateway {
         view_image.set(image_buffer);
 
         const result = this.engine.exports.image_multiply_value(ptr, buffer_length, value);
-        if (result != 0) throw "Erro ao multiplicar valor!";
+        if (result == -1) throw "Erro ao multiplicar valor!";
 
-        return this._read_image_in_memory(ptr, buffer_length); 
+        return this._read_image_in_memory(result, buffer_length); 
     }
 
     divValue(image, value) {
@@ -94,9 +93,9 @@ export default class ImageEngineGateway {
         view_image.set(image_buffer);
 
         const result = this.engine.exports.image_div_value(ptr, buffer_length, value);
-        if (result != 0) throw "Erro ao dividir valor!";
+        if (result == -1) throw "Erro ao dividir valor!";
 
-        return this._read_image_in_memory(ptr, buffer_length);     
+        return this._read_image_in_memory(result, buffer_length);     
     }
 
     invertHorizontal(image) {
@@ -108,7 +107,7 @@ export default class ImageEngineGateway {
 
         const result = this.engine.exports.image_invert_horizontal(ptr, buffer_length);
         if (result == -1) throw "Erro ao inverter horizontalmente!";
-        return this._read_image_in_memory(buffer_length, result);         
+        return this._read_image_in_memory(result, buffer_length);         
     }
 
     invertVerticle(image) {
