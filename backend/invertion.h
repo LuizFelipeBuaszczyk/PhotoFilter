@@ -26,3 +26,25 @@ int invert_horizontal(Image *image, Image *result_image) {
     return 0;
 }
 
+// columns * (rows - i) - 250 + j - 1
+int invert_vertical(Image *image, Image *result_image) {
+    int width = image->columns;
+    int heigth = image->rows;
+
+    for (int i=0; i<image->rows/2; i++){
+        for (int j=0; j<image->columns; j++) {
+            *result_image->pixels[i * width + j].red = *image->pixels[width * (heigth - i) - 250 + j - 1].red;
+            *result_image->pixels[i * width + j].green = *image->pixels[width * (heigth - i) - 250 + j - 1].green;
+            *result_image->pixels[i * width + j].blue = *image->pixels[width * (heigth - i) - 250 + j - 1].blue;
+            *result_image->pixels[i * width + j].alpha = *image->pixels[width * (heigth - i) - 250 + j - 1].alpha;
+
+            *result_image->pixels[width * (heigth - i) - 250 + j - 1].red = *image->pixels[i * width + j].red;
+            *result_image->pixels[width * (heigth - i) - 250 + j - 1].green = *image->pixels[i * width + j].green;
+            *result_image->pixels[width * (heigth - i) - 250 + j - 1].blue = *image->pixels[i * width + j].blue;
+            *result_image->pixels[width * (heigth - i) - 250 + j - 1].alpha = *image->pixels[i * width + j].alpha;
+        }
+    }
+
+    return 0;
+}
+
