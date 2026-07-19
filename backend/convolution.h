@@ -1,4 +1,5 @@
 #include "types.h"
+#include <stdint.h>
 
 bool is_border(int x, int y, int max_x, int max_y) {
     return x == 0 || y == 0 || x == max_x || y == max_y;
@@ -115,6 +116,62 @@ int convolution_max(Image *image, int kernel_size, Image *result_image) {
             *result_image->pixels[i * width + j].red = max_red;
             *result_image->pixels[i * width + j].green = max_green;
             *result_image->pixels[i * width + j].blue = max_blue;
+            *result_image->pixels[i * width + j].alpha = *image->pixels[i * width + j].alpha;
+         }
+    }
+
+    return 0;
+}
+
+uint8_t* find_median_value(uint8_t **values, int size) {
+    
+    for (int i=0; i<size; i++) 
+    {
+        uint8_t *aux = values[i];
+
+        for (int j=i; j<size; j++) {
+            if(*aux>*values[j]) {
+                values[i] = values[j];
+                values[j] = aux;
+                aux = values[i];
+            }
+        }
+
+
+    }
+
+    if (size % 2 == 0) return values[size/2];
+
+    return values[size/2 + 1];
+}
+
+int convolution_median(Image *image, int kernel_size, Image *result_image) {
+    int width = image->columns;
+    int height = image->rows;
+
+    int total_pixel_in_kernel = kernel_size * kernel_size;
+
+    for (int i=0; i<height; i++) {
+        for (int j=0; j<width; j++) {
+            uint8_t *red_values[kernel_size*kernel_size];
+            uint8_t *green_values[kernel_size*kernel_size];
+            uint8_t *blue_values[kernel_size*kernel_size];
+            int pixel_count = 0;
+
+            for (int x=kernel_size / 2 * -1 + i; x<=kernel_size / 2 + i; x++) {
+                for (int y=kernel_size / 2 * -1 + j; y<=kernel_size / 2 + j; y++) {
+                    if (is_valid(x, y, height, width)) {
+                       red_values[pixel_count] = image->pixels[x*width+y].red;
+                       green_values[pixel_count] = image->pixels[x*width+y].green;
+                       blue_values[pixel_count] = image->pixels[x*width+y].blue;
+                       pixel_count++;
+                    }
+                }
+            }         
+
+            *result_image->pixels[i * width + j].red = *find_median_value(red_values, pixel_count);
+            *result_image->pixels[i * width + j].green = *find_median_value(green_values, pixel_count);
+            *result_image->pixels[i * width + j].blue = *find_median_value(blue_values, pixel_count);
             *result_image->pixels[i * width + j].alpha = *image->pixels[i * width + j].alpha;
          }
     }

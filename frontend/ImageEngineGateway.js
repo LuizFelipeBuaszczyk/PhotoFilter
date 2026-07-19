@@ -131,7 +131,7 @@ export default class ImageEngineGateway {
 
         const result = this.engine.exports.image_convolution_average(ptr, buffer_length, kernel_size);
         console.log(result);
-        if (result == -1) throw "Erro ao realizar a covolução de média!";
+        if (result == -1) throw "Erro ao realizar a covolução média!";
         return this._read_image_in_memory(result, buffer_length);
     }
 
@@ -144,7 +144,7 @@ export default class ImageEngineGateway {
 
         const result = this.engine.exports.image_convolution_min(ptr, buffer_length, kernel_size);
         console.log(result);
-        if (result == -1) throw "Erro ao realizar a convolução de miníma!";
+        if (result == -1) throw "Erro ao realizar a convolução miníma!";
         return this._read_image_in_memory(result, buffer_length);
     }
     
@@ -157,13 +157,21 @@ export default class ImageEngineGateway {
 
         const result = this.engine.exports.image_convolution_max(ptr, buffer_length, kernel_size);
         console.log(result);
-        if (result == -1) throw "Erro ao realizar a convolução de máxima!";
+        if (result == -1) throw "Erro ao realizar a convolução máxima!";
         return this._read_image_in_memory(result, buffer_length);
     }
 
-    convolutionMedian(image, kernelSize) {
-        const endpoint = `${this.endpoint}/convolutional/median?kernel=${kernelSize}`;
-        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
+    convolutionMedian(image, kernel_size) {
+        const ptr = 0;
+        const image_buffer = new Uint8Array(image);
+        const buffer_length = image_buffer.length;
+        const view_image = new Uint8Array(this.memory.buffer, ptr, buffer_length);
+        view_image.set(image_buffer);
+
+        const result = this.engine.exports.image_convolution_median(ptr, buffer_length, kernel_size);
+        console.log(result);
+        if (result == -1) throw "Erro ao realizar a convolução mediana!";
+        return this._read_image_in_memory(result, buffer_length);
     }
 
     convolutionOrder(image, kernelSize, value) {

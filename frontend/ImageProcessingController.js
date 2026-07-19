@@ -90,7 +90,7 @@ export default class ImageProcessingController {
             case 'maxValue':
                 return this.engine.convolutionMax(this.first_image, kernelSize);
             case 'medianValue':
-                return this.engine.convolutionMedian(imageCanva, kernelSize);
+                return this.engine.convolutionMedian(this.first_image, kernelSize);
             case 'orderValue':
                 return this.engine.convolutionOrder(imageCanva, kernelSize, inputValue);
             case 'conservativeSomoothingValue':
