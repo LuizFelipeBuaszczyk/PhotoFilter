@@ -43,3 +43,42 @@ int convolution_average(Image *image, int kernel_size, Image *result_image) {
 
     return 0;
 }
+
+int convolution_min(Image *image, int kernel_size, Image *result_image) {
+    int width = image->columns;
+    int height = image->rows;
+
+    int total_pixel_in_kernel = kernel_size * kernel_size;
+
+    for (int i=0; i<height; i++) {
+        for (int j=0; j<width; j++) {
+            int min_red = 255;            
+            int min_green = 255;            
+            int min_blue = 255;            
+            
+            for (int x=kernel_size / 2 * -1 + i; x<=kernel_size / 2 + i; x++) {
+                for (int y=kernel_size / 2 * -1 + j; y<=kernel_size / 2 + j; y++) {
+                    if (is_valid(x, y, height, width)) {
+                        if (min_red > *image->pixels[x*width+y].red) {
+                            min_red = *image->pixels[x*width+y].red;
+                        }
+                        if (min_green > *image->pixels[x*width+y].green) {
+                            min_green = *image->pixels[x * width + y].green;
+
+                        }
+                        if (min_blue > *image->pixels[x*width+y].blue) {
+                            min_blue = *image->pixels[x * width + y].blue;
+                        }
+                    }
+                }
+            }
+
+            *result_image->pixels[i * width + j].red = min_red;
+            *result_image->pixels[i * width + j].green = min_green;
+            *result_image->pixels[i * width + j].blue = min_blue;
+            *result_image->pixels[i * width + j].alpha = *image->pixels[i * width + j].alpha;
+         }
+    }
+
+    return 0;
+}

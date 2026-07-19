@@ -131,13 +131,21 @@ export default class ImageEngineGateway {
 
         const result = this.engine.exports.image_convolution_average(ptr, buffer_length, kernel_size);
         console.log(result);
-        if (result == -1) throw "Erro ao inverter verticalmente!";
+        if (result == -1) throw "Erro ao realizar a covolução de média!";
         return this._read_image_in_memory(result, buffer_length);
     }
 
-    convolutionMin(image, kernelSize) {
-        const endpoint = `${this.endpoint}/convolutional/min?kernel=${kernelSize}`;
-        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
+    convolutionMin(image, kernel_size) {
+        const ptr = 0;
+        const image_buffer = new Uint8Array(image);
+        const buffer_length = image_buffer.length;
+        const view_image = new Uint8Array(this.memory.buffer, ptr, buffer_length);
+        view_image.set(image_buffer);
+
+        const result = this.engine.exports.image_convolution_min(ptr, buffer_length, kernel_size);
+        console.log(result);
+        if (result == -1) throw "Erro ao realizar a convolução de miníma!";
+        return this._read_image_in_memory(result, buffer_length);
     }
     
     convolutionMax(image, kernelSize) {
