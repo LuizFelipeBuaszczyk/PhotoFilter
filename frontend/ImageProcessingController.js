@@ -94,7 +94,7 @@ export default class ImageProcessingController {
             case 'orderValue':
                 return this.engine.convolutionOrder(this.first_image, kernelSize, inputValue);
             case 'conservativeSomoothingValue':
-                return this.engine.convolutionConservativeSuavization(imageCanva, kernelSize);
+                return this.engine.convolutionConservativeSuavization(this.first_image, kernelSize);
             case 'gaussianValue':
                 return this.engine.convolutionGaussian(imageCanva, kernelSize, inputValue); 
             default:

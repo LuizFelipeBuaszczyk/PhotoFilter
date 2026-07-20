@@ -182,9 +182,16 @@ export default class ImageEngineGateway {
         return this._read_image_in_memory(result, buffer_length);
     }
 
-    convolutionConservativeSuavization(image, kernelSize) {
-        const endpoint = `${this.endpoint}/convolutional/median?conservativeSomoothing?kernel=${kernelSize}`;
-        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
+    convolutionConservativeSuavization(image, kernel_size) {
+        const ptr = 0;
+        const image_buffer = new Uint8Array(image);
+        const buffer_length = image_buffer.length;
+        const view_image = new Uint8Array(this.memory.buffer, ptr, buffer_length);
+        view_image.set(image_buffer);
+
+        const result = this.engine.exports.image_convolution_conservative_smoothing(ptr, buffer_length, kernel_size);
+        if (result == -1) throw "Erro ao realizar a convolução suavização conservativa!";
+        return this._read_image_in_memory(result, buffer_length);
     }
 
     convolutionGaussian(image, kernelSize, sigma) {

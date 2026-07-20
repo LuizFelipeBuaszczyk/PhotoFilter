@@ -240,3 +240,91 @@ int convolution_order(Image *image, int kernel_size, int order_value, Image *res
 
     return 0;
 }
+
+void sort_pixels_array(uint8_t **array, int size) {
+
+    for (int i=0; i<size; i++) {
+        uint8_t *aux = array[i];
+
+        for (int j=i; j<size; j++) {
+            if(*aux>*array[j]) {
+                array[i] = array[j];
+                array[j] = aux;
+                aux = array[i];
+            }
+        }
+    }
+
+}
+
+int convolution_conservative_smoothing(Image *image, int kernel_size, Image *result_image) {
+    int width = image->columns;
+    int height = image->rows;
+
+    int total_pixel_in_kernel = kernel_size * kernel_size;
+
+    for (int i=0; i<height; i++) {
+        for (int j=0; j<width; j++) {
+            uint8_t *red_values[kernel_size*kernel_size];
+            uint8_t *green_values[kernel_size*kernel_size];
+            uint8_t *blue_values[kernel_size*kernel_size];
+            int pixel_count = 0;
+
+            for (int x=kernel_size / 2 * -1 + i; x<=kernel_size / 2 + i; x++) {
+                for (int y=kernel_size / 2 * -1 + j; y<=kernel_size / 2 + j; y++) {
+                    if (is_valid(x, y, height, width)) {
+                       red_values[pixel_count] = image->pixels[x*width+y].red;
+                       green_values[pixel_count] = image->pixels[x*width+y].green;
+                       blue_values[pixel_count] = image->pixels[x*width+y].blue;
+                       pixel_count++;
+                    }
+                }
+            }         
+            
+            sort_pixels_array(red_values, pixel_count);
+            sort_pixels_array(green_values, pixel_count);
+            sort_pixels_array(blue_values, pixel_count);
+
+            uint8_t min_red = *red_values[0];
+            uint8_t max_red = *red_values[pixel_count-1];
+
+
+            if (*image->pixels[i * width + j].red > max_red) {
+                *result_image->pixels[i * width + j].red = max_red;
+            } 
+            else if (*image->pixels[i * width + j].red < min_red) {
+                *result_image->pixels[i * width + j].red = min_red;
+            } else {
+                *result_image->pixels[i * width + j].red = *image->pixels[i * width + j].red; 
+            }
+
+            uint8_t min_green = *green_values[0];
+            uint8_t max_green = *green_values[pixel_count-1];
+
+            if (*image->pixels[i * width + j].green > max_green) {
+                *result_image->pixels[i * width + j].green = max_green; 
+            } 
+            else if (*image->pixels[i * width + j].green < min_green) {
+                *result_image->pixels[i * width + j].green = min_green; 
+            } else {
+                *result_image->pixels[i * width + j].green = *image->pixels[i * width + j].green; 
+            }
+
+            uint8_t min_blue = *green_values[0];
+            uint8_t max_blue = *green_values[pixel_count-1];
+
+            if (*image->pixels[i * width + j].blue > max_blue) {
+                *result_image->pixels[i * width + j].blue = max_blue; 
+            } 
+            else if (*image->pixels[i * width + j].blue < min_blue) {
+                *result_image->pixels[i * width + j].blue = min_blue; 
+            } else {
+                *result_image->pixels[i * width + j].blue = *image->pixels[i * width + j].blue; 
+            }
+
+            *result_image->pixels[i * width + j].alpha = *image->pixels[i * width + j].alpha;
+         }
+    }
+
+    return 0;
+}
