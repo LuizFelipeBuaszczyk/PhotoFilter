@@ -92,7 +92,7 @@ export default class ImageProcessingController {
             case 'medianValue':
                 return this.engine.convolutionMedian(this.first_image, kernelSize);
             case 'orderValue':
-                return this.engine.convolutionOrder(imageCanva, kernelSize, inputValue);
+                return this.engine.convolutionOrder(this.first_image, kernelSize, inputValue);
             case 'conservativeSomoothingValue':
                 return this.engine.convolutionConservativeSuavization(imageCanva, kernelSize);
             case 'gaussianValue':

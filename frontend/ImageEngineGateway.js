@@ -130,7 +130,6 @@ export default class ImageEngineGateway {
         view_image.set(image_buffer);
 
         const result = this.engine.exports.image_convolution_average(ptr, buffer_length, kernel_size);
-        console.log(result);
         if (result == -1) throw "Erro ao realizar a covolução média!";
         return this._read_image_in_memory(result, buffer_length);
     }
@@ -143,7 +142,6 @@ export default class ImageEngineGateway {
         view_image.set(image_buffer);
 
         const result = this.engine.exports.image_convolution_min(ptr, buffer_length, kernel_size);
-        console.log(result);
         if (result == -1) throw "Erro ao realizar a convolução miníma!";
         return this._read_image_in_memory(result, buffer_length);
     }
@@ -156,7 +154,6 @@ export default class ImageEngineGateway {
         view_image.set(image_buffer);
 
         const result = this.engine.exports.image_convolution_max(ptr, buffer_length, kernel_size);
-        console.log(result);
         if (result == -1) throw "Erro ao realizar a convolução máxima!";
         return this._read_image_in_memory(result, buffer_length);
     }
@@ -169,14 +166,20 @@ export default class ImageEngineGateway {
         view_image.set(image_buffer);
 
         const result = this.engine.exports.image_convolution_median(ptr, buffer_length, kernel_size);
-        console.log(result);
         if (result == -1) throw "Erro ao realizar a convolução mediana!";
         return this._read_image_in_memory(result, buffer_length);
     }
 
-    convolutionOrder(image, kernelSize, value) {
-        const endpoint = `${this.endpoint}/convolutional/order?kernel=${kernelSize}&selectedvalue=${value}`;
-        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
+    convolutionOrder(image, kernel_size, order_value) {
+        const ptr = 0;
+        const image_buffer = new Uint8Array(image);
+        const buffer_length = image_buffer.length;
+        const view_image = new Uint8Array(this.memory.buffer, ptr, buffer_length);
+        view_image.set(image_buffer);
+
+        const result = this.engine.exports.image_convolution_order(ptr, buffer_length, kernel_size, order_value);
+        if (result == -1) throw "Erro ao realizar a convolução ordem!";
+        return this._read_image_in_memory(result, buffer_length);
     }
 
     convolutionConservativeSuavization(image, kernelSize) {

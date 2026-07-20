@@ -178,3 +178,65 @@ int convolution_median(Image *image, int kernel_size, Image *result_image) {
 
     return 0;
 }
+
+uint8_t* find_order_value(uint8_t **values, int size, int value) {
+    
+    for (int i=0; i<size; i++) 
+    {
+        uint8_t *aux = values[i];
+
+        for (int j=i; j<size; j++) {
+            if(*aux>*values[j]) {
+                values[i] = values[j];
+                values[j] = aux;
+                aux = values[i];
+            }
+        }
+
+
+    }
+
+    return values[value];
+}
+
+bool is_order_value_valid(int kernel_size, int order_value) {
+    return order_value >= 0 && order_value < kernel_size * kernel_size;
+}
+
+int convolution_order(Image *image, int kernel_size, int order_value, Image *result_image) {
+    int width = image->columns;
+    int height = image->rows;
+
+    if (!is_order_value_valid(kernel_size, order_value)) {
+        return 1;
+    }
+
+    int total_pixel_in_kernel = kernel_size * kernel_size;
+
+    for (int i=0; i<height; i++) {
+        for (int j=0; j<width; j++) {
+            uint8_t *red_values[kernel_size*kernel_size];
+            uint8_t *green_values[kernel_size*kernel_size];
+            uint8_t *blue_values[kernel_size*kernel_size];
+            int pixel_count = 0;
+
+            for (int x=kernel_size / 2 * -1 + i; x<=kernel_size / 2 + i; x++) {
+                for (int y=kernel_size / 2 * -1 + j; y<=kernel_size / 2 + j; y++) {
+                    if (is_valid(x, y, height, width)) {
+                       red_values[pixel_count] = image->pixels[x*width+y].red;
+                       green_values[pixel_count] = image->pixels[x*width+y].green;
+                       blue_values[pixel_count] = image->pixels[x*width+y].blue;
+                       pixel_count++;
+                    }
+                }
+            }         
+
+            *result_image->pixels[i * width + j].red = *find_order_value(red_values, pixel_count, order_value);
+            *result_image->pixels[i * width + j].green = *find_order_value(green_values, pixel_count, order_value);
+            *result_image->pixels[i * width + j].blue = *find_order_value(blue_values, pixel_count, order_value);
+            *result_image->pixels[i * width + j].alpha = *image->pixels[i * width + j].alpha;
+         }
+    }
+
+    return 0;
+}
