@@ -257,7 +257,7 @@ void sort_pixels_array(uint8_t **array, int size) {
 
 }
 
-int convolution_conservative_smoothing(Image *image, int kernel_size, Image *result_image) {
+int convolution_conservative_smoothing(Image *image, int kernel_size, int sigma, Image *result_image) {
     int width = image->columns;
     int height = image->rows;
 
@@ -324,6 +324,54 @@ int convolution_conservative_smoothing(Image *image, int kernel_size, Image *res
 
             *result_image->pixels[i * width + j].alpha = *image->pixels[i * width + j].alpha;
          }
+    }
+
+    return 0;
+}
+
+void set_gaussian_model(int kernel_size, int sigma, float *gaussian_kernel) {
+    float pi = 3.14;
+    float euler = 2.71828;
+    int center = kernel_size / 2 + 1;
+
+    float total = 0;
+    for (int i=0; i<kernel_size; i++) {
+        for (int j=0; j<kernel_size; j++) {
+            int x = i - center;
+            int y = i - center;
+
+            gaussian_kernel[i*kernel_size+j] = (1/ (2 * pi *(sigma * sigma)) * (euler * (-(x * x + y * y) / (sigma * sigma))));
+            total += gaussian_kernel[i*kernel_size+j];
+        }
+    }
+
+    for (int i=0; i<kernel_size; i++) {
+        for (int j=0; j<kernel_size; j++) {
+            gaussian_kernel[i*kernel_size+j] /= total;
+        }
+    }
+}
+
+int convolution_gaussian(Image *image, int kernel_size, Image *result_image) {
+    int width = image->columns;
+    int height = image->rows;
+
+    int total_pixel_in_kernel = kernel_size * kernel_size;
+
+    for (int i=0; i<height; i++) {
+        for (int j=0; j<width; j++) {
+            
+            int pixel_count = 0;
+
+            for (int x=kernel_size / 2 * -1 + i; x<=kernel_size / 2 + i; x++) {
+                for (int y=kernel_size / 2 * -1 + j; y<=kernel_size / 2 + j; y++) {
+                    if (is_valid(x, y, height, width)) {
+                       
+                       pixel_count++;
+                    }
+                }
+            }
+        }
     }
 
     return 0;
