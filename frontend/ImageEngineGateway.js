@@ -119,41 +119,91 @@ export default class ImageEngineGateway {
 
         const result = this.engine.exports.image_invert_vertical(ptr, buffer_length);
         if (result == -1) throw "Erro ao inverter verticalmente!";
-        return this._read_image_in_memory(result, buffer_length);             }
-
-    convolutionAverage(image, kernelSize) {
-        const endpoint = `${this.endpoint}/convolutional/mean?kernel=${kernelSize}`;
-        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
+        return this._read_image_in_memory(result, buffer_length);
     }
 
-    convolutionMin(image, kernelSize) {
-        const endpoint = `${this.endpoint}/convolutional/min?kernel=${kernelSize}`;
-        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
+    convolutionAverage(image, kernel_size) {
+        const ptr = 0;
+        const image_buffer = new Uint8Array(image);
+        const buffer_length = image_buffer.length;
+        const view_image = new Uint8Array(this.memory.buffer, ptr, buffer_length);
+        view_image.set(image_buffer);
+
+        const result = this.engine.exports.image_convolution_average(ptr, buffer_length, kernel_size);
+        if (result == -1) throw "Erro ao realizar a covolução média!";
+        return this._read_image_in_memory(result, buffer_length);
+    }
+
+    convolutionMin(image, kernel_size) {
+        const ptr = 0;
+        const image_buffer = new Uint8Array(image);
+        const buffer_length = image_buffer.length;
+        const view_image = new Uint8Array(this.memory.buffer, ptr, buffer_length);
+        view_image.set(image_buffer);
+
+        const result = this.engine.exports.image_convolution_min(ptr, buffer_length, kernel_size);
+        if (result == -1) throw "Erro ao realizar a convolução miníma!";
+        return this._read_image_in_memory(result, buffer_length);
     }
     
-    convolutionMax(image, kernelSize) {
-        const endpoint = `${this.endpoint}/convolutional/max?kernel=${kernelSize}`;
-        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
+    convolutionMax(image, kernel_size) {
+        const ptr = 0;
+        const image_buffer = new Uint8Array(image);
+        const buffer_length = image_buffer.length;
+        const view_image = new Uint8Array(this.memory.buffer, ptr, buffer_length);
+        view_image.set(image_buffer);
+
+        const result = this.engine.exports.image_convolution_max(ptr, buffer_length, kernel_size);
+        if (result == -1) throw "Erro ao realizar a convolução máxima!";
+        return this._read_image_in_memory(result, buffer_length);
     }
 
-    convolutionMedian(image, kernelSize) {
-        const endpoint = `${this.endpoint}/convolutional/median?kernel=${kernelSize}`;
-        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
+    convolutionMedian(image, kernel_size) {
+        const ptr = 0;
+        const image_buffer = new Uint8Array(image);
+        const buffer_length = image_buffer.length;
+        const view_image = new Uint8Array(this.memory.buffer, ptr, buffer_length);
+        view_image.set(image_buffer);
+
+        const result = this.engine.exports.image_convolution_median(ptr, buffer_length, kernel_size);
+        if (result == -1) throw "Erro ao realizar a convolução mediana!";
+        return this._read_image_in_memory(result, buffer_length);
     }
 
-    convolutionOrder(image, kernelSize, value) {
-        const endpoint = `${this.endpoint}/convolutional/order?kernel=${kernelSize}&selectedvalue=${value}`;
-        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
+    convolutionOrder(image, kernel_size, order_value) {
+        const ptr = 0;
+        const image_buffer = new Uint8Array(image);
+        const buffer_length = image_buffer.length;
+        const view_image = new Uint8Array(this.memory.buffer, ptr, buffer_length);
+        view_image.set(image_buffer);
+
+        const result = this.engine.exports.image_convolution_order(ptr, buffer_length, kernel_size, order_value);
+        if (result == -1) throw "Erro ao realizar a convolução ordem!";
+        return this._read_image_in_memory(result, buffer_length);
     }
 
-    convolutionConservativeSuavization(image, kernelSize) {
-        const endpoint = `${this.endpoint}/convolutional/median?conservativeSomoothing?kernel=${kernelSize}`;
-        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
+    convolutionConservativeSuavization(image, kernel_size) {
+        const ptr = 0;
+        const image_buffer = new Uint8Array(image);
+        const buffer_length = image_buffer.length;
+        const view_image = new Uint8Array(this.memory.buffer, ptr, buffer_length);
+        view_image.set(image_buffer);
+
+        const result = this.engine.exports.image_convolution_conservative_smoothing(ptr, buffer_length, kernel_size);
+        if (result == -1) throw "Erro ao realizar a convolução suavização conservativa!";
+        return this._read_image_in_memory(result, buffer_length);
     }
 
-    convolutionGaussian(image, kernelSize, sigma) {
-        const endpoint = `${this.endpoint}/convolutional/gaussian?kernel=${kernelSize}&sigma=${sigma}`;
-        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
+    convolutionGaussian(image, kernel_size, sigma) {
+        const ptr = 0;
+        const image_buffer = new Uint8Array(image);
+        const buffer_length = image_buffer.length;
+        const view_image = new Uint8Array(this.memory.buffer, ptr, buffer_length);
+        view_image.set(image_buffer);
+
+        const result = this.engine.exports.image_convolution_gaussian(ptr, buffer_length, kernel_size, sigma);
+        if (result == -1) throw "Erro ao realizar a convolução gaussiana!";
+        return this._read_image_in_memory(result, buffer_length);
     }
 
     borderPrewit(image) {

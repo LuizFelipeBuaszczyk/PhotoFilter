@@ -84,19 +84,19 @@ export default class ImageProcessingController {
 
         switch (option) {
             case 'meanValue':
-                return this.engine.convolutionAverage(imageCanva, kernelSize);
+                return this.engine.convolutionAverage(this.first_image, kernelSize);
             case 'minValue':
-                return this.engine.convolutionMin(imageCanva, kernelSize);
+                return this.engine.convolutionMin(this.first_image, kernelSize);
             case 'maxValue':
-                return this.engine.convolutionMax(imageCanva, kernelSize);
+                return this.engine.convolutionMax(this.first_image, kernelSize);
             case 'medianValue':
-                return this.engine.convolutionMedian(imageCanva, kernelSize);
+                return this.engine.convolutionMedian(this.first_image, kernelSize);
             case 'orderValue':
-                return this.engine.convolutionOrder(imageCanva, kernelSize, inputValue);
+                return this.engine.convolutionOrder(this.first_image, kernelSize, inputValue);
             case 'conservativeSomoothingValue':
-                return this.engine.convolutionConservativeSuavization(imageCanva, kernelSize);
+                return this.engine.convolutionConservativeSuavization(this.first_image, kernelSize);
             case 'gaussianValue':
-                return this.engine.convolutionGaussian(imageCanva, kernelSize, inputValue); 
+                return this.engine.convolutionGaussian(this.first_image, kernelSize, inputValue); 
             default:
                 throw `Opção inválida para convolução: ${option}`;
         }
