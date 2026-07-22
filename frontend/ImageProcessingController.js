@@ -96,7 +96,7 @@ export default class ImageProcessingController {
             case 'conservativeSomoothingValue':
                 return this.engine.convolutionConservativeSuavization(this.first_image, kernelSize);
             case 'gaussianValue':
-                return this.engine.convolutionGaussian(imageCanva, kernelSize, inputValue); 
+                return this.engine.convolutionGaussian(this.first_image, kernelSize, inputValue); 
             default:
                 throw `Opção inválida para convolução: ${option}`;
         }

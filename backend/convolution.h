@@ -1,5 +1,6 @@
 #include "types.h"
 #include <stdint.h>
+#include <math.h>
 
 bool is_border(int x, int y, int max_x, int max_y) {
     return x == 0 || y == 0 || x == max_x || y == max_y;
@@ -257,7 +258,7 @@ void sort_pixels_array(uint8_t **array, int size) {
 
 }
 
-int convolution_conservative_smoothing(Image *image, int kernel_size, int sigma, Image *result_image) {
+int convolution_conservative_smoothing(Image *image, int kernel_size,Image *result_image) {
     int width = image->columns;
     int height = image->rows;
 
@@ -331,16 +332,15 @@ int convolution_conservative_smoothing(Image *image, int kernel_size, int sigma,
 
 void set_gaussian_model(int kernel_size, int sigma, float *gaussian_kernel) {
     float pi = 3.14;
-    float euler = 2.71828;
-    int center = kernel_size / 2 + 1;
+    int center = kernel_size / 2;
 
     float total = 0;
     for (int i=0; i<kernel_size; i++) {
         for (int j=0; j<kernel_size; j++) {
             int x = i - center;
-            int y = i - center;
+            int y = j - center;
 
-            gaussian_kernel[i*kernel_size+j] = (1/ (2 * pi *(sigma * sigma)) * (euler * (-(x * x + y * y) / (sigma * sigma))));
+            gaussian_kernel[i*kernel_size+j] = ((1.0 / (pi * (sigma * sigma))) * expf(-(x * x + y * y) / (2.0 * sigma * sigma)));
             total += gaussian_kernel[i*kernel_size+j];
         }
     }
@@ -352,25 +352,39 @@ void set_gaussian_model(int kernel_size, int sigma, float *gaussian_kernel) {
     }
 }
 
-int convolution_gaussian(Image *image, int kernel_size, Image *result_image) {
+int convolution_gaussian(Image *image, int kernel_size,  int sigma, Image *result_image) {
     int width = image->columns;
     int height = image->rows;
 
     int total_pixel_in_kernel = kernel_size * kernel_size;
 
+    float gaussian_kernel[total_pixel_in_kernel];
+    set_gaussian_model(kernel_size, sigma, gaussian_kernel);
+
     for (int i=0; i<height; i++) {
         for (int j=0; j<width; j++) {
-            
+            float sum_red, sum_green, sum_blue;
+            sum_red = sum_green = sum_blue = 0;
             int pixel_count = 0;
 
-            for (int x=kernel_size / 2 * -1 + i; x<=kernel_size / 2 + i; x++) {
-                for (int y=kernel_size / 2 * -1 + j; y<=kernel_size / 2 + j; y++) {
+            for (int x=kernel_size / 2 * -1 + i, aux_x=0; x<=kernel_size / 2 + i; x++, aux_x++) {
+                for (int y=kernel_size / 2 * -1 + j, aux_y=0; y<=kernel_size / 2 + j; y++, aux_y++) {
                     if (is_valid(x, y, height, width)) {
-                       
-                       pixel_count++;
+                        sum_red += (*image->pixels[x*width+y].red * gaussian_kernel[aux_x*kernel_size+aux_y]);
+                        sum_green += (*image->pixels[x*width+y].green * gaussian_kernel[aux_x*kernel_size+aux_y]);
+                        sum_blue += (*image->pixels[x*width+y].blue * gaussian_kernel[aux_x*kernel_size+aux_y]);
+                    } else {
+                        sum_red += (*image->pixels[i*width+j].red * gaussian_kernel[aux_x*kernel_size+aux_y]);
+                        sum_green += (*image->pixels[i*width+j].green * gaussian_kernel[aux_x*kernel_size+aux_y]);
+                        sum_blue += (*image->pixels[i*width+j].blue * gaussian_kernel[aux_x*kernel_size+aux_y]);
                     }
                 }
             }
+
+            *result_image->pixels[i*width+j].red = sum_red > 255 ? 255 : sum_red;
+            *result_image->pixels[i*width+j].green = sum_green > 255 ? 255 : sum_green;
+            *result_image->pixels[i*width+j].blue = sum_blue > 255 ? 255 : sum_blue;
+            *result_image->pixels[i*width+j].alpha = *image->pixels[i*width+j].alpha;
         }
     }
 
