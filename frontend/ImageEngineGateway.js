@@ -46,13 +46,18 @@ export default class ImageEngineGateway {
         return image_matrix;
     }
 
-    addValue(image, value) {
-        const ptr = 0;
+    _set_image_to_buffer(image, ptr) {
         const image_buffer = new Uint8Array(image);
         const buffer_length = image_buffer.length;
         const view_image = new Uint8Array(this.memory.buffer, ptr, buffer_length);
         view_image.set(image_buffer);
 
+        return buffer_length;
+    }
+
+    addValue(image, value) {
+        const ptr = 0;
+        const buffer_length = this._set_image_to_buffer(image, ptr); 
         const result = this.engine.exports.image_add_value(ptr, buffer_length, value);
         if (result == -1) throw "Erro ao somar valor!";
 
@@ -61,12 +66,8 @@ export default class ImageEngineGateway {
 
     subtValue(image, value) {
         const ptr = 0;
-        const image_buffer = new Uint8Array(image);
-        const buffer_length = image_buffer.length;
-        const view_image = new Uint8Array(this.memory.buffer, ptr, buffer_length);
-        view_image.set(image_buffer);
-
-        const result = this.engine.exports.image_subt_value(ptr, buffer_length, value);
+        const buffer_length = this._set_image_to_buffer(image, ptr); 
+        const result = this.engine.exports.image_subt_value(0, buffer_length, value);
         if (result == -1) throw "Erro ao subtrair valor!";
 
         return this._read_image_in_memory(result, buffer_length); 
@@ -74,11 +75,7 @@ export default class ImageEngineGateway {
 
     multiplyValue(image, value) {
         const ptr = 0;
-        const image_buffer = new Uint8Array(image);
-        const buffer_length = image_buffer.length;
-        const view_image = new Uint8Array(this.memory.buffer, ptr, buffer_length);
-        view_image.set(image_buffer);
-
+        const buffer_length = this._set_image_to_buffer(image, ptr); 
         const result = this.engine.exports.image_multiply_value(ptr, buffer_length, value);
         if (result == -1) throw "Erro ao multiplicar valor!";
 
@@ -87,11 +84,7 @@ export default class ImageEngineGateway {
 
     divValue(image, value) {
         const ptr = 0;
-        const image_buffer = new Uint8Array(image);
-        const buffer_length = image_buffer.length;
-        const view_image = new Uint8Array(this.memory.buffer, ptr, buffer_length);
-        view_image.set(image_buffer);
-
+        const buffer_length = this._set_image_to_buffer(image, ptr); 
         const result = this.engine.exports.image_div_value(ptr, buffer_length, value);
         if (result == -1) throw "Erro ao dividir valor!";
 
@@ -100,11 +93,7 @@ export default class ImageEngineGateway {
 
     invertHorizontal(image) {
         const ptr = 0;
-        const image_buffer = new Uint8Array(image);
-        const buffer_length = image_buffer.length;
-        const view_image = new Uint8Array(this.memory.buffer, ptr, buffer_length);
-        view_image.set(image_buffer);
-
+        const buffer_length = this._set_image_to_buffer(image, ptr); 
         const result = this.engine.exports.image_invert_horizontal(ptr, buffer_length);
         if (result == -1) throw "Erro ao inverter horizontalmente!";
         return this._read_image_in_memory(result, buffer_length);         
@@ -112,11 +101,7 @@ export default class ImageEngineGateway {
 
     invertVerticle(image) {
         const ptr = 0;
-        const image_buffer = new Uint8Array(image);
-        const buffer_length = image_buffer.length;
-        const view_image = new Uint8Array(this.memory.buffer, ptr, buffer_length);
-        view_image.set(image_buffer);
-
+        const buffer_length = this._set_image_to_buffer(image, ptr); 
         const result = this.engine.exports.image_invert_vertical(ptr, buffer_length);
         if (result == -1) throw "Erro ao inverter verticalmente!";
         return this._read_image_in_memory(result, buffer_length);
@@ -124,11 +109,7 @@ export default class ImageEngineGateway {
 
     convolutionAverage(image, kernel_size) {
         const ptr = 0;
-        const image_buffer = new Uint8Array(image);
-        const buffer_length = image_buffer.length;
-        const view_image = new Uint8Array(this.memory.buffer, ptr, buffer_length);
-        view_image.set(image_buffer);
-
+        const buffer_length = this._set_image_to_buffer(image, ptr); 
         const result = this.engine.exports.image_convolution_average(ptr, buffer_length, kernel_size);
         if (result == -1) throw "Erro ao realizar a covolução média!";
         return this._read_image_in_memory(result, buffer_length);
@@ -136,11 +117,7 @@ export default class ImageEngineGateway {
 
     convolutionMin(image, kernel_size) {
         const ptr = 0;
-        const image_buffer = new Uint8Array(image);
-        const buffer_length = image_buffer.length;
-        const view_image = new Uint8Array(this.memory.buffer, ptr, buffer_length);
-        view_image.set(image_buffer);
-
+        const buffer_length = this._set_image_to_buffer(image, ptr); 
         const result = this.engine.exports.image_convolution_min(ptr, buffer_length, kernel_size);
         if (result == -1) throw "Erro ao realizar a convolução miníma!";
         return this._read_image_in_memory(result, buffer_length);
@@ -148,11 +125,7 @@ export default class ImageEngineGateway {
     
     convolutionMax(image, kernel_size) {
         const ptr = 0;
-        const image_buffer = new Uint8Array(image);
-        const buffer_length = image_buffer.length;
-        const view_image = new Uint8Array(this.memory.buffer, ptr, buffer_length);
-        view_image.set(image_buffer);
-
+        const buffer_length = this._set_image_to_buffer(image, ptr); 
         const result = this.engine.exports.image_convolution_max(ptr, buffer_length, kernel_size);
         if (result == -1) throw "Erro ao realizar a convolução máxima!";
         return this._read_image_in_memory(result, buffer_length);
@@ -160,11 +133,7 @@ export default class ImageEngineGateway {
 
     convolutionMedian(image, kernel_size) {
         const ptr = 0;
-        const image_buffer = new Uint8Array(image);
-        const buffer_length = image_buffer.length;
-        const view_image = new Uint8Array(this.memory.buffer, ptr, buffer_length);
-        view_image.set(image_buffer);
-
+        const buffer_length = this._set_image_to_buffer(image, ptr); 
         const result = this.engine.exports.image_convolution_median(ptr, buffer_length, kernel_size);
         if (result == -1) throw "Erro ao realizar a convolução mediana!";
         return this._read_image_in_memory(result, buffer_length);
@@ -172,11 +141,7 @@ export default class ImageEngineGateway {
 
     convolutionOrder(image, kernel_size, order_value) {
         const ptr = 0;
-        const image_buffer = new Uint8Array(image);
-        const buffer_length = image_buffer.length;
-        const view_image = new Uint8Array(this.memory.buffer, ptr, buffer_length);
-        view_image.set(image_buffer);
-
+        const buffer_length = this._set_image_to_buffer(image, ptr); 
         const result = this.engine.exports.image_convolution_order(ptr, buffer_length, kernel_size, order_value);
         if (result == -1) throw "Erro ao realizar a convolução ordem!";
         return this._read_image_in_memory(result, buffer_length);
@@ -184,11 +149,7 @@ export default class ImageEngineGateway {
 
     convolutionConservativeSuavization(image, kernel_size) {
         const ptr = 0;
-        const image_buffer = new Uint8Array(image);
-        const buffer_length = image_buffer.length;
-        const view_image = new Uint8Array(this.memory.buffer, ptr, buffer_length);
-        view_image.set(image_buffer);
-
+        const buffer_length = this._set_image_to_buffer(image, ptr); 
         const result = this.engine.exports.image_convolution_conservative_smoothing(ptr, buffer_length, kernel_size);
         if (result == -1) throw "Erro ao realizar a convolução suavização conservativa!";
         return this._read_image_in_memory(result, buffer_length);
@@ -196,11 +157,7 @@ export default class ImageEngineGateway {
 
     convolutionGaussian(image, kernel_size, sigma) {
         const ptr = 0;
-        const image_buffer = new Uint8Array(image);
-        const buffer_length = image_buffer.length;
-        const view_image = new Uint8Array(this.memory.buffer, ptr, buffer_length);
-        view_image.set(image_buffer);
-
+        const buffer_length = this._set_image_to_buffer(image, ptr); 
         const result = this.engine.exports.image_convolution_gaussian(ptr, buffer_length, kernel_size, sigma);
         if (result == -1) throw "Erro ao realizar a convolução gaussiana!";
         return this._read_image_in_memory(result, buffer_length);
