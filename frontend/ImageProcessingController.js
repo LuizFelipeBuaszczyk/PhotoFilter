@@ -143,7 +143,7 @@ export default class ImageProcessingController {
         
         switch (option) {
             case 'grayScaleValue':
-                return this.engine.convertToGrayScale(imageCanva);
+                return this.engine.convertToGrayScale(this.first_image);
             case 'binaryScaleValue':
                 return this.engine.convertToBinaryScale(imageCanva);
             default:

@@ -207,8 +207,11 @@ export default class ImageEngineGateway {
     }
     
     convertToGrayScale(image){
-        const endpoint = `${this.endpoint}/convert/8bit`;
-        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
+         const ptr = 0;
+        const buffer_length = this._set_image_to_buffer(image, ptr); 
+        const result = this.engine.exports.image_convert_to_grayscale(ptr, buffer_length);
+        if (result == -1) throw "Erro ao realizar a conversão para escala de cinza";
+        return this._read_image_in_memory(result, buffer_length);
     }
 
     convertToBinaryScale(image){
