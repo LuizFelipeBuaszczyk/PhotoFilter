@@ -4,6 +4,8 @@
 #include "arithmetic.h"
 #include "invertion.h"
 #include "convolution.h"
+#include "grayscale.h"
+#include "segmentation.h"
 
 #include "types.h"
 
@@ -665,3 +667,104 @@ int image_convolution_gaussian(uint8_t *buffer, int size, int kernel_size, int s
     
     return size;
 }
+
+EMSCRIPTEN_KEEPALIVE
+int image_convert_to_grayscale(uint8_t *buffer, int size) {
+    if (buffer_size_is_valid(size) != 0) {
+        return -1;
+    }     
+    
+    int size_pixels_array = size / 4;
+    int pixel_count = 0;
+    Pixel pixels[size_pixels_array];
+
+    for(int i=0; i<size;){
+        Pixel px;
+        px.red = &buffer[i++];
+        px.green = &buffer[i++];
+        px.blue = &buffer[i++];
+        px.alpha = &buffer[i++];
+    
+        pixels[pixel_count++] = px;
+    }
+
+    Image image;
+    image.rows = 250;
+    image.columns = 250;
+    image.pixels = (Pixel *)&pixels;
+    
+    Pixel result_pixels[size_pixels_array];
+    pixel_count = 0;
+    for (int i=size; i<size+size;) {
+        Pixel px;
+        px.red = &buffer[i++];
+        px.green = &buffer[i++];
+        px.blue = &buffer[i++];
+        px.alpha = &buffer[i++];
+
+        result_pixels[pixel_count++] = px;
+    }
+
+    Image result_image;
+    result_image.rows = 250;
+    result_image.columns = 250;
+    result_image.pixels = (Pixel *) &result_pixels;
+
+    int result = grayscale_convertion_average(&image, &result_image);
+    if (result != 0) {
+        return -1;
+    }
+    
+    return size;
+}
+
+EMSCRIPTEN_KEEPALIVE
+int image_convert_to_binaryscale(uint8_t *buffer, int size, int treshold) {
+    if (buffer_size_is_valid(size) != 0) {
+        return -1;
+    }     
+    
+    int size_pixels_array = size / 4;
+    int pixel_count = 0;
+    Pixel pixels[size_pixels_array];
+
+    for(int i=0; i<size;){
+        Pixel px;
+        px.red = &buffer[i++];
+        px.green = &buffer[i++];
+        px.blue = &buffer[i++];
+        px.alpha = &buffer[i++];
+    
+        pixels[pixel_count++] = px;
+    }
+
+    Image image;
+    image.rows = 250;
+    image.columns = 250;
+    image.pixels = (Pixel *)&pixels;
+    
+    Pixel result_pixels[size_pixels_array];
+    pixel_count = 0;
+    for (int i=size; i<size+size;) {
+        Pixel px;
+        px.red = &buffer[i++];
+        px.green = &buffer[i++];
+        px.blue = &buffer[i++];
+        px.alpha = &buffer[i++];
+
+        result_pixels[pixel_count++] = px;
+    }
+
+    Image result_image;
+    result_image.rows = 250;
+    result_image.columns = 250;
+    result_image.pixels = (Pixel *) &result_pixels;
+
+    int result = segmentation_treshold(&image, &result_image, treshold);
+    if (result != 0) {
+        return -1;
+    }
+    
+    return size;
+}
+

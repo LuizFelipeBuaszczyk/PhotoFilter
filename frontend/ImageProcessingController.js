@@ -139,13 +139,12 @@ export default class ImageProcessingController {
     }
 
     _convert(option) {
-        const imageCanva = document.getElementById('showInputImage');
         
         switch (option) {
             case 'grayScaleValue':
-                return this.engine.convertToGrayScale(imageCanva);
+                return this.engine.convertToGrayScale(this.first_image);
             case 'binaryScaleValue':
-                return this.engine.convertToBinaryScale(imageCanva);
+                return this.engine.convertToBinaryScale(this.first_image);
             default:
                 throw `Opção inválida para conversão de escala: ${option}`;
         }
