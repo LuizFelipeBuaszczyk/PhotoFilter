@@ -111,7 +111,7 @@ export default class ImageProcessingController {
             case 'sobelValue':
                 return this.engine.borderSobel(this.first_image);
             case 'laplacianValue':
-                return this.engine.borderLaplacian(imageCanva);
+                return this.engine.borderLaplacian(this.first_image);
             default:
                 throw `Opção inválida para detecção de borda: ${option}`;
         }

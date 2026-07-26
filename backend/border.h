@@ -104,3 +104,46 @@ int border_detection_sobel(Image *image, Image *result_image){
 
     return 0;
 }
+
+int border_detection_lapaclian(Image *image, Image *result_image){
+    /* derivate
+     * [ -1,-1,-1]
+     * [ -1, 8,-1]
+     * [ -1,-1,-1]
+     */
+
+    int width = image->columns;
+    int height = image->rows;
+
+    
+    int derivate[3][3];
+
+    derivate[0][0] = 1; derivate[0][1] = 1; derivate[0][2] = 1;
+    derivate[1][0] = 1; derivate[1][1] = -8; derivate[1][2] = 1;
+    derivate[2][0] = 1; derivate[2][1] = 1; derivate[2][2] = 1;
+
+    grayscale_convertion_average(image, image);
+
+    for (int i=0; i<image->rows; i++) {
+        for (int j=0; j<image->columns; j++) {
+            int value=0; 
+            
+            for (int x=i-1, pos_x=0; x<=i+1; x++, pos_x++) {
+                for (int y=j-1, pos_y=0; y<=j+1; y++, pos_y++) {
+                    if (is_valid(x, y, height, width)) {
+                        value += *image->pixels[x*height+y].red * derivate[pos_x][pos_y];
+                    } else {
+                        value += *image->pixels[i*height+j].red * derivate[pos_x][pos_y];
+                    }
+                }
+            }
+            uint8_t result_value = value > 255 ? value : 255;
+            *result_image->pixels[i*height+j].red = result_value;
+            *result_image->pixels[i*height+j].green = result_value;
+            *result_image->pixels[i*height+j].blue = result_value;
+            *result_image->pixels[i*height+j].alpha = *image->pixels[i*height+j].alpha;
+         }
+    }
+
+    return 0;
+}

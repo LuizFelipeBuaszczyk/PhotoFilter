@@ -180,8 +180,11 @@ export default class ImageEngineGateway {
     }
 
     borderLaplacian(image) {
-        const endpoint = `${this.endpoint}/borderDetection/laplacian`;
-        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
+        const ptr = 0;
+        const buffer_length = this._set_image_to_buffer(image, ptr); 
+        const result = this.engine.exports.image_border_detection_laplacian(ptr, buffer_length);
+        if (result == -1) throw "Erro ao realizar detecção de borda laplacian!";
+        return this._read_image_in_memory(result, buffer_length);         
     }
 
     morphologicalDilatation (image, kernelSize, kernelFormat){
