@@ -1,14 +1,8 @@
-#include "types.h"
 #include <stdint.h>
 #include <math.h>
 
-bool is_border(int x, int y, int max_x, int max_y) {
-    return x == 0 || y == 0 || x == max_x || y == max_y;
-}
-
-bool is_valid(int x, int y, int max_x, int max_y) {
-    return x >=0 && y >= 0 && x < max_x && y < max_y;
-}
+#include "types.h"
+#include "utils.h"
 
 int convolution_average(Image *image, int kernel_size, Image *result_image) {
     int width = image->columns;
