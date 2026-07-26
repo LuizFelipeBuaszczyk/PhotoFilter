@@ -107,7 +107,7 @@ export default class ImageProcessingController {
     
         switch (option) {
             case 'prewitValue':
-                return this.engine.borderPrewit(imageCanva);
+                return this.engine.borderPrewit(this.first_image);
             case 'sobelValue':
                 return this.engine.borderSobel(imageCanva);
             case 'laplacianValue':
