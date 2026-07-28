@@ -233,18 +233,21 @@ export default class ImageEngineGateway {
 
     // 2 Images
     addImages(image1, image2) {
-        const endpoint = `${this.endpoint}/add`;
-
-        const body = transformIMGtoMATRIX(image1) + '\n' + 'S' + transformIMGtoMATRIX(image2);
-        return fetchAPI(endpoint, 'POST', body);
+        const ptr = 0;
+        const buffer_length = this._set_image_to_buffer(image1, ptr); 
+        const buffer_length_image2 = this._set_image_to_buffer(image2, buffer_length);
+        const result = this.engine.exports.image_add_image(ptr, buffer_length);
+        if (result == -1) throw "Erro ao realizar soma entre duas imagens";
+        return this._read_image_in_memory(result, buffer_length);
     }
 
     subtImages(image1, image2) {
-        const endpoint = `${this.endpoint}/subt`;
-
-        const body = transformIMGtoMATRIX(image1) + '\n' + 'S' + transformIMGtoMATRIX(image2);
-        return fetchAPI(endpoint, 'POST', body);
-    }
+        const ptr = 0;
+        const buffer_length = this._set_image_to_buffer(image1, ptr); 
+        const buffer_length_image2 = this._set_image_to_buffer(image2, buffer_length);
+        const result = this.engine.exports.image_subt_image(ptr, buffer_length);
+        if (result == -1) throw "Erro ao realizar subtração entre duas imagens";
+        return this._read_image_in_memory(result, buffer_length);    }
 
     logicAND(image1, image2) {
         const endpoint = `${this.endpoint}/logic/and`;
