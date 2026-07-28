@@ -989,3 +989,73 @@ int image_add_image(uint8_t *buffer, int size) {
     return size+size;
 }
 
+EMSCRIPTEN_KEEPALIVE
+int image_subt_image(uint8_t *buffer, int size) {
+    if (buffer_size_is_valid(size) != 0) {
+        return -1;
+    }     
+    
+    // Image 1
+    int size_pixels_array = size / 4;
+    int pixel_count = 0;
+    Pixel pixels[size_pixels_array];
+
+    for(int i=0; i<size;){
+        Pixel px;
+        px.red = &buffer[i++];
+        px.green = &buffer[i++];
+        px.blue = &buffer[i++];
+        px.alpha = &buffer[i++];
+    
+        pixels[pixel_count++] = px;
+    }
+
+    Image image;
+    image.rows = 250;
+    image.columns = 250;
+    image.pixels = (Pixel *)&pixels;
+    
+    // Image 2
+    Pixel pixels_to_subt[size_pixels_array];
+    pixel_count = 0;
+    for (int i=size; i<size+size;) {
+        Pixel px;
+        px.red = &buffer[i++];
+        px.green = &buffer[i++];
+        px.blue = &buffer[i++];
+        px.alpha = &buffer[i++];
+
+        pixels_to_subt[pixel_count++] = px;
+    }
+
+    Image image_to_subt;
+    image_to_subt.rows = 250;
+    image_to_subt.columns = 250;
+    image_to_subt.pixels = (Pixel *) &pixels_to_subt;
+    
+    // Result Image
+    Pixel result_pixels[size_pixels_array];
+    pixel_count = 0;
+    for (int i=size+size; i<size+size+size;) {
+        Pixel px;
+        px.red = &buffer[i++];
+        px.green = &buffer[i++];
+        px.blue = &buffer[i++];
+        px.alpha = &buffer[i++];
+
+        result_pixels[pixel_count++] = px;
+    }
+
+    Image result_image;
+    result_image.rows = 250;
+    result_image.columns = 250;
+    result_image.pixels = (Pixel *) &result_pixels;
+
+    int result = subt_image(&image, &image_to_subt, &result_image);
+    if (result != 0) {
+        return -1;
+    }
+    
+    return size+size;
+}
+

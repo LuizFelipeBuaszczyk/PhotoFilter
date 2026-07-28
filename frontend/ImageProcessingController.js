@@ -43,9 +43,7 @@ export default class ImageProcessingController {
     }
 
     _arithmetic(option) {
-        const imageCanva = document.getElementById('showInputImage');
         const value = document.getElementById('range') ? document.getElementById('range').value : 0;
-        const imageCanva2 = document.getElementById('showInputImage2');
 
         switch (option) {
             case 'addValue':
@@ -59,7 +57,7 @@ export default class ImageProcessingController {
             case 'addImages':
                 return this.engine.addImages(this.first_image, this.second_image);
             case 'subtImages':
-                return this.engine.subtImages(imageCanva, imageCanva2);
+                return this.engine.subtImages(this.first_image, this.set_second_image);
             default:
                 throw `Opção inválida para aritmética: ${option}`;
         }
