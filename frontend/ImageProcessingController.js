@@ -57,7 +57,7 @@ export default class ImageProcessingController {
             case 'divValue':
                 return this.engine.divValue(this.first_image, value);
             case 'addImages':
-                return this.engine.addImages(imageCanva, imageCanva2);
+                return this.engine.addImages(this.first_image, this.second_image);
             case 'subtImages':
                 return this.engine.subtImages(imageCanva, imageCanva2);
             default:
