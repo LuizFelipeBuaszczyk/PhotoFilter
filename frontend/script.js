@@ -159,13 +159,6 @@ function showButtonsFeatureBetweenImages(fieldset) {
     });
 
     radioButtons.push({
-        'id': 'diffButton',
-        'value': 'diference',
-        'labelText': 'Diferença'
-    });
-
-
-    radioButtons.push({
         'id': 'linearButton',
         'value': 'linear',
         'labelText': 'Linear'
@@ -206,9 +199,6 @@ function manageSelectFeature(selectedFeature) {
             break;
         case 'logic':
             showLogicOperations(selectOperations);
-            break;
-        case 'diference':
-            showDiffOperations(selectOperations);
             break;
         case 'linear':
             showLinearOperations(selectOperations);
@@ -311,11 +301,6 @@ function showLogicOperations(selectOperations) {
     else {
         selectOperations.add(createOption('notValue', className, 'NOT'));
     }
-}
-
-function showDiffOperations(selectOperations) {
-    selectOperations.hidden = true;
-    return; 
 }
 
 function showLinearOperations(selectOperations) {

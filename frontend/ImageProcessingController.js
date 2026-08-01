@@ -31,8 +31,6 @@ export default class ImageProcessingController {
                 return await this._convert(option);
             case 'logic':
                 return await this._logic(option);
-            case 'diference':
-                return await this._diference();
             case 'linear':
                 return await this._linear(option);
             case 'histogram':
@@ -76,7 +74,6 @@ export default class ImageProcessingController {
     }
 
     _convolutional(option) {
-        const imageCanva = document.getElementById('showInputImage');
         const kernelSize = document.getElementById('range').value;
         const inputValue = document.getElementById('inputValue') ? document.getElementById('inputValue').value : null;
 
@@ -101,7 +98,6 @@ export default class ImageProcessingController {
     }
 
     _border(option) {
-        const imageCanva = document.getElementById('showInputImage');
     
         switch (option) {
             case 'prewitValue':
@@ -162,13 +158,6 @@ export default class ImageProcessingController {
             default:
                 throw `Opção inválida para operação lógica: ${option}`;
         }
-    }
-
-    _diference() {
-        const imageCanva = document.getElementById('showInputImage');
-        const imageCanva2 = document.getElementById('showInputImage2');
-        
-        return this.engine.diferenceImages(imageCanva, imageCanva2);
     }
 
     _linear(option) {

@@ -285,13 +285,6 @@ export default class ImageEngineGateway {
         return this._read_image_in_memory(result, buffer_length);
     }
     
-    diferenceImages(image1, image2) {
-        const endpoint = `${this.endpoint}/diference`;
-
-        const body = transformIMGtoMATRIX(image1) + '\n' + 'S' + transformIMGtoMATRIX(image2);
-        return fetchAPI(endpoint, 'POST', body);
-    }
-
     linearAverage(image1, image2) {
         const endpoint = `${this.endpoint}/linear/average`;
 
