@@ -154,7 +154,7 @@ export default class ImageProcessingController {
 
         switch (option) {
             case 'andValue':
-                return this.engine.logicAND(imageCanva, imageCanva2);
+                return this.engine.logicAND(this.first_image, this.second_image);
             case 'orValue':
                 return this.engine.logicOR(imageCanva, imageCanva2);
             case 'xorValue':
