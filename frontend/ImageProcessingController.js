@@ -158,7 +158,7 @@ export default class ImageProcessingController {
             case 'orValue':
                 return this.engine.logicOR(this.first_image, this.second_image);
             case 'xorValue':
-                return this.engine.logicXOR(imageCanva, imageCanva2);
+                return this.engine.logicXOR(this.first_image, this.second_image);
             case 'notValue':
                 return this.engine.logicNOT(imageCanva);
             default:
