@@ -247,32 +247,42 @@ export default class ImageEngineGateway {
         const buffer_length_image2 = this._set_image_to_buffer(image2, buffer_length);
         const result = this.engine.exports.image_subt_image(ptr, buffer_length);
         if (result == -1) throw "Erro ao realizar subtração entre duas imagens";
-        return this._read_image_in_memory(result, buffer_length);    }
+        return this._read_image_in_memory(result, buffer_length);    
+    }
 
     logicAND(image1, image2) {
-        const endpoint = `${this.endpoint}/logic/and`;
-
-        const body = transformIMGtoMATRIX(image1) + '\n' + 'S' + transformIMGtoMATRIX(image2);
-        return fetchAPI(endpoint, 'POST', body);
+        const ptr = 0;
+        const buffer_length = this._set_image_to_buffer(image1, ptr); 
+        const buffer_length_image2 = this._set_image_to_buffer(image2, buffer_length);
+        const result = this.engine.exports.image_logic_and_image(ptr, buffer_length);
+        if (result == -1) throw "Erro ao realizar a operação lógica AND entre duas imagens";
+        return this._read_image_in_memory(result, buffer_length);
     }
 
     logicOR(image1, image2) {
-        const endpoint = `${this.endpoint}/logic/or`;
-
-        const body = transformIMGtoMATRIX(image1) + '\n' + 'S' + transformIMGtoMATRIX(image2);
-        return fetchAPI(endpoint, 'POST', body);
+        const ptr = 0;
+        const buffer_length = this._set_image_to_buffer(image1, ptr); 
+        const buffer_length_image2 = this._set_image_to_buffer(image2, buffer_length);
+        const result = this.engine.exports.image_logic_or_image(ptr, buffer_length);
+        if (result == -1) throw "Erro ao realizar a operação lógica OR entre duas imagens";
+        return this._read_image_in_memory(result, buffer_length);    
     }
 
     logicXOR(image1, image2) {
-        const endpoint = `${this.endpoint}/logic/xor`;
-
-        const body = transformIMGtoMATRIX(image1) + '\n' + 'S' + transformIMGtoMATRIX(image2);
-        return fetchAPI(endpoint, 'POST', body);
+        const ptr = 0;
+        const buffer_length = this._set_image_to_buffer(image1, ptr); 
+        const buffer_length_image2 = this._set_image_to_buffer(image2, buffer_length);
+        const result = this.engine.exports.image_logic_xor_image(ptr, buffer_length);
+        if (result == -1) throw "Erro ao realizar a operação lógica XOR entre duas imagens";
+        return this._read_image_in_memory(result, buffer_length);
     }
 
     logicNOT(image) {
-        const endpoint = `${this.endpoint}/logic/not`;
-        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
+        const ptr = 0;
+        const buffer_length = this._set_image_to_buffer(image, ptr); 
+        const result = this.engine.exports.image_logic_not(ptr, buffer_length);
+        if (result == -1) throw "Erro ao realizar a operação lógica NOT na imagem";
+        return this._read_image_in_memory(result, buffer_length);
     }
     
     diferenceImages(image1, image2) {
