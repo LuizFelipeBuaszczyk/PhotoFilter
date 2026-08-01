@@ -278,8 +278,11 @@ export default class ImageEngineGateway {
     }
 
     logicNOT(image) {
-        const endpoint = `${this.endpoint}/logic/not`;
-        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
+        const ptr = 0;
+        const buffer_length = this._set_image_to_buffer(image, ptr); 
+        const result = this.engine.exports.image_logic_not(ptr, buffer_length);
+        if (result == -1) throw "Erro ao realizar a operação lógica NOT na imagem";
+        return this._read_image_in_memory(result, buffer_length);
     }
     
     diferenceImages(image1, image2) {

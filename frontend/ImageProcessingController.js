@@ -149,8 +149,6 @@ export default class ImageProcessingController {
     }
 
     _logic(option) {
-        const imageCanva = document.getElementById('showInputImage');
-        const imageCanva2 = document.getElementById('showInputImage2');
 
         switch (option) {
             case 'andValue':
@@ -160,7 +158,7 @@ export default class ImageProcessingController {
             case 'xorValue':
                 return this.engine.logicXOR(this.first_image, this.second_image);
             case 'notValue':
-                return this.engine.logicNOT(imageCanva);
+                return this.engine.logicNOT(this.first_image);
             default:
                 throw `Opção inválida para operação lógica: ${option}`;
         }

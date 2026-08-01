@@ -3,6 +3,28 @@
 
 #include "segmentation.h"
 
+int logic_not(Image *image, Image *result_image) {
+    int width = image->columns;
+    int height = image->rows;
+
+    segmentation_treshold(image, image, 127);
+
+    for (int i=0; i<height; i++) {
+        for (int j=0; j<width; j++) {
+            uint8_t not_operation = (*image->pixels[i*height+j].red == 255) ? 0 : 255; 
+
+            *result_image->pixels[i*height+j].red = not_operation;
+            *result_image->pixels[i*height+j].green = not_operation;
+            *result_image->pixels[i*height+j].blue = not_operation;
+            *result_image->pixels[i*height+j].alpha = *image->pixels[i*height+j].alpha;
+        }
+    }
+    
+
+    return 0;
+}
+
+
 int logic_and(Image *image, Image *image2, Image *result_image) {
     int width = image->columns;
     int height = image->rows;
