@@ -161,15 +161,13 @@ export default class ImageProcessingController {
     }
 
     _linear(option) {
-        const imageCanva = document.getElementById('showInputImage');
-        const imageCanva2 = document.getElementById('showInputImage2');
         const inputValue = document.getElementById('inputValue') ? document.getElementById('inputValue').value : null;
 
         switch (option) {
             case 'averageValue':
                 return this.engine.linearAverage(this.first_image, this.second_image);
             case 'blendingValue':
-                return this.engine.linearBlending(imageCanva, imageCanva2, inputValue);
+                return this.engine.linearBlending(this.first_image, this.second_image, inputValue);
             default: 
                 throw `Opção inválida para operação linear: ${option}`;
         }
