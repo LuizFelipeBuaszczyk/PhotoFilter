@@ -167,7 +167,7 @@ export default class ImageProcessingController {
 
         switch (option) {
             case 'averageValue':
-                return this.engine.linearAverage(imageCanva, imageCanva2);
+                return this.engine.linearAverage(this.first_image, this.second_image);
             case 'blendingValue':
                 return this.engine.linearBlending(imageCanva, imageCanva2, inputValue);
             default: 
