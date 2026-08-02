@@ -285,26 +285,22 @@ export default class ImageEngineGateway {
         return this._read_image_in_memory(result, buffer_length);
     }
     
-    diferenceImages(image1, image2) {
-        const endpoint = `${this.endpoint}/diference`;
-
-        const body = transformIMGtoMATRIX(image1) + '\n' + 'S' + transformIMGtoMATRIX(image2);
-        return fetchAPI(endpoint, 'POST', body);
-    }
-
     linearAverage(image1, image2) {
-        const endpoint = `${this.endpoint}/linear/average`;
-
-        const body = transformIMGtoMATRIX(image1) + '\n' + 'S' + transformIMGtoMATRIX(image2);
-        return fetchAPI(endpoint, 'POST', body);       
-
-    }
+        const ptr = 0;
+        const buffer_length = this._set_image_to_buffer(image1, ptr); 
+        const buffer_length_image2 = this._set_image_to_buffer(image2, buffer_length);
+        const result = this.engine.exports.image_logic_linear_average_image(ptr, buffer_length);
+        if (result == -1) throw "Erro ao realizar a operação linear de média entre duas imagens";
+        return this._read_image_in_memory(result, buffer_length);
+     }
 
     linearBlending(image1, image2, value) {
-        const endpoint = `${this.endpoint}/linear/blending?value=${value}`;
-
-        const body = transformIMGtoMATRIX(image1) + '\n' + 'S' + transformIMGtoMATRIX(image2);
-        return fetchAPI(endpoint, 'POST', body);       
+        const ptr = 0;
+        const buffer_length = this._set_image_to_buffer(image1, ptr); 
+        const buffer_length_image2 = this._set_image_to_buffer(image2, buffer_length);
+        const result = this.engine.exports.image_logic_linear_blending_image(ptr, buffer_length, value);
+        if (result == -1) throw "Erro ao realizar a operação linear blending entre duas imagens";
+        return this._read_image_in_memory(result, buffer_length);   
     }
 
     equalizeHistogram(image) {

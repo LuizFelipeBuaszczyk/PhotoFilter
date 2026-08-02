@@ -31,8 +31,6 @@ export default class ImageProcessingController {
                 return await this._convert(option);
             case 'logic':
                 return await this._logic(option);
-            case 'diference':
-                return await this._diference();
             case 'linear':
                 return await this._linear(option);
             case 'histogram':
@@ -76,7 +74,6 @@ export default class ImageProcessingController {
     }
 
     _convolutional(option) {
-        const imageCanva = document.getElementById('showInputImage');
         const kernelSize = document.getElementById('range').value;
         const inputValue = document.getElementById('inputValue') ? document.getElementById('inputValue').value : null;
 
@@ -101,7 +98,6 @@ export default class ImageProcessingController {
     }
 
     _border(option) {
-        const imageCanva = document.getElementById('showInputImage');
     
         switch (option) {
             case 'prewitValue':
@@ -164,23 +160,14 @@ export default class ImageProcessingController {
         }
     }
 
-    _diference() {
-        const imageCanva = document.getElementById('showInputImage');
-        const imageCanva2 = document.getElementById('showInputImage2');
-        
-        return this.engine.diferenceImages(imageCanva, imageCanva2);
-    }
-
     _linear(option) {
-        const imageCanva = document.getElementById('showInputImage');
-        const imageCanva2 = document.getElementById('showInputImage2');
         const inputValue = document.getElementById('inputValue') ? document.getElementById('inputValue').value : null;
 
         switch (option) {
             case 'averageValue':
-                return this.engine.linearAverage(imageCanva, imageCanva2);
+                return this.engine.linearAverage(this.first_image, this.second_image);
             case 'blendingValue':
-                return this.engine.linearBlending(imageCanva, imageCanva2, inputValue);
+                return this.engine.linearBlending(this.first_image, this.second_image, inputValue);
             default: 
                 throw `Opção inválida para operação linear: ${option}`;
         }
