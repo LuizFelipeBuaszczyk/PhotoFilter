@@ -304,8 +304,11 @@ export default class ImageEngineGateway {
     }
 
     equalizeHistogram(image) {
-        const endpoint = `${this.endpoint}/histogram/equalize`;
-        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
+        const ptr = 0;
+        const buffer_length = this._set_image_to_buffer(image, ptr); 
+        const result = this.engine.exports.image_histogram_equalize(ptr, buffer_length);
+        if (result == -1) throw "Erro ao equalizar histograma da imagem"
+        return this._read_image_in_memory(result, buffer_length);   
     }
 
     visualizeHistogram(image) {
