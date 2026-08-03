@@ -9,6 +9,7 @@
 #include "border.h"
 #include "logic.h"
 #include "linear.h"
+#include "histogram.h"
 
 #include "types.h"
 
@@ -1324,7 +1325,7 @@ int image_logic_not(uint8_t *buffer, int size) {
 }
 
 EMSCRIPTEN_KEEPALIVE
-int image_logic_linear_average_image(uint8_t *buffer, int size) {
+int image_linear_average_image(uint8_t *buffer, int size) {
     if (buffer_size_is_valid(size) != 0) {
         return -1;
     }     
@@ -1394,7 +1395,7 @@ int image_logic_linear_average_image(uint8_t *buffer, int size) {
 }
 
 EMSCRIPTEN_KEEPALIVE
-int image_logic_linear_blending_image(uint8_t *buffer, int size, float value) {
+int image_linear_blending_image(uint8_t *buffer, int size, float value) {
     if (buffer_size_is_valid(size) != 0) {
         return -1;
     }     
@@ -1461,5 +1462,57 @@ int image_logic_linear_blending_image(uint8_t *buffer, int size, float value) {
     }
     
     return size+size;
+}
+
+EMSCRIPTEN_KEEPALIVE
+int image_histogram_equalize(uint8_t *buffer, int size) {
+    if (buffer_size_is_valid(size) != 0) {
+        return -1;
+    }     
+    
+    // Image 1
+    int size_pixels_array = size / 4;
+    int pixel_count = 0;
+    Pixel pixels[size_pixels_array];
+
+    for(int i=0; i<size;){
+        Pixel px;
+        px.red = &buffer[i++];
+        px.green = &buffer[i++];
+        px.blue = &buffer[i++];
+        px.alpha = &buffer[i++];
+    
+        pixels[pixel_count++] = px;
+    }
+
+    Image image;
+    image.rows = 250;
+    image.columns = 250;
+    image.pixels = (Pixel *)&pixels;
+    
+    // Result Image
+    Pixel result_pixels[size_pixels_array];
+    pixel_count = 0;
+    for (int i=size; i<size+size;) {
+        Pixel px;
+        px.red = &buffer[i++];
+        px.green = &buffer[i++];
+        px.blue = &buffer[i++];
+        px.alpha = &buffer[i++];
+
+        result_pixels[pixel_count++] = px;
+    }
+
+    Image result_image;
+    result_image.rows = 250;
+    result_image.columns = 250;
+    result_image.pixels = (Pixel *) &result_pixels;
+
+    int result = equalize_histogram(&image, &result_image);
+    if (result != 0) {
+        return -1;
+    }
+    
+    return size;
 }
 

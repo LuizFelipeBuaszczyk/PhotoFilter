@@ -178,7 +178,7 @@ export default class ImageProcessingController {
 
         switch (option) {
             case 'equalizeHistogramValue':
-                return this.engine.equalizeHistogram(imageCanva); 
+                return this.engine.equalizeHistogram(this.first_image); 
             case 'visualizeHistogramValue':
                 return this.engine.visualizeHistogram(imageCanva);
             default:
