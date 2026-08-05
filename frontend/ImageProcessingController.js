@@ -118,7 +118,7 @@ export default class ImageProcessingController {
 
         switch (option) {
             case 'dilationValue':
-                return this.engine.morphologicalDilatation(imageCanva, kernelSize, type);
+                return this.engine.morphologicalDilatation(this.first_image, kernelSize, type);
             case 'erosionValue':
                 return this.engine.morphologicalErosion(imageCanva, kernelSize, type);
             case 'openingValue':
