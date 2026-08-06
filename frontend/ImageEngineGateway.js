@@ -1,11 +1,9 @@
-import { transformIMGtoMATRIX, fetchAPI } from "./utils/utils.js";
 
 const IMAGE_WIDTH = 250;
 
 export default class ImageEngineGateway {
 
     constructor() {
-        this.endpoint = 'http://localhost:8080';
         
         const _memory = new WebAssembly.Memory({initial:32}); 
         WebAssembly.instantiateStreaming(fetch("engine.wasm"), {
@@ -184,35 +182,47 @@ export default class ImageEngineGateway {
         const buffer_length = this._set_image_to_buffer(image, ptr); 
         const result = this.engine.exports.image_border_detection_laplacian(ptr, buffer_length);
         if (result == -1) throw "Erro ao realizar detecção de borda laplacian!";
-        return this._read_image_in_memory(result, buffer_length);         
+        return this._read_image_in_memory(result, buffer_length);
     }
 
-    morphologicalDilatation (image, kernelSize, kernelFormat){
-        const endpoint = `${this.endpoint}/morphological/dilation?kernel=${kernelSize}&type=${kernelFormat}`;
-        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
+    morphologicalDilatation (image, kernel_size, kernel_type){
+        const ptr = 0;
+        const buffer_length = this._set_image_to_buffer(image, ptr); 
+        const result = this.engine.exports.image_morphology_dilation(ptr, buffer_length, kernel_size, kernel_type);
+        if (result == -1) throw "Erro ao realizar operação morfológica de dilatação";
+        return this._read_image_in_memory(result, buffer_length);
     }
 
-    morphologicalErosion (image, kernelSize, kernelFormat){
-        const endpoint = `${this.endpoint}/morphological/erosion?kernel=${kernelSize}&type=${kernelFormat}`;
-        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
+    morphologicalErosion (image, kernel_size, kernel_type){
+        const ptr = 0;
+        const buffer_length = this._set_image_to_buffer(image, ptr); 
+        const result = this.engine.exports.image_morphology_erosion(ptr, buffer_length, kernel_size, kernel_type);
+        if (result == -1) throw "Erro ao realizar operação morfológica de erosão";
+        return this._read_image_in_memory(result, buffer_length);
     }
 
-    morphologicalOpening (image, kernelSize, kernelFormat){
-        const endpoint = `${this.endpoint}/morphological/opening?kernel=${kernelSize}&type=${kernelFormat}`;
-        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
-
+    morphologicalOpening (image, kernel_size, kernel_type){
+        const ptr = 0;
+        const buffer_length = this._set_image_to_buffer(image, ptr); 
+        const result = this.engine.exports.image_morphology_opening(ptr, buffer_length, kernel_size, kernel_type);
+        if (result == -1) throw "Erro ao realizar operação morfológica de abertura";
+        return this._read_image_in_memory(result, buffer_length);
     }
 
-    morphologicalClosing (image, kernelSize, kernelFormat){
-        const endpoint = `${this.endpoint}/morphological/closing?kernel=${kernelSize}&type=${kernelFormat}`;
-        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
-
+    morphologicalClosing (image, kernel_size, kernel_type){
+        const ptr = 0;
+        const buffer_length = this._set_image_to_buffer(image, ptr); 
+        const result = this.engine.exports.image_morphology_closing(ptr, buffer_length, kernel_size, kernel_type);
+        if (result == -1) throw "Erro ao realizar operação morfológica de fechamento";
+        return this._read_image_in_memory(result, buffer_length);
     }
 
-    morphologicalOutline (image, kernelSize, kernelFormat){
-        const endpoint = `${this.endpoint}/morphological/outline?kernel=${kernelSize}&type=${kernelFormat}`;
-        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
-
+    morphologicalOutline (image, kernel_size, kernel_type){
+        const ptr = 0;
+        const buffer_length = this._set_image_to_buffer(image, ptr); 
+        const result = this.engine.exports.image_morphology_outline(ptr, buffer_length, kernel_size, kernel_type);
+        if (result == -1) throw "Erro ao realizar operação morfológica de contorno";
+        return this._read_image_in_memory(result, buffer_length);
     }
     
     convertToGrayScale(image){
@@ -309,10 +319,5 @@ export default class ImageEngineGateway {
         const result = this.engine.exports.image_histogram_equalize(ptr, buffer_length);
         if (result == -1) throw "Erro ao equalizar histograma da imagem"
         return this._read_image_in_memory(result, buffer_length);   
-    }
-
-    visualizeHistogram(image) {
-        const endpoint = `${this.endpoint}/histogram`;
-        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
     }
 }

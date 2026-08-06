@@ -118,15 +118,15 @@ export default class ImageProcessingController {
 
         switch (option) {
             case 'dilationValue':
-                return this.engine.morphologicalDilatation(imageCanva, kernelSize, type);
+                return this.engine.morphologicalDilatation(this.first_image, kernelSize, type);
             case 'erosionValue':
-                return this.engine.morphologicalErosion(imageCanva, kernelSize, type);
+                return this.engine.morphologicalErosion(this.first_image, kernelSize, type);
             case 'openingValue':
-                return this.engine.morphologicalOpening(imageCanva, kernelSize, type);
+                return this.engine.morphologicalOpening(this.first_image, kernelSize, type);
             case 'closingValue':
-                return this.engine.morphologicalClosing(imageCanva, kernelSize, type);
+                return this.engine.morphologicalClosing(this.first_image, kernelSize, type);
             case 'outlineValue':
-                return this.engine.morphologicalOutline(imageCanva, kernelSize, type);
+                return this.engine.morphologicalOutline(this.first_image, kernelSize, type);
             default:
                 throw `Opção inválida para operação morfológica: ${option}`;
         }
