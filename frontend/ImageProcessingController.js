@@ -124,7 +124,7 @@ export default class ImageProcessingController {
             case 'openingValue':
                 return this.engine.morphologicalOpening(this.first_image, kernelSize, type);
             case 'closingValue':
-                return this.engine.morphologicalClosing(imageCanva, kernelSize, type);
+                return this.engine.morphologicalClosing(this.first_image, kernelSize, type);
             case 'outlineValue':
                 return this.engine.morphologicalOutline(imageCanva, kernelSize, type);
             default:

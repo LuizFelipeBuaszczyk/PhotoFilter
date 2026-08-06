@@ -211,10 +211,12 @@ export default class ImageEngineGateway {
         return this._read_image_in_memory(result, buffer_length);
     }
 
-    morphologicalClosing (image, kernelSize, kernelFormat){
-        const endpoint = `${this.endpoint}/morphological/closing?kernel=${kernelSize}&type=${kernelFormat}`;
-        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
-
+    morphologicalClosing (image, kernel_size, kernel_type){
+        const ptr = 0;
+        const buffer_length = this._set_image_to_buffer(image, ptr); 
+        const result = this.engine.exports.image_morphology_closing(ptr, buffer_length, kernel_size, kernel_type);
+        if (result == -1) throw "Erro ao realizar operação morfológica de fechamento";
+        return this._read_image_in_memory(result, buffer_length);
     }
 
     morphologicalOutline (image, kernelSize, kernelFormat){
