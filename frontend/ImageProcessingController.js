@@ -122,7 +122,7 @@ export default class ImageProcessingController {
             case 'erosionValue':
                 return this.engine.morphologicalErosion(this.first_image, kernelSize, type);
             case 'openingValue':
-                return this.engine.morphologicalOpening(imageCanva, kernelSize, type);
+                return this.engine.morphologicalOpening(this.first_image, kernelSize, type);
             case 'closingValue':
                 return this.engine.morphologicalClosing(imageCanva, kernelSize, type);
             case 'outlineValue':

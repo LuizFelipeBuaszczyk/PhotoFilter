@@ -1,5 +1,3 @@
-
-
 #include "types.h"
 #include "utils.h"
 #include "segmentation.h"
@@ -154,6 +152,18 @@ int morpho_erosion (Image *image, Image *result_image, int kernel_size, int kern
             *result_image->pixels[i*height+j].alpha = *image->pixels[i*height+j].alpha;
         }
     }   
+
+    return 0;
+}
+
+int morpho_opening (Image *image, Image *aux_image, Image *result_image, int kernel_size, int kernel_type) {
+    int width = image->columns;
+    int height = image->rows;
+    int padding = kernel_size / 2;
+    int total_size = width * height;
+    
+    morpho_erosion(image, aux_image, kernel_size, kernel_type);
+    morpho_dilation(aux_image, result_image, kernel_size, kernel_type);
 
     return 0;
 }
