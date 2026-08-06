@@ -126,7 +126,7 @@ export default class ImageProcessingController {
             case 'closingValue':
                 return this.engine.morphologicalClosing(this.first_image, kernelSize, type);
             case 'outlineValue':
-                return this.engine.morphologicalOutline(imageCanva, kernelSize, type);
+                return this.engine.morphologicalOutline(this.first_image, kernelSize, type);
             default:
                 throw `Opção inválida para operação morfológica: ${option}`;
         }
