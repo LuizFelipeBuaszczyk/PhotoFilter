@@ -1,11 +1,9 @@
-import { transformIMGtoMATRIX, fetchAPI } from "./utils/utils.js";
 
 const IMAGE_WIDTH = 250;
 
 export default class ImageEngineGateway {
 
     constructor() {
-        this.endpoint = 'http://localhost:8080';
         
         const _memory = new WebAssembly.Memory({initial:32}); 
         WebAssembly.instantiateStreaming(fetch("engine.wasm"), {
@@ -321,10 +319,5 @@ export default class ImageEngineGateway {
         const result = this.engine.exports.image_histogram_equalize(ptr, buffer_length);
         if (result == -1) throw "Erro ao equalizar histograma da imagem"
         return this._read_image_in_memory(result, buffer_length);   
-    }
-
-    visualizeHistogram(image) {
-        const endpoint = `${this.endpoint}/histogram`;
-        return fetchAPI(endpoint, 'POST', transformIMGtoMATRIX(image));
     }
 }
