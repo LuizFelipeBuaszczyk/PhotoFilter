@@ -1,8 +1,10 @@
+<div align="center">
+    <img src="docs/logo.png" width="200" height="200" alt="PhotoFilter logo" style="border-radius: 45px;">
+</div>
+
 # PhotoFilter
 
 O **PhotoFilter** é uma aplicação web para processamento digital de imagens que executa algoritmos diretamente no navegador utilizando **C** compilado para **WebAssembly (WASM)**.
-
-> O projeto está em desenvolvimento inicial ainda, necessitando adaptações da antiga engine escrita em C++ para C.
 
 ---
 
@@ -13,6 +15,29 @@ O **PhotoFilter** é uma aplicação web para processamento digital de imagens q
 - JavaScript
 - HTML
 - CSS
+
+---
+
+## Como Rodar localmente
+
+Para rodar localmente é necessário ter um compilador como o **Emscripten** para executar a compilação.
+
+1. Clone o projeto
+```sh
+git clone http://github.com/luizfelipebuaszczyk/PhotoFilter
+```
+
+2. Dentro do repositório compile com **Emscripten**
+
+```sh
+emcc backend/main.c backend/src/* -I backend/include -o frontend/engine.js -sSTACK_SIZE=5000000
+```
+
+3. Inicie um servidor HTTP de sua preferência para o frontend.
+
+```sh
+cd frontend/ && python -m http.server 80
+```
 
 ---
 
