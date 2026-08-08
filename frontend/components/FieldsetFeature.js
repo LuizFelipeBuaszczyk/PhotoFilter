@@ -8,7 +8,7 @@ import { createLabel, createInput } from "../utils/utils.js";
   }
 */
 export default function FieldsetFeature(fieldset, listRadioButtons){
-
+    
     listRadioButtons.forEach(radioButton => {
         const input = createInput(radioButton.id, 'radio', radioButton.value, fieldset.id);
 
@@ -16,8 +16,12 @@ export default function FieldsetFeature(fieldset, listRadioButtons){
 
         input.checked = radioButton.selected; 
 
-        fieldset.append(input);
-        fieldset.append(label);
+        const wrapper = document.createElement('div');
+        wrapper.className = 'feature-option';
+        wrapper.append(input);
+        wrapper.append(label);
+
+        fieldset.append(wrapper);
 
     });
 
