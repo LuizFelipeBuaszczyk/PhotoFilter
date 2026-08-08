@@ -1,3 +1,5 @@
+#include "invertion.h"
+
 #include "types.h"
 
 int invert_horizontal(Image *image, Image *result_image) {

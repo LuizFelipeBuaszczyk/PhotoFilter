@@ -299,7 +299,7 @@ export default class ImageEngineGateway {
         const ptr = 0;
         const buffer_length = this._set_image_to_buffer(image1, ptr); 
         const buffer_length_image2 = this._set_image_to_buffer(image2, buffer_length);
-        const result = this.engine.exports.image_logic_linear_average_image(ptr, buffer_length);
+        const result = this.engine.exports.image_linear_average_image(ptr, buffer_length);
         if (result == -1) throw "Erro ao realizar a operação linear de média entre duas imagens";
         return this._read_image_in_memory(result, buffer_length);
      }
@@ -308,7 +308,7 @@ export default class ImageEngineGateway {
         const ptr = 0;
         const buffer_length = this._set_image_to_buffer(image1, ptr); 
         const buffer_length_image2 = this._set_image_to_buffer(image2, buffer_length);
-        const result = this.engine.exports.image_logic_linear_blending_image(ptr, buffer_length, value);
+        const result = this.engine.exports.image_linear_blending_image(ptr, buffer_length, value);
         if (result == -1) throw "Erro ao realizar a operação linear blending entre duas imagens";
         return this._read_image_in_memory(result, buffer_length);   
     }

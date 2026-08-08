@@ -1,3 +1,7 @@
+#include "morphology.h"
+
+#include "stdlib.h"
+
 #include "types.h"
 #include "utils.h"
 #include "segmentation.h"

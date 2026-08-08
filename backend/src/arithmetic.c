@@ -1,8 +1,7 @@
-#pragma once
-#include <stdio.h>
+#include "arithmetic.h"
 #include "types.h"
 
-static int add_value (uint8_t value, Image *image, Image *result_image) {
+int add_value (uint8_t value, Image *image, Image *result_image) {
     for (int i=0; i<image->rows * image->columns; i++){
         if (*image->pixels[i].red + value > 255) {
             *result_image->pixels[i].red = 255;
@@ -28,7 +27,7 @@ static int add_value (uint8_t value, Image *image, Image *result_image) {
     return 0;
 }
 
-static int subt_value (uint8_t value, Image *image, Image *result_image) {
+int subt_value (uint8_t value, Image *image, Image *result_image) {
     for (int i=0; i<image->rows * image->columns; i++){
         if (*image->pixels[i].red - value < 0) {
             *result_image->pixels[i].red = 0;
@@ -53,7 +52,7 @@ static int subt_value (uint8_t value, Image *image, Image *result_image) {
     return 0;
 }
 
-static int multiply_value (uint8_t value, Image *image, Image *result_image) {
+int multiply_value (uint8_t value, Image *image, Image *result_image) {
     for (int i=0; i<image->rows * image->columns; i++){
         if (*image->pixels[i].red * value > 255) {
             *result_image->pixels[i].red = 255;
@@ -79,7 +78,7 @@ static int multiply_value (uint8_t value, Image *image, Image *result_image) {
 }
 
 
-static int div_value (uint8_t value, Image *image, Image *result_image) {
+int div_value (uint8_t value, Image *image, Image *result_image) {
     for (int i=0; i<image->rows * image->columns; i++){
         if (*image->pixels[i].red / value < 0) {
             *result_image->pixels[i].red = 0;
@@ -104,7 +103,7 @@ static int div_value (uint8_t value, Image *image, Image *result_image) {
     return 0;
 }
 
-static int add_image (Image *image, Image *image_to_add, Image *result_image) {
+int add_image (Image *image, Image *image_to_add, Image *result_image) {
     for (int i=0; i<image->rows * image->columns; i++){
         if (*image->pixels[i].red + *image_to_add->pixels[i].red > 255) {
             *result_image->pixels[i].red = 255;
@@ -130,7 +129,7 @@ static int add_image (Image *image, Image *image_to_add, Image *result_image) {
     return 0;
 }
 
-static int subt_image (Image *image, Image *image_to_subt, Image *result_image) {
+int subt_image (Image *image, Image *image_to_subt, Image *result_image) {
     for (int i=0; i<image->rows * image->columns; i++){
         if (*image->pixels[i].red - *image_to_subt->pixels[i].red < 0) {
             *result_image->pixels[i].red = 0;

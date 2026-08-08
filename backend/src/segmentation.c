@@ -1,7 +1,6 @@
-#pragma once
+#include "segmentation.h"
 
 #include "types.h"
-
 #include "grayscale.h"
 
 int segmentation_treshold(Image *image, Image *result_image, int threshold) {

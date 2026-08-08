@@ -1,6 +1,6 @@
+#include "logic.h"
 
 #include "types.h"
-
 #include "segmentation.h"
 
 int logic_not(Image *image, Image *result_image) {

@@ -1,3 +1,5 @@
+#include "linear.h"
+
 #include "types.h"
 
 int linear_average(Image *image, Image *second_image, Image *result_image) {

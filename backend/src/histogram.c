@@ -1,3 +1,5 @@
+#include "histogram.h"
+
 #include "types.h"
 #include "grayscale.h"
 

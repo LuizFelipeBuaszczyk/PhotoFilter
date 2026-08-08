@@ -1,4 +1,4 @@
-#pragma once
+#include "grayscale.h"
 
 #include "types.h"
 #include <stdint.h>

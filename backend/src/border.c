@@ -1,9 +1,11 @@
+#include "border.h"
+
+#include "stdbool.h"
+#include <math.h>
 
 #include "types.h"
 #include "grayscale.h"
-
 #include "utils.h"
-#include <math.h>
 
 int border_detection_prewit(Image *image, Image *result_image){
     /* derivate X || derivate Y

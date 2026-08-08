@@ -1,4 +1,5 @@
-#pragma once
+#ifndef TYPES
+#define TYPES
 
 #include <stdint.h>
 
@@ -14,3 +15,5 @@ typedef struct {
     int columns;
     Pixel *pixels;
 } Image;
+
+#endif
