@@ -3,70 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manipulação de Imagens</title>
+    <title>PhotoFilter</title>
     <script src="script.js" type="module" defer></script>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" />
 </head>
 <body>
     <header>
         <h1>PhotoFilter</h1>
     </header>
-
     <main>
         <div class="container">
             <div class="inputImages">
-                <form>
-                    <h2>Imagem de Entrada</h2>
-                    <input type="file" id="inputImage" name="image">
-                    <input type="file" id="inputImage2" name="image">
-                </form>
-                <div class="showInputImages">
-                    <canvas id="showInputImage"  class="imgStyle" width="250" height="250"></canvas>
-                    <canvas id="showInputImage2" class="imgStyle" width="250" height="250"></canvas>
+                <div id="divEnable2Images">
+                    <input type= "checkbox" id="enable2Images">
+                    <label type="text">2 imagens</label>
                 </div>
+                <form id="formInputImages">
+                    <div class="imageDiv">
+                        <h2>Imagem de Entrada</h2>
+                        <input type="file" id="inputImage" name="image">
+                        <canvas id="showInputImage"  class="imgStyle" width="250" height="250"></canvas>
+                    </div>
+                </form>
             </div>
             <section id="sectionFeature">
                 <fieldset class="featureButtons" id="featureButtons">
-                    <input type="radio" value="arithmetic" id="arithmeticButton" name="featureButtons" checked>
-                    <label for="arithmeticButton">Aritmética</label>
 
-                    <input type="radio" value="invert" id="invertButton" name="featureButtons">
-                    <label for="invertButton">Inverção</label>
-
-                    <input type="radio"value="convolutional" id="convolutionalButton" name="featureButtons">
-                    <label for="convolutionalButton">Convolução</label>
-
-                    <input type="radio" value="border" id="borderDetectionButton" name="featureButtons">
-                    <label for="borderDetectionButton">Bordas</label>
-
-                    <input type="radio" value="morphological" id="morphologicalButton" name="featureButtons">
-                    <label for="morphologicalButton">Operações Morfológicas</label>
-
-                    <input type="radio" value="convert" id="convertButton" name="featureButtons">
-                    <label for="convertButton">Conversão de Escala</label>
-
-                    <input type="radio" value="logic" id="logicButton" name="featureButtons">
-                    <label for="logicButton">Lógica</label>
-
-                    <input type="radio" value="histogram" id="histogramButton" name="featureButtons">
-                    <label for="histogramButton">Histograma</label>
-
-                </fieldset>
+               </fieldset>
                 <div class="operations">
-                    <div id="divEnable2Images">
-                            <input type= "checkbox" id="enable2Images">
-                            <label type="text">2 imagens</label>
-                        </div>
-                        <select name="selectFeatures" id="selectFeatures">
-                            <option value="addValue">Adicionar</option>
-                            <option value="subtValue">Subtrair</option>
-                            <option value="multValue">Multiplicação</option>
-                            <option value="divValue">Divisão</option>     
-                        </select>
-                        <section id="parameterSection"></section>
-                        <button id="proccessButton">Processar</button>
-                    </div>
-                </section>
+                    <select name="selectFeatures" id="selectFeatures"></select>
+                    <section id="parameterSection"></section>
+                    <button id="proccessButton">Processar</button>
+                </div>
+            </section>
                 <div>
                     <h2>Imagem de saída</h2>
                     <canvas id="canvas" width="250" height="250"></canvas>

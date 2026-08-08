@@ -55,7 +55,7 @@ export default class ImageProcessingController {
             case 'addImages':
                 return this.engine.addImages(this.first_image, this.second_image);
             case 'subtImages':
-                return this.engine.subtImages(this.first_image, this.set_second_image);
+                return this.engine.subtImages(this.first_image, this.second_image);
             default:
                 throw `Opção inválida para aritmética: ${option}`;
         }

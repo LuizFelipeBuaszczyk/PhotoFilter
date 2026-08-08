@@ -42,7 +42,7 @@ main {
     gap: 10px;
 }
 
-.inputImages{
+.imageDiv {
     display: inline-block;
     margin-right: 40px;
     max-width: 650px;
@@ -50,7 +50,19 @@ main {
 
 .showInputImages {
     display: flex;
+    align-items: flex-start;
     gap: 55px;
+}
+
+#inputImage2Container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+#formInputImages {
+    display: flex;
+    flex-direction: row;
 }
 
 .imgStyle {

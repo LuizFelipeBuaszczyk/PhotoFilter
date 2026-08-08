@@ -18,11 +18,6 @@ document.getElementById('inputImage')
     loadImageToCanvas(event.target.files[0], 'showInputImage', GATEWAY.set_first_image.bind(GATEWAY)); 
 });
 
-document.getElementById('inputImage2')
-    .addEventListener('change', (event) => {
-    loadImageToCanvas(event.target.files[0], 'showInputImage2', GATEWAY.set_second_image.bind(GATEWAY));    
-});
-
 document.getElementById('enable2Images')
     .addEventListener('change', (event) => {
     activeOperationsBetweenTwoImages(event.target.checked)
@@ -60,18 +55,6 @@ function loadImageToCanvas(file, canvasId, set_function) {
     reader.readAsDataURL(file);
 }
 
-// TODO Pensar em uma melhor visualização do histograma das imagens
-async function loadImageHistogram() {
-
-    try {
-        const histogram = await GATEWAY.proccess('histogram', 'visualizeHistogramValue');
-        const labels = Array.from({length: 256}, (_, i) => i);
-        await drawHistogram('imageHistogram', labels, histogram);
-    } catch (error){
-        console.log(error);
-    }
-}
-
 function activeOperationsBetweenTwoImages(active){
     const fieldset = document.getElementById('featureButtons');
     fieldset.replaceChildren();
@@ -79,11 +62,45 @@ function activeOperationsBetweenTwoImages(active){
     OPERATION_WITH_2_IMAGES = active;
 
     if (OPERATION_WITH_2_IMAGES) {
+        createSecondImageInput();
         showButtonsFeatureBetweenImages(fieldset);        
     } else {
+        removeSecondImageInput();
         showButtonsFeatureOneImage(fieldset);
     }
      
+}
+activeOperationsBetweenTwoImages(false);
+
+
+function createSecondImageInput() {
+    const form = document.getElementById('formInputImages');
+    const image_div = document.createElement('div');
+    image_div.id = 'inputImage2Container';
+    image_div.className = 'imageDiv';
+
+    const h2 = document.createElement('h2');
+    h2.textContent = 'Imagem de Entrada 2';
+
+    const input = createInput('inputImage2', 'file', null, 'image2');
+    image_div.append(h2, input);
+
+    const canvas = document.createElement('canvas');
+    canvas.id = 'showInputImage2';
+    canvas.className = 'imgStyle';
+    canvas.width = 250;
+    canvas.height = 250;
+    
+    image_div.append(canvas);
+    form.append(image_div);
+
+    input.addEventListener('change', (event) => {
+        loadImageToCanvas(event.target.files[0], 'showInputImage2', GATEWAY.set_second_image.bind(GATEWAY));
+    });
+}
+
+function removeSecondImageInput() {
+    document.getElementById('inputImage2Container')?.remove();
 }
 
 function showButtonsFeatureOneImage(fieldset){
