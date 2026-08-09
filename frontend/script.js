@@ -70,7 +70,7 @@ function activeOperationsBetweenTwoImages(active){
     }
      
 }
-activeOperationsBetweenTwoImages(false);
+activeOperationsBetweenTwoImages(OPERATION_WITH_2_IMAGES);
 
 
 function createSecondImageInput() {
@@ -242,7 +242,7 @@ function showArithmeticOperations(selectOperations, parameterSection){
         selectOperations.add(createOption('multValue', className, 'Multiplicação'));
         selectOperations.add(createOption('divValue', className, 'Divisão'));
    
-        const range = Range('rangeForm', 0, 255, 1, 'Valor: 128');
+        const range = Range('rangeForm', 0, 255, 1, 128);
         parameterSection.append(range);
     }
 }
@@ -265,7 +265,7 @@ function showConvolutionalOperations(selectOperations) {
     selectOperations.add(createOption('conservativeSomoothingValue', className, 'Suavização Conservativa'));
     selectOperations.add(createOption('gaussianValue', className, 'Gaussiano'));
 
-    const range = Range('rangeForm', 3, 29, 2, 'Valor: 17');
+    const range = Range('rangeForm', 3, 29, 2, 17);
     parameterSection.append(range);
 }
 
@@ -286,7 +286,7 @@ function showMorphologicalOperations (selectOperations) {
     selectOperations.add(createOption('closingValue', className, 'Fechamento'));
     selectOperations.add(createOption('outlineValue', className, 'Contorno'));
 
-    const range = Range('rangeForm', 0, 255, 1, 'Valor: 128');
+    const range = Range('rangeForm', 3, 29, 2, 17);
     parameterSection.append(range);
 
     const selectMorphologicalFeatures = SelectMorphologicalFeature('selectFeatureOptions', null);
@@ -353,13 +353,13 @@ function manageSelectParameters(selectedOption) {
 function showArithmeticParameters(parameterSection) {
 
     if (!OPERATION_WITH_2_IMAGES) {
-        const range = Range('rangeForm', 0, 255, 1, 'Valor: 128');
+        const range = Range('rangeForm', 0, 255, 1, 128);
         parameterSection.append(range);
     }
 }
 
 function showConvolutionalParameters(parameterSection) {
-    const range = Range('rangeForm', 3, 29, 1, 'Valor: 17');
+    const range = Range('rangeForm', 3, 29, 2, 17);
     parameterSection.append(range);   
     
     switch (SELECTED_OPTION){
@@ -375,7 +375,7 @@ function showConvolutionalParameters(parameterSection) {
 }
 
 function showMorphologicalParameters(parameterSection) {
-    const range = Range('rangeForm', 0, 255, 1, 'Valor: 128');
+    const range = Range('rangeForm', 3, 29, 2, 17);
     parameterSection.append(range);   
 
     const selectMorphologicalFeatures = SelectMorphologicalFeature('selectFeatureOptions', null);
