@@ -396,6 +396,13 @@ async function proccessImage(){
     const feature = document.querySelector('#featureButtons :checked').value;
     const option = document.getElementById('selectFeatures').value;
 
+    if (OPERATION_WITH_2_IMAGES) {
+        if (!GATEWAY.first_image) return alert("Selecione a primeira imagem antes de processar");
+        if (!GATEWAY.second_image) return alert("Selecione a segunda imagem antes de processar");
+    } else if (!GATEWAY.first_image) {
+        return alert("Selecione uma imagem antes de processar");
+    }
+
     try {
         const response = await GATEWAY.proccess(feature, option);
         // TODO -- Adaptação para o endpoint de histogram, será corrigido no refactor do backend
