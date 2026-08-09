@@ -4,6 +4,7 @@ import { createInput, createOption, drawImage, drawHistogram } from './utils/uti
 import Range from './components/range.js'; 
 import SelectMorphologicalFeature from './components/SelectMorphologicalFeature.js';
 import FieldsetFeature from './components/FieldsetFeature.js';
+import Notification from './components/notification.js';
 import ImageProcessingController from './ImageProcessingController.js' ;
 
 // GLOBAIS
@@ -11,6 +12,7 @@ let SELECTED_FEATURE = 'arithmetic';
 let SELECTED_OPTION = 'addValue';
 let OPERATION_WITH_2_IMAGES = false;
 const GATEWAY = new ImageProcessingController(); 
+const NOTIFIER = new Notification(); 
 
 // Eventos
 document.getElementById('inputImage')
@@ -408,7 +410,7 @@ async function proccessImage(){
         // TODO -- Adaptação para o endpoint de histogram, será corrigido no refactor do backend
         await drawImage(response.image ? response.image : response, 'canvas');
     } catch (error) {
-        console.log(error);
+        NOTIFIER.showError(error);
     }
 }
 

@@ -10,6 +10,7 @@
     --border: #e2e8f0;
     --text: #1e293b;
     --text-muted: #64748b;
+    --text-error: #fd1800;
     --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.08);
     --shadow-md: 0 10px 30px rgba(15, 23, 42, 0.12);
     --radius: 14px;
@@ -337,5 +338,30 @@ canvas {
 #saveImageButton:hover {
     background: var(--primary-500);
     color: #ffffff;
+}
+
+.notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.notification {
+    padding: 14px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffffff;
+    background: var(--text-error);
+    border-radius: 10px;
+    box-shadow: var(--shadow-md);
+}
+
+.notification-hidden {
+    opacity: 0;
+    transform: translateX(20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
