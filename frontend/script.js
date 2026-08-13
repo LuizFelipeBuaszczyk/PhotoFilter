@@ -157,6 +157,7 @@ function showButtonsFeatureOneImage(fieldset){
         'labelText': 'Histograma'
     });
 
+    SELECTED_FEATURE = 'arithmetic'
     FieldsetFeature(fieldset, radioButtons);
     manageSelectFeature(SELECTED_FEATURE);
 }
@@ -182,7 +183,8 @@ function showButtonsFeatureBetweenImages(fieldset) {
         'value': 'linear',
         'labelText': 'Linear'
     });
-
+    
+    SELECTED_FEATURE = 'arithmetic'
     FieldsetFeature(fieldset, radioButtons);
     manageSelectFeature(SELECTED_FEATURE);
 }
