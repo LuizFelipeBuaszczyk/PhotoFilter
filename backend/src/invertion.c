@@ -2,7 +2,7 @@
 
 #include "types.h"
 
-int invert_horizontal(Image *image, Image *result_image) {
+Status invert_horizontal(Image *image, Image *result_image) {
     int width = image->columns;
     int heigth = image->rows;
 
@@ -21,10 +21,10 @@ int invert_horizontal(Image *image, Image *result_image) {
        }
     }
 
-    return 0;
+    return OK;
 }
 
-int invert_vertical(Image *image, Image *result_image) {
+Status invert_vertical(Image *image, Image *result_image) {
     int width = image->columns;
     int heigth = image->rows;
 
@@ -42,6 +42,6 @@ int invert_vertical(Image *image, Image *result_image) {
         }
     }
 
-    return 0;
+    return OK;
 }
 
