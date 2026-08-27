@@ -16,4 +16,10 @@ typedef struct {
     Pixel *pixels;
 } Image;
 
+typedef enum {
+    OK=0,
+    INVALID_BUFFER_SIZE=-1,
+
+} Status;
+
 #endif

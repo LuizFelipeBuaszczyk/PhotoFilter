@@ -2,6 +2,7 @@
 #include <stdint.h>
 
 #include "arithmetic.h"
+#include "include/types.h"
 #include "invertion.h"
 #include "convolution.h"
 #include "grayscale.h"
@@ -14,7 +15,6 @@
 
 #include "types.h"
 
-
 int buffer_size_is_valid(int size){
     return size % 4 == 0 ? 0 : 1;
 } 
@@ -23,7 +23,7 @@ int buffer_size_is_valid(int size){
 EMSCRIPTEN_KEEPALIVE
 int image_add_value(uint8_t *buffer, int size, int value) {
     if (buffer_size_is_valid(size) != 0) {
-        return -1;
+        return INVALID_BUFFER_SIZE;
     }
 
     int size_pixels_array = size / 4;
@@ -62,8 +62,8 @@ int image_add_value(uint8_t *buffer, int size, int value) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
     
-    int result = add_value(value, &image, &result_image);
-    if (result != 0) return -1;
+    Status result = add_value(value, &image, &result_image);
+    if (result != OK) return result;
 
     return size;
 }
@@ -71,7 +71,7 @@ int image_add_value(uint8_t *buffer, int size, int value) {
 EMSCRIPTEN_KEEPALIVE
 int image_subt_value(uint8_t *buffer, int size, int value) {
     if (buffer_size_is_valid(size) != 0) {
-        return -1;
+        return INVALID_BUFFER_SIZE;
     }
 
     int size_pixels_array = size / 4;
@@ -111,8 +111,8 @@ int image_subt_value(uint8_t *buffer, int size, int value) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = subt_value(value, &image, &result_image);
-    if (result != 0) return -1;
+    Status result = subt_value(value, &image, &result_image);
+    if (result != OK) return result;
 
     return size;
 }
@@ -120,7 +120,7 @@ int image_subt_value(uint8_t *buffer, int size, int value) {
 EMSCRIPTEN_KEEPALIVE
 int image_multiply_value(uint8_t *buffer, int size, int value) {
     if (buffer_size_is_valid(size) != 0) {
-        return -1;
+        return INVALID_BUFFER_SIZE;
     }
 
     int size_pixels_array = size / 4;
@@ -160,8 +160,8 @@ int image_multiply_value(uint8_t *buffer, int size, int value) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = multiply_value(value, &image, &result_image);
-    if(result != 0) return -1;
+    Status result = multiply_value(value, &image, &result_image);
+    if(result != OK) return result;
 
     return size;
 }
@@ -169,7 +169,7 @@ int image_multiply_value(uint8_t *buffer, int size, int value) {
 EMSCRIPTEN_KEEPALIVE
 int image_div_value(uint8_t *buffer, int size, int value) {
     if (buffer_size_is_valid(size) != 0) {
-        return -1;
+        return INVALID_BUFFER_SIZE;
     }
 
     int size_pixels_array = size / 4;
@@ -209,8 +209,8 @@ int image_div_value(uint8_t *buffer, int size, int value) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = div_value(value, &image, &result_image);
-    if (result != 0) return -1;
+    Status result = div_value(value, &image, &result_image);
+    if (result != OK) return result;
 
     return size;
 }
@@ -926,7 +926,7 @@ int image_border_detection_laplacian(uint8_t *buffer, int size) {
 EMSCRIPTEN_KEEPALIVE
 int image_add_image(uint8_t *buffer, int size) {
     if (buffer_size_is_valid(size) != 0) {
-        return -1;
+        return INVALID_BUFFER_SIZE;
     }     
     
     // Image 1
@@ -985,10 +985,8 @@ int image_add_image(uint8_t *buffer, int size) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = add_image(&image, &image_to_add, &result_image);
-    if (result != 0) {
-        return -1;
-    }
+    Status result = add_image(&image, &image_to_add, &result_image);
+    if (result != OK) return result;
     
     return size+size;
 }
@@ -996,7 +994,7 @@ int image_add_image(uint8_t *buffer, int size) {
 EMSCRIPTEN_KEEPALIVE
 int image_subt_image(uint8_t *buffer, int size) {
     if (buffer_size_is_valid(size) != 0) {
-        return -1;
+        return INVALID_BUFFER_SIZE;
     }     
     
     // Image 1
@@ -1056,10 +1054,8 @@ int image_subt_image(uint8_t *buffer, int size) {
     result_image.pixels = (Pixel *) &result_pixels;
 
     int result = subt_image(&image, &image_to_subt, &result_image);
-    if (result != 0) {
-        return -1;
-    }
-    
+    if (result != OK) return result;
+
     return size+size;
 }
 

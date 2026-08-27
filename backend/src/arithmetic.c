@@ -1,7 +1,7 @@
 #include "arithmetic.h"
 #include "types.h"
 
-int add_value (uint8_t value, Image *image, Image *result_image) {
+Status add_value (uint8_t value, Image *image, Image *result_image) {
     for (int i=0; i<image->rows * image->columns; i++){
         if (*image->pixels[i].red + value > 255) {
             *result_image->pixels[i].red = 255;
@@ -24,10 +24,10 @@ int add_value (uint8_t value, Image *image, Image *result_image) {
         *result_image->pixels[i].alpha = *image->pixels[i].alpha;
     }
     
-    return 0;
+    return OK;
 }
 
-int subt_value (uint8_t value, Image *image, Image *result_image) {
+Status subt_value (uint8_t value, Image *image, Image *result_image) {
     for (int i=0; i<image->rows * image->columns; i++){
         if (*image->pixels[i].red - value < 0) {
             *result_image->pixels[i].red = 0;
@@ -49,10 +49,10 @@ int subt_value (uint8_t value, Image *image, Image *result_image) {
         *result_image->pixels[i].alpha = *image->pixels[i].alpha;
     }
     
-    return 0;
+    return OK;
 }
 
-int multiply_value (uint8_t value, Image *image, Image *result_image) {
+Status multiply_value (uint8_t value, Image *image, Image *result_image) {
     for (int i=0; i<image->rows * image->columns; i++){
         if (*image->pixels[i].red * value > 255) {
             *result_image->pixels[i].red = 255;
@@ -74,11 +74,11 @@ int multiply_value (uint8_t value, Image *image, Image *result_image) {
         *result_image->pixels[i].alpha = *image->pixels[i].alpha;
     }
     
-    return 0;
+    return OK;
 }
 
 
-int div_value (uint8_t value, Image *image, Image *result_image) {
+Status div_value (uint8_t value, Image *image, Image *result_image) {
     for (int i=0; i<image->rows * image->columns; i++){
         if (*image->pixels[i].red / value < 0) {
             *result_image->pixels[i].red = 0;
@@ -100,10 +100,10 @@ int div_value (uint8_t value, Image *image, Image *result_image) {
         *result_image->pixels[i].alpha = *image->pixels[i].alpha;
     }
     
-    return 0;
+    return OK;
 }
 
-int add_image (Image *image, Image *image_to_add, Image *result_image) {
+Status add_image (Image *image, Image *image_to_add, Image *result_image) {
     for (int i=0; i<image->rows * image->columns; i++){
         if (*image->pixels[i].red + *image_to_add->pixels[i].red > 255) {
             *result_image->pixels[i].red = 255;
@@ -126,10 +126,10 @@ int add_image (Image *image, Image *image_to_add, Image *result_image) {
         *result_image->pixels[i].alpha = *image->pixels[i].alpha;
     }
     
-    return 0;
+    return OK;
 }
 
-int subt_image (Image *image, Image *image_to_subt, Image *result_image) {
+Status subt_image (Image *image, Image *image_to_subt, Image *result_image) {
     for (int i=0; i<image->rows * image->columns; i++){
         if (*image->pixels[i].red - *image_to_subt->pixels[i].red < 0) {
             *result_image->pixels[i].red = 0;
@@ -152,7 +152,7 @@ int subt_image (Image *image, Image *image_to_subt, Image *result_image) {
         *result_image->pixels[i].alpha = *image->pixels[i].alpha;
     }
     
-    return 0;
+    return OK;
 }
 
 
