@@ -3,7 +3,7 @@
 #include "types.h"
 #include "segmentation.h"
 
-int logic_not(Image *image, Image *result_image) {
+Status logic_not(Image *image, Image *result_image) {
     int width = image->columns;
     int height = image->rows;
 
@@ -19,13 +19,11 @@ int logic_not(Image *image, Image *result_image) {
             *result_image->pixels[i*height+j].alpha = *image->pixels[i*height+j].alpha;
         }
     }
-    
 
-    return 0;
+    return OK;
 }
 
-
-int logic_and(Image *image, Image *image2, Image *result_image) {
+Status logic_and(Image *image, Image *image2, Image *result_image) {
     int width = image->columns;
     int height = image->rows;
 
@@ -42,12 +40,11 @@ int logic_and(Image *image, Image *image2, Image *result_image) {
             *result_image->pixels[i*height+j].alpha = *image->pixels[i*height+j].alpha;
         }
     }
-    
 
-    return 0;
+    return OK;
 }
 
-int logic_or(Image *image, Image *image2, Image *result_image) {
+Status logic_or(Image *image, Image *image2, Image *result_image) {
     int width = image->columns;
     int height = image->rows;
 
@@ -64,12 +61,11 @@ int logic_or(Image *image, Image *image2, Image *result_image) {
             *result_image->pixels[i*height+j].alpha = *image->pixels[i*height+j].alpha;
         }
     }
-    
 
-    return 0;
+    return OK;
 }
 
-int logic_xor(Image *image, Image *image2, Image *result_image) {
+Status logic_xor(Image *image, Image *image2, Image *result_image) {
     int width = image->columns;
     int height = image->rows;
 
@@ -88,7 +84,6 @@ int logic_xor(Image *image, Image *image2, Image *result_image) {
             *result_image->pixels[i*height+j].alpha = *image->pixels[i*height+j].alpha;
         }
     }
-    
 
-    return 0;
+    return OK;
 }

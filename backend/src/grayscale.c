@@ -3,7 +3,7 @@
 #include "types.h"
 #include <stdint.h>
 
-int grayscale_convertion_average(Image *image, Image *result_image) {
+Status grayscale_convertion_average(Image *image, Image *result_image) {
 
     for (int i=0; i<image->rows; i++) {
         for (int j=0; j<image->columns; j++) {
@@ -15,6 +15,6 @@ int grayscale_convertion_average(Image *image, Image *result_image) {
         }
     }
 
-    return 0;
+    return OK;
 }
 

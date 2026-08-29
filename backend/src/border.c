@@ -7,7 +7,7 @@
 #include "grayscale.h"
 #include "utils.h"
 
-int border_detection_prewit(Image *image, Image *result_image){
+Status border_detection_prewit(Image *image, Image *result_image){
     /* derivate X || derivate Y
      * [-1, 0, 1] || [-1,-1,-1]
      * [-1, 0, 1] || [ 0, 0, 0]
@@ -54,10 +54,10 @@ int border_detection_prewit(Image *image, Image *result_image){
          }
     }
 
-    return 0;
+    return OK;
 }
 
-int border_detection_sobel(Image *image, Image *result_image){
+Status border_detection_sobel(Image *image, Image *result_image){
     /* derivate X || derivate Y
      * [ 1, 0,-1] || [ 1, 2, 1]
      * [ 2, 0,-2] || [ 0, 0, 0]
@@ -104,10 +104,10 @@ int border_detection_sobel(Image *image, Image *result_image){
          }
     }
 
-    return 0;
+    return OK;
 }
 
-int border_detection_lapaclian(Image *image, Image *result_image){
+Status border_detection_lapaclian(Image *image, Image *result_image){
     /* derivate
      * [ -1,-1,-1]
      * [ -1, 8,-1]
@@ -147,5 +147,5 @@ int border_detection_lapaclian(Image *image, Image *result_image){
          }
     }
 
-    return 0;
+    return OK;
 }

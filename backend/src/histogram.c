@@ -3,7 +3,7 @@
 #include "types.h"
 #include "grayscale.h"
 
-int get_histogram(Image *image, int *histogram) {
+Status get_histogram(Image *image, int *histogram) {
     int width = image->columns;
     int height = image->rows;
     
@@ -13,11 +13,11 @@ int get_histogram(Image *image, int *histogram) {
         }
     }
 
-    return 0;
+    return OK;
 }
 
 
-int equalize_histogram(Image *image, Image *result_image) {
+Status equalize_histogram(Image *image, Image *result_image) {
     int width = image->columns;
     int height = image->rows;
 
@@ -52,5 +52,5 @@ int equalize_histogram(Image *image, Image *result_image) {
         }
     }
 
-    return 0;
+    return OK;
 }

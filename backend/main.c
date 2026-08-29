@@ -257,7 +257,6 @@ int image_invert_horizontal(uint8_t *buffer, int size) {
     result_image.pixels = (Pixel *) &result_pixels;
 
     Status result = invert_horizontal(&image, &result_image);
-
     if (result != OK) return result;
     
     return size;
@@ -306,7 +305,7 @@ int image_invert_vertical(uint8_t *buffer, int size) {
     result_image.pixels = (Pixel *) &result_pixels;
 
     Status result = invert_vertical(&image, &result_image);
-    if (result != 0) return result;   
+    if (result != OK) return result;   
 
     return size;
 }
@@ -354,9 +353,8 @@ int image_convolution_average(uint8_t *buffer, int size, int kernel_size) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = convolution_average(&image, kernel_size, &result_image);
-
-    if (result != 0) return result;
+    Status result = convolution_average(&image, kernel_size, &result_image);
+    if (result != OK) return result;
     
     return size;
 }
@@ -403,8 +401,8 @@ int image_convolution_min(uint8_t *buffer, int size, int kernel_size) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = convolution_min(&image, kernel_size, &result_image);
-    if (result != 0) return result;
+    Status result = convolution_min(&image, kernel_size, &result_image);
+    if (result != OK) return result;
     
     return size;
 }
@@ -451,8 +449,8 @@ int image_convolution_max(uint8_t *buffer, int size, int kernel_size) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = convolution_max(&image, kernel_size, &result_image);
-    if (result != 0) return result;
+    Status result = convolution_max(&image, kernel_size, &result_image);
+    if (result != OK) return result;
     
     return size;
 }
@@ -497,8 +495,8 @@ int image_convolution_median(uint8_t *buffer, int size, int kernel_size) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = convolution_median(&image, kernel_size, &result_image);
-    if (result != 0) result;   
+    Status result = convolution_median(&image, kernel_size, &result_image);
+    if (result != OK) return result;   
 
     return size;
 }
@@ -543,9 +541,9 @@ int image_convolution_order(uint8_t *buffer, int size, int kernel_size, int orde
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = convolution_order(&image, kernel_size, order_value, &result_image);
+    Status result = convolution_order(&image, kernel_size, order_value, &result_image);
+    if (result != OK) return result;   
 
-    if (result != 0) result;   
     return size;
 }
 
@@ -589,8 +587,8 @@ int image_convolution_conservative_smoothing(uint8_t *buffer, int size, int kern
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = convolution_conservative_smoothing(&image, kernel_size, &result_image);
-    if (result != 0) return result;
+    Status result = convolution_conservative_smoothing(&image, kernel_size, &result_image);
+    if (result != OK) return result;
 
     return size;
 }
@@ -635,8 +633,8 @@ int image_convolution_gaussian(uint8_t *buffer, int size, int kernel_size, int s
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = convolution_gaussian(&image, kernel_size, sigma, &result_image);
-    if (result != 0) return result;
+    Status result = convolution_gaussian(&image, kernel_size, sigma, &result_image);
+    if (result != OK) return result;
 
     return size;
 }
@@ -681,8 +679,8 @@ int image_convert_to_grayscale(uint8_t *buffer, int size) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = grayscale_convertion_average(&image, &result_image);
-    if (result != 0) return result;
+    Status result = grayscale_convertion_average(&image, &result_image);
+    if (result != OK) return result;
     
     return size;
 }
@@ -727,8 +725,8 @@ int image_convert_to_binaryscale(uint8_t *buffer, int size, int treshold) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = segmentation_treshold(&image, &result_image, treshold);
-    if (result != 0) return result;
+    Status result = segmentation_treshold(&image, &result_image, treshold);
+    if (result != OK) return result;
     
     return size;
 }
@@ -773,8 +771,8 @@ int image_border_detection_prewit(uint8_t *buffer, int size) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = border_detection_prewit(&image, &result_image);
-    if (result != 0) return result;
+    Status result = border_detection_prewit(&image, &result_image);
+    if (result != OK) return result;
 
     return size;
 }
@@ -819,8 +817,8 @@ int image_border_detection_sobel(uint8_t *buffer, int size) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = border_detection_sobel(&image, &result_image);
-    if (result != 0) return result;
+    Status result = border_detection_sobel(&image, &result_image);
+    if (result != OK) return result;
 
     return size;
 }
@@ -865,8 +863,8 @@ int image_border_detection_laplacian(uint8_t *buffer, int size) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = border_detection_lapaclian(&image, &result_image);
-    if (result != 0) return result;
+    Status result = border_detection_lapaclian(&image, &result_image);
+    if (result != OK) return result;
 
     return size;
 }
@@ -1001,7 +999,7 @@ int image_subt_image(uint8_t *buffer, int size) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = subt_image(&image, &image_to_subt, &result_image);
+    Status result = subt_image(&image, &image_to_subt, &result_image);
     if (result != OK) return result;
 
     return size+size;
@@ -1067,8 +1065,8 @@ int image_logic_and_image(uint8_t *buffer, int size) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = logic_and(&image, &image_to_and, &result_image);
-    if (result != 0) return result;
+    Status result = logic_and(&image, &image_to_and, &result_image);
+    if (result != OK) return result;
 
     return size+size;
 }
@@ -1133,8 +1131,8 @@ int image_logic_or_image(uint8_t *buffer, int size) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = logic_or(&image, &second_image, &result_image);
-    if (result != 0) return result;
+    Status result = logic_or(&image, &second_image, &result_image);
+    if (result != OK) return result;
 
     return size+size;
 }
@@ -1199,8 +1197,8 @@ int image_logic_xor_image(uint8_t *buffer, int size) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = logic_xor(&image, &second_image, &result_image);
-    if (result != 0) return result;
+    Status result = logic_xor(&image, &second_image, &result_image);
+    if (result != OK) return result;
 
     return size+size;
 }
@@ -1247,8 +1245,8 @@ int image_logic_not(uint8_t *buffer, int size) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = logic_not(&image, &result_image);
-    if (result != 0) return result;
+    Status result = logic_not(&image, &result_image);
+    if (result != OK) return result;
 
     return size;
 }
@@ -1313,8 +1311,8 @@ int image_linear_average_image(uint8_t *buffer, int size) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = linear_average(&image, &second_image, &result_image);
-    if (result != 0) return result;
+    Status result = linear_average(&image, &second_image, &result_image);
+    if (result != OK) return result;
 
     return size+size;
 }
@@ -1379,8 +1377,8 @@ int image_linear_blending_image(uint8_t *buffer, int size, float value) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = linear_blending(&image, &second_image, value, &result_image);
-    if (result != 0) return result;
+    Status result = linear_blending(&image, &second_image, value, &result_image);
+    if (result != OK) return result;
     
     return size+size;
 }
@@ -1427,8 +1425,8 @@ int image_histogram_equalize(uint8_t *buffer, int size) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = equalize_histogram(&image, &result_image);
-    if (result != 0) return result;
+    Status result = equalize_histogram(&image, &result_image);
+    if (result != OK) return result;
     
     return size;
 }
@@ -1475,8 +1473,8 @@ int image_morphology_dilation(uint8_t *buffer, int size, int kernel_size, int ke
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = morpho_dilation(&image, &result_image, kernel_size, kernel_type);
-    if (result != 0) return result;
+    Status result = morpho_dilation(&image, &result_image, kernel_size, kernel_type);
+    if (result != OK) return result;
     
     return size;
 }
@@ -1523,8 +1521,8 @@ int image_morphology_erosion(uint8_t *buffer, int size, int kernel_size, int ker
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = morpho_erosion(&image, &result_image, kernel_size, kernel_type);
-    if (result != 0) return result;
+    Status result = morpho_erosion(&image, &result_image, kernel_size, kernel_type);
+    if (result != OK) return result;
     
     return size;
 }
@@ -1589,8 +1587,8 @@ int image_morphology_opening(uint8_t *buffer, int size, int kernel_size, int ker
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = morpho_opening(&image, &image_aux, &result_image, kernel_size, kernel_type);
-    if (result != 0) return result;
+    Status result = morpho_opening(&image, &image_aux, &result_image, kernel_size, kernel_type);
+    if (result != OK) return result;
     
     return size+size;
 }
@@ -1655,8 +1653,8 @@ int image_morphology_closing(uint8_t *buffer, int size, int kernel_size, int ker
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = morpho_closing(&image, &image_aux, &result_image, kernel_size, kernel_type);
-    if (result != 0) return result;
+    Status result = morpho_closing(&image, &image_aux, &result_image, kernel_size, kernel_type);
+    if (result != OK) return result;
     
     return size+size;
 }
@@ -1721,8 +1719,8 @@ int image_morphology_outline(uint8_t *buffer, int size, int kernel_size, int ker
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = morpho_outline(&image, &image_aux, &result_image, kernel_size, kernel_type);
-    if (result != 0) return result;
+    Status result = morpho_outline(&image, &image_aux, &result_image, kernel_size, kernel_type);
+    if (result != OK) return result;
     
     return size+size;
 }
