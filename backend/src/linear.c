@@ -2,7 +2,7 @@
 
 #include "types.h"
 
-int linear_average(Image *image, Image *second_image, Image *result_image) {
+Status linear_average(Image *image, Image *second_image, Image *result_image) {
     int width = image->columns;
     int height = image->rows;
 
@@ -24,10 +24,10 @@ int linear_average(Image *image, Image *second_image, Image *result_image) {
         }
     }
     
-    return 0;
+    return OK;
 }
 
-int linear_blending(Image *image, Image *second_image, float value, Image *result_image) {
+Status linear_blending(Image *image, Image *second_image, float value, Image *result_image) {
     int width = image->columns;
     int height = image->rows;
 
@@ -50,7 +50,7 @@ int linear_blending(Image *image, Image *second_image, float value, Image *resul
         }
     }
     
-    return 0;
+    return OK;
 }
 
 

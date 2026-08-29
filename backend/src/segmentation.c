@@ -3,9 +3,10 @@
 #include "types.h"
 #include "grayscale.h"
 
-int segmentation_treshold(Image *image, Image *result_image, int threshold) {
+Status segmentation_treshold(Image *image, Image *result_image, int threshold) {
     
-    grayscale_convertion_average(image, image);
+    Status result_grayscale_convertion = grayscale_convertion_average(image, image);
+    if (result_grayscale_convertion != OK) return result_grayscale_convertion;
 
     for (int i=0; i<image->rows; i++){
         for (int j=0; j<image->columns; j++) {
@@ -16,5 +17,5 @@ int segmentation_treshold(Image *image, Image *result_image, int threshold) {
         }
     }
 
-    return 0;
+    return OK;
 }

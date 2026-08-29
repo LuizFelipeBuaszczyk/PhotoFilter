@@ -7,7 +7,7 @@
 #include "segmentation.h"
 #include "arithmetic.h"
 
-int morpho_dilation(Image *image, Image *result_image, int kernel_size, int kernel_type) {
+Status morpho_dilation(Image *image, Image *result_image, int kernel_size, int kernel_type) {
     int width = image->columns;
     int height = image->rows;
     int padding = kernel_size / 2;
@@ -70,7 +70,7 @@ int morpho_dilation(Image *image, Image *result_image, int kernel_size, int kern
                     }
                     break;
                 default:
-                    return 1;
+                    return INVALID_KERNEL_TYPE;
 
             }
 
@@ -81,10 +81,10 @@ int morpho_dilation(Image *image, Image *result_image, int kernel_size, int kern
         }
     }
 
-    return 0;
+    return OK;
 }
 
-int morpho_erosion (Image *image, Image *result_image, int kernel_size, int kernel_type) {
+Status morpho_erosion (Image *image, Image *result_image, int kernel_size, int kernel_type) {
     int width = image->columns;
     int height = image->rows;
     int padding = kernel_size / 2;
@@ -147,7 +147,7 @@ int morpho_erosion (Image *image, Image *result_image, int kernel_size, int kern
                     }
                     break;
                 default:
-                    return 1;
+                    return INVALID_KERNEL_TYPE;
 
             }
 
@@ -158,38 +158,47 @@ int morpho_erosion (Image *image, Image *result_image, int kernel_size, int kern
         }
     }   
 
-    return 0;
+    return OK;
 }
 
-int morpho_opening (Image *image, Image *aux_image, Image *result_image, int kernel_size, int kernel_type) {
+Status morpho_opening (Image *image, Image *aux_image, Image *result_image, int kernel_size, int kernel_type) {
     int width = image->columns;
     int height = image->rows;
     int padding = kernel_size / 2;
     
-    morpho_erosion(image, aux_image, kernel_size, kernel_type);
-    morpho_dilation(aux_image, result_image, kernel_size, kernel_type);
+    Status result_erosion = morpho_erosion(image, aux_image, kernel_size, kernel_type);
+    if (result_erosion != OK) return result_erosion;
 
-    return 0;
+    Status result_dilation = morpho_dilation(aux_image, result_image, kernel_size, kernel_type);
+    if (result_dilation != OK) return result_dilation;
+
+    return OK;
 }
 
-int morpho_closing (Image *image, Image *aux_image, Image *result_image, int kernel_size, int kernel_type) {
+Status morpho_closing (Image *image, Image *aux_image, Image *result_image, int kernel_size, int kernel_type) {
+    int width = image->columns;
+    int height = image->rows;
+    int padding = kernel_size / 2;
+
+    Status result_dilation = morpho_dilation(aux_image, result_image, kernel_size, kernel_type);
+    if (result_dilation != OK) return result_dilation;
+
+    Status result_erosion = morpho_erosion(image, aux_image, kernel_size, kernel_type);
+    if (result_erosion != OK) return result_erosion;
+    
+    return OK;
+}
+
+Status morpho_outline (Image *image, Image *aux_image, Image *result_image, int kernel_size, int kernel_type) {
     int width = image->columns;
     int height = image->rows;
     int padding = kernel_size / 2;
     
-    morpho_dilation(image, aux_image, kernel_size, kernel_type);
-    morpho_erosion(aux_image, result_image, kernel_size, kernel_type);
+    Status result_erosion =  morpho_erosion(image, aux_image, kernel_size, kernel_type);
+    if (result_erosion != OK) return result_erosion;
 
-    return 0;
-}
+    Status result_subt = subt_image(image, aux_image, result_image);
+    if (result_subt != OK) return result_subt;
 
-int morpho_outline (Image *image, Image *aux_image, Image *result_image, int kernel_size, int kernel_type) {
-    int width = image->columns;
-    int height = image->rows;
-    int padding = kernel_size / 2;
-    
-    morpho_erosion(image, aux_image, kernel_size, kernel_type);
-    subt_image(image, aux_image, result_image);
-
-    return 0;
+    return OK;
 }

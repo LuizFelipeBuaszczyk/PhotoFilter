@@ -6,7 +6,7 @@
 #include "types.h"
 #include "utils.h"
 
-int convolution_average(Image *image, int kernel_size, Image *result_image) {
+Status convolution_average(Image *image, int kernel_size, Image *result_image) {
     int width = image->columns;
     int height = image->rows;
 
@@ -39,10 +39,10 @@ int convolution_average(Image *image, int kernel_size, Image *result_image) {
          }
     }
 
-    return 0;
+    return OK;
 }
 
-int convolution_min(Image *image, int kernel_size, Image *result_image) {
+Status convolution_min(Image *image, int kernel_size, Image *result_image) {
     int width = image->columns;
     int height = image->rows;
 
@@ -78,10 +78,10 @@ int convolution_min(Image *image, int kernel_size, Image *result_image) {
          }
     }
 
-    return 0;
+    return OK;
 }
 
-int convolution_max(Image *image, int kernel_size, Image *result_image) {
+Status convolution_max(Image *image, int kernel_size, Image *result_image) {
     int width = image->columns;
     int height = image->rows;
 
@@ -117,7 +117,7 @@ int convolution_max(Image *image, int kernel_size, Image *result_image) {
          }
     }
 
-    return 0;
+    return OK;
 }
 
 uint8_t* find_median_value(uint8_t **values, int size) {
@@ -142,7 +142,7 @@ uint8_t* find_median_value(uint8_t **values, int size) {
     return values[size/2 + 1];
 }
 
-int convolution_median(Image *image, int kernel_size, Image *result_image) {
+Status convolution_median(Image *image, int kernel_size, Image *result_image) {
     int width = image->columns;
     int height = image->rows;
 
@@ -173,7 +173,7 @@ int convolution_median(Image *image, int kernel_size, Image *result_image) {
          }
     }
 
-    return 0;
+    return OK;
 }
 
 uint8_t* find_order_value(uint8_t **values, int size, int value) {
@@ -200,12 +200,12 @@ bool is_order_value_valid(int kernel_size, int order_value) {
     return order_value >= 0 && order_value < kernel_size * kernel_size;
 }
 
-int convolution_order(Image *image, int kernel_size, int order_value, Image *result_image) {
+Status convolution_order(Image *image, int kernel_size, int order_value, Image *result_image) {
     int width = image->columns;
     int height = image->rows;
 
     if (!is_order_value_valid(kernel_size, order_value)) {
-        return 1;
+        return INVALID_INDEX;
     }
 
     int total_pixel_in_kernel = kernel_size * kernel_size;
@@ -235,7 +235,7 @@ int convolution_order(Image *image, int kernel_size, int order_value, Image *res
          }
     }
 
-    return 0;
+    return OK;
 }
 
 void sort_pixels_array(uint8_t **array, int size) {
@@ -254,7 +254,7 @@ void sort_pixels_array(uint8_t **array, int size) {
 
 }
 
-int convolution_conservative_smoothing(Image *image, int kernel_size,Image *result_image) {
+Status convolution_conservative_smoothing(Image *image, int kernel_size,Image *result_image) {
     int width = image->columns;
     int height = image->rows;
 
@@ -323,7 +323,7 @@ int convolution_conservative_smoothing(Image *image, int kernel_size,Image *resu
          }
     }
 
-    return 0;
+    return OK;
 }
 
 void set_gaussian_model(int kernel_size, int sigma, float *gaussian_kernel) {
@@ -348,7 +348,7 @@ void set_gaussian_model(int kernel_size, int sigma, float *gaussian_kernel) {
     }
 }
 
-int convolution_gaussian(Image *image, int kernel_size,  int sigma, Image *result_image) {
+Status convolution_gaussian(Image *image, int kernel_size,  int sigma, Image *result_image) {
     int width = image->columns;
     int height = image->rows;
 
@@ -384,5 +384,5 @@ int convolution_gaussian(Image *image, int kernel_size,  int sigma, Image *resul
         }
     }
 
-    return 0;
+    return OK;
 }

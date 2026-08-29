@@ -14,7 +14,6 @@
 
 #include "types.h"
 
-
 int buffer_size_is_valid(int size){
     return size % 4 == 0 ? 0 : 1;
 } 
@@ -23,7 +22,7 @@ int buffer_size_is_valid(int size){
 EMSCRIPTEN_KEEPALIVE
 int image_add_value(uint8_t *buffer, int size, int value) {
     if (buffer_size_is_valid(size) != 0) {
-        return -1;
+        return INVALID_BUFFER_SIZE;
     }
 
     int size_pixels_array = size / 4;
@@ -39,7 +38,7 @@ int image_add_value(uint8_t *buffer, int size, int value) {
     
         pixels[pixel_count++] = px;
     }
-    
+
     Image image;
     image.rows = 250;
     image.columns = 250;
@@ -62,8 +61,8 @@ int image_add_value(uint8_t *buffer, int size, int value) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
     
-    int result = add_value(value, &image, &result_image);
-    if (result != 0) return -1;
+    Status result = add_value(value, &image, &result_image);
+    if (result != OK) return result;
 
     return size;
 }
@@ -71,7 +70,7 @@ int image_add_value(uint8_t *buffer, int size, int value) {
 EMSCRIPTEN_KEEPALIVE
 int image_subt_value(uint8_t *buffer, int size, int value) {
     if (buffer_size_is_valid(size) != 0) {
-        return -1;
+        return INVALID_BUFFER_SIZE;
     }
 
     int size_pixels_array = size / 4;
@@ -111,8 +110,8 @@ int image_subt_value(uint8_t *buffer, int size, int value) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = subt_value(value, &image, &result_image);
-    if (result != 0) return -1;
+    Status result = subt_value(value, &image, &result_image);
+    if (result != OK) return result;
 
     return size;
 }
@@ -120,7 +119,7 @@ int image_subt_value(uint8_t *buffer, int size, int value) {
 EMSCRIPTEN_KEEPALIVE
 int image_multiply_value(uint8_t *buffer, int size, int value) {
     if (buffer_size_is_valid(size) != 0) {
-        return -1;
+        return INVALID_BUFFER_SIZE;
     }
 
     int size_pixels_array = size / 4;
@@ -160,8 +159,8 @@ int image_multiply_value(uint8_t *buffer, int size, int value) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = multiply_value(value, &image, &result_image);
-    if(result != 0) return -1;
+    Status result = multiply_value(value, &image, &result_image);
+    if(result != OK) return result;
 
     return size;
 }
@@ -169,7 +168,7 @@ int image_multiply_value(uint8_t *buffer, int size, int value) {
 EMSCRIPTEN_KEEPALIVE
 int image_div_value(uint8_t *buffer, int size, int value) {
     if (buffer_size_is_valid(size) != 0) {
-        return -1;
+        return INVALID_BUFFER_SIZE;
     }
 
     int size_pixels_array = size / 4;
@@ -209,8 +208,8 @@ int image_div_value(uint8_t *buffer, int size, int value) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = div_value(value, &image, &result_image);
-    if (result != 0) return -1;
+    Status result = div_value(value, &image, &result_image);
+    if (result != OK) return result;
 
     return size;
 }
@@ -218,7 +217,7 @@ int image_div_value(uint8_t *buffer, int size, int value) {
 EMSCRIPTEN_KEEPALIVE
 int image_invert_horizontal(uint8_t *buffer, int size) {
     if (buffer_size_is_valid(size) != 0) {
-        return -1;
+        return INVALID_BUFFER_SIZE;
     }     
     
     int size_pixels_array = size / 4;
@@ -257,11 +256,8 @@ int image_invert_horizontal(uint8_t *buffer, int size) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = invert_horizontal(&image, &result_image);
-
-    if (result != 0) {
-        return -1;
-    }
+    Status result = invert_horizontal(&image, &result_image);
+    if (result != OK) return result;
     
     return size;
 }
@@ -269,7 +265,7 @@ int image_invert_horizontal(uint8_t *buffer, int size) {
 EMSCRIPTEN_KEEPALIVE
 int image_invert_vertical(uint8_t *buffer, int size) {
     if (buffer_size_is_valid(size) != 0) {
-        return -1;
+        return INVALID_BUFFER_SIZE;
     }     
     
     int size_pixels_array = size / 4;
@@ -308,12 +304,9 @@ int image_invert_vertical(uint8_t *buffer, int size) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = invert_vertical(&image, &result_image);
+    Status result = invert_vertical(&image, &result_image);
+    if (result != OK) return result;   
 
-    if (result != 0) {
-        return -1;
-    }
-    
     return size;
 }
 
@@ -321,7 +314,7 @@ int image_invert_vertical(uint8_t *buffer, int size) {
 EMSCRIPTEN_KEEPALIVE
 int image_convolution_average(uint8_t *buffer, int size, int kernel_size) {
     if (buffer_size_is_valid(size) != 0) {
-        return -1;
+        return INVALID_BUFFER_SIZE;
     }     
     
     int size_pixels_array = size / 4;
@@ -360,11 +353,8 @@ int image_convolution_average(uint8_t *buffer, int size, int kernel_size) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = convolution_average(&image, kernel_size, &result_image);
-
-    if (result != 0) {
-        return -1;
-    }
+    Status result = convolution_average(&image, kernel_size, &result_image);
+    if (result != OK) return result;
     
     return size;
 }
@@ -372,7 +362,7 @@ int image_convolution_average(uint8_t *buffer, int size, int kernel_size) {
 EMSCRIPTEN_KEEPALIVE
 int image_convolution_min(uint8_t *buffer, int size, int kernel_size) {
     if (buffer_size_is_valid(size) != 0) {
-        return -1;
+        return INVALID_BUFFER_SIZE;
     }     
     
     int size_pixels_array = size / 4;
@@ -411,11 +401,8 @@ int image_convolution_min(uint8_t *buffer, int size, int kernel_size) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = convolution_min(&image, kernel_size, &result_image);
-
-    if (result != 0) {
-        return -1;
-    }
+    Status result = convolution_min(&image, kernel_size, &result_image);
+    if (result != OK) return result;
     
     return size;
 }
@@ -423,7 +410,7 @@ int image_convolution_min(uint8_t *buffer, int size, int kernel_size) {
 EMSCRIPTEN_KEEPALIVE
 int image_convolution_max(uint8_t *buffer, int size, int kernel_size) {
     if (buffer_size_is_valid(size) != 0) {
-        return -1;
+        return INVALID_BUFFER_SIZE;
     }     
     
     int size_pixels_array = size / 4;
@@ -462,20 +449,15 @@ int image_convolution_max(uint8_t *buffer, int size, int kernel_size) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = convolution_max(&image, kernel_size, &result_image);
-
-    if (result != 0) {
-        return -1;
-    }
+    Status result = convolution_max(&image, kernel_size, &result_image);
+    if (result != OK) return result;
     
     return size;
 }
 
 EMSCRIPTEN_KEEPALIVE
 int image_convolution_median(uint8_t *buffer, int size, int kernel_size) {
-    if (buffer_size_is_valid(size) != 0) {
-        return -1;
-    }     
+    if (buffer_size_is_valid(size) != 0) return INVALID_BUFFER_SIZE;
     
     int size_pixels_array = size / 4;
     int pixel_count = 0;
@@ -513,21 +495,16 @@ int image_convolution_median(uint8_t *buffer, int size, int kernel_size) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = convolution_median(&image, kernel_size, &result_image);
+    Status result = convolution_median(&image, kernel_size, &result_image);
+    if (result != OK) return result;   
 
-    if (result != 0) {
-        return -1;
-    }
-    
     return size;
 }
 
 EMSCRIPTEN_KEEPALIVE
 int image_convolution_order(uint8_t *buffer, int size, int kernel_size, int order_value) {
-    if (buffer_size_is_valid(size) != 0) {
-        return -1;
-    }     
-    
+    if (buffer_size_is_valid(size) != 0) return INVALID_BUFFER_SIZE;   
+
     int size_pixels_array = size / 4;
     int pixel_count = 0;
     Pixel pixels[size_pixels_array];
@@ -564,20 +541,15 @@ int image_convolution_order(uint8_t *buffer, int size, int kernel_size, int orde
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = convolution_order(&image, kernel_size, order_value, &result_image);
+    Status result = convolution_order(&image, kernel_size, order_value, &result_image);
+    if (result != OK) return result;   
 
-    if (result != 0) {
-        return -1;
-    }
-    
     return size;
 }
 
 EMSCRIPTEN_KEEPALIVE
 int image_convolution_conservative_smoothing(uint8_t *buffer, int size, int kernel_size) {
-    if (buffer_size_is_valid(size) != 0) {
-        return -1;
-    }     
+    if (buffer_size_is_valid(size) != 0) return INVALID_BUFFER_SIZE;
     
     int size_pixels_array = size / 4;
     int pixel_count = 0;
@@ -615,20 +587,16 @@ int image_convolution_conservative_smoothing(uint8_t *buffer, int size, int kern
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = convolution_conservative_smoothing(&image, kernel_size, &result_image);
-    if (result != 0) {
-        return -1;
-    }
-    
+    Status result = convolution_conservative_smoothing(&image, kernel_size, &result_image);
+    if (result != OK) return result;
+
     return size;
 }
 
 EMSCRIPTEN_KEEPALIVE
 int image_convolution_gaussian(uint8_t *buffer, int size, int kernel_size, int sigma) {
-    if (buffer_size_is_valid(size) != 0) {
-        return -1;
-    }     
-    
+    if (buffer_size_is_valid(size) != 0) return INVALID_BUFFER_SIZE;
+
     int size_pixels_array = size / 4;
     int pixel_count = 0;
     Pixel pixels[size_pixels_array];
@@ -665,19 +633,15 @@ int image_convolution_gaussian(uint8_t *buffer, int size, int kernel_size, int s
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = convolution_gaussian(&image, kernel_size, sigma, &result_image);
-    if (result != 0) {
-        return -1;
-    }
-    
+    Status result = convolution_gaussian(&image, kernel_size, sigma, &result_image);
+    if (result != OK) return result;
+
     return size;
 }
 
 EMSCRIPTEN_KEEPALIVE
 int image_convert_to_grayscale(uint8_t *buffer, int size) {
-    if (buffer_size_is_valid(size) != 0) {
-        return -1;
-    }     
+    if (buffer_size_is_valid(size) != 0) return INVALID_BUFFER_SIZE;
     
     int size_pixels_array = size / 4;
     int pixel_count = 0;
@@ -715,19 +679,15 @@ int image_convert_to_grayscale(uint8_t *buffer, int size) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = grayscale_convertion_average(&image, &result_image);
-    if (result != 0) {
-        return -1;
-    }
+    Status result = grayscale_convertion_average(&image, &result_image);
+    if (result != OK) return result;
     
     return size;
 }
 
 EMSCRIPTEN_KEEPALIVE
 int image_convert_to_binaryscale(uint8_t *buffer, int size, int treshold) {
-    if (buffer_size_is_valid(size) != 0) {
-        return -1;
-    }     
+    if (buffer_size_is_valid(size) != 0) return INVALID_BUFFER_SIZE;
     
     int size_pixels_array = size / 4;
     int pixel_count = 0;
@@ -765,20 +725,16 @@ int image_convert_to_binaryscale(uint8_t *buffer, int size, int treshold) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = segmentation_treshold(&image, &result_image, treshold);
-    if (result != 0) {
-        return -1;
-    }
+    Status result = segmentation_treshold(&image, &result_image, treshold);
+    if (result != OK) return result;
     
     return size;
 }
 
 EMSCRIPTEN_KEEPALIVE
 int image_border_detection_prewit(uint8_t *buffer, int size) {
-    if (buffer_size_is_valid(size) != 0) {
-        return -1;
-    }     
-    
+    if (buffer_size_is_valid(size) != 0) return INVALID_BUFFER_SIZE;
+
     int size_pixels_array = size / 4;
     int pixel_count = 0;
     Pixel pixels[size_pixels_array];
@@ -815,20 +771,16 @@ int image_border_detection_prewit(uint8_t *buffer, int size) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = border_detection_prewit(&image, &result_image);
-    if (result != 0) {
-        return -1;
-    }
-    
+    Status result = border_detection_prewit(&image, &result_image);
+    if (result != OK) return result;
+
     return size;
 }
 
 EMSCRIPTEN_KEEPALIVE
 int image_border_detection_sobel(uint8_t *buffer, int size) {
-    if (buffer_size_is_valid(size) != 0) {
-        return -1;
-    }     
-    
+    if (buffer_size_is_valid(size) != 0) return INVALID_BUFFER_SIZE;
+
     int size_pixels_array = size / 4;
     int pixel_count = 0;
     Pixel pixels[size_pixels_array];
@@ -865,20 +817,16 @@ int image_border_detection_sobel(uint8_t *buffer, int size) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = border_detection_sobel(&image, &result_image);
-    if (result != 0) {
-        return -1;
-    }
-    
+    Status result = border_detection_sobel(&image, &result_image);
+    if (result != OK) return result;
+
     return size;
 }
 
 EMSCRIPTEN_KEEPALIVE
 int image_border_detection_laplacian(uint8_t *buffer, int size) {
-    if (buffer_size_is_valid(size) != 0) {
-        return -1;
-    }     
-    
+    if (buffer_size_is_valid(size) != 0) return INVALID_BUFFER_SIZE;
+
     int size_pixels_array = size / 4;
     int pixel_count = 0;
     Pixel pixels[size_pixels_array];
@@ -915,18 +863,16 @@ int image_border_detection_laplacian(uint8_t *buffer, int size) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = border_detection_lapaclian(&image, &result_image);
-    if (result != 0) {
-        return -1;
-    }
-    
+    Status result = border_detection_lapaclian(&image, &result_image);
+    if (result != OK) return result;
+
     return size;
 }
 
 EMSCRIPTEN_KEEPALIVE
 int image_add_image(uint8_t *buffer, int size) {
     if (buffer_size_is_valid(size) != 0) {
-        return -1;
+        return INVALID_BUFFER_SIZE;
     }     
     
     // Image 1
@@ -985,10 +931,8 @@ int image_add_image(uint8_t *buffer, int size) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = add_image(&image, &image_to_add, &result_image);
-    if (result != 0) {
-        return -1;
-    }
+    Status result = add_image(&image, &image_to_add, &result_image);
+    if (result != OK) return result;
     
     return size+size;
 }
@@ -996,7 +940,7 @@ int image_add_image(uint8_t *buffer, int size) {
 EMSCRIPTEN_KEEPALIVE
 int image_subt_image(uint8_t *buffer, int size) {
     if (buffer_size_is_valid(size) != 0) {
-        return -1;
+        return INVALID_BUFFER_SIZE;
     }     
     
     // Image 1
@@ -1055,20 +999,16 @@ int image_subt_image(uint8_t *buffer, int size) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = subt_image(&image, &image_to_subt, &result_image);
-    if (result != 0) {
-        return -1;
-    }
-    
+    Status result = subt_image(&image, &image_to_subt, &result_image);
+    if (result != OK) return result;
+
     return size+size;
 }
 
 EMSCRIPTEN_KEEPALIVE
 int image_logic_and_image(uint8_t *buffer, int size) {
-    if (buffer_size_is_valid(size) != 0) {
-        return -1;
-    }     
-    
+    if (buffer_size_is_valid(size) != 0) return INVALID_BUFFER_SIZE;
+
     // Image 1
     int size_pixels_array = size / 4;
     int pixel_count = 0;
@@ -1125,20 +1065,16 @@ int image_logic_and_image(uint8_t *buffer, int size) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = logic_and(&image, &image_to_and, &result_image);
-    if (result != 0) {
-        return -1;
-    }
-    
+    Status result = logic_and(&image, &image_to_and, &result_image);
+    if (result != OK) return result;
+
     return size+size;
 }
 
 EMSCRIPTEN_KEEPALIVE
 int image_logic_or_image(uint8_t *buffer, int size) {
-    if (buffer_size_is_valid(size) != 0) {
-        return -1;
-    }     
-    
+    if (buffer_size_is_valid(size) != 0) return INVALID_BUFFER_SIZE;   
+
     // Image 1
     int size_pixels_array = size / 4;
     int pixel_count = 0;
@@ -1195,20 +1131,16 @@ int image_logic_or_image(uint8_t *buffer, int size) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = logic_or(&image, &second_image, &result_image);
-    if (result != 0) {
-        return -1;
-    }
-    
+    Status result = logic_or(&image, &second_image, &result_image);
+    if (result != OK) return result;
+
     return size+size;
 }
 
 EMSCRIPTEN_KEEPALIVE
 int image_logic_xor_image(uint8_t *buffer, int size) {
-    if (buffer_size_is_valid(size) != 0) {
-        return -1;
-    }     
-    
+    if (buffer_size_is_valid(size) != 0) return INVALID_BUFFER_SIZE;
+
     // Image 1
     int size_pixels_array = size / 4;
     int pixel_count = 0;
@@ -1265,20 +1197,16 @@ int image_logic_xor_image(uint8_t *buffer, int size) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = logic_xor(&image, &second_image, &result_image);
-    if (result != 0) {
-        return -1;
-    }
-    
+    Status result = logic_xor(&image, &second_image, &result_image);
+    if (result != OK) return result;
+
     return size+size;
 }
 
 EMSCRIPTEN_KEEPALIVE
 int image_logic_not(uint8_t *buffer, int size) {
-    if (buffer_size_is_valid(size) != 0) {
-        return -1;
-    }     
-    
+    if (buffer_size_is_valid(size) != 0) return INVALID_BUFFER_SIZE;
+
     // Image 
     int size_pixels_array = size / 4;
     int pixel_count = 0;
@@ -1317,20 +1245,16 @@ int image_logic_not(uint8_t *buffer, int size) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = logic_not(&image, &result_image);
-    if (result != 0) {
-        return -1;
-    }
-    
+    Status result = logic_not(&image, &result_image);
+    if (result != OK) return result;
+
     return size;
 }
 
 EMSCRIPTEN_KEEPALIVE
 int image_linear_average_image(uint8_t *buffer, int size) {
-    if (buffer_size_is_valid(size) != 0) {
-        return -1;
-    }     
-    
+    if (buffer_size_is_valid(size) != 0) return INVALID_BUFFER_SIZE;   
+
     // Image 1
     int size_pixels_array = size / 4;
     int pixel_count = 0;
@@ -1387,19 +1311,15 @@ int image_linear_average_image(uint8_t *buffer, int size) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = linear_average(&image, &second_image, &result_image);
-    if (result != 0) {
-        return -1;
-    }
-    
+    Status result = linear_average(&image, &second_image, &result_image);
+    if (result != OK) return result;
+
     return size+size;
 }
 
 EMSCRIPTEN_KEEPALIVE
 int image_linear_blending_image(uint8_t *buffer, int size, float value) {
-    if (buffer_size_is_valid(size) != 0) {
-        return -1;
-    }     
+    if (buffer_size_is_valid(size) != 0) return INVALID_BUFFER_SIZE;
     
     // Image 1
     int size_pixels_array = size / 4;
@@ -1457,19 +1377,15 @@ int image_linear_blending_image(uint8_t *buffer, int size, float value) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = linear_blending(&image, &second_image, value, &result_image);
-    if (result != 0) {
-        return -1;
-    }
+    Status result = linear_blending(&image, &second_image, value, &result_image);
+    if (result != OK) return result;
     
     return size+size;
 }
 
 EMSCRIPTEN_KEEPALIVE
 int image_histogram_equalize(uint8_t *buffer, int size) {
-    if (buffer_size_is_valid(size) != 0) {
-        return -1;
-    }     
+    if (buffer_size_is_valid(size) != 0) return INVALID_BUFFER_SIZE;
     
     // Image 1
     int size_pixels_array = size / 4;
@@ -1509,19 +1425,15 @@ int image_histogram_equalize(uint8_t *buffer, int size) {
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = equalize_histogram(&image, &result_image);
-    if (result != 0) {
-        return -1;
-    }
+    Status result = equalize_histogram(&image, &result_image);
+    if (result != OK) return result;
     
     return size;
 }
 
 EMSCRIPTEN_KEEPALIVE
 int image_morphology_dilation(uint8_t *buffer, int size, int kernel_size, int kernel_type) {
-    if (buffer_size_is_valid(size) != 0) {
-        return -1;
-    }     
+    if (buffer_size_is_valid(size) != 0) return INVALID_BUFFER_SIZE;
     
     // Image 
     int size_pixels_array = size / 4;
@@ -1561,19 +1473,15 @@ int image_morphology_dilation(uint8_t *buffer, int size, int kernel_size, int ke
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = morpho_dilation(&image, &result_image, kernel_size, kernel_type);
-    if (result != 0) {
-        return -1;
-    }
+    Status result = morpho_dilation(&image, &result_image, kernel_size, kernel_type);
+    if (result != OK) return result;
     
     return size;
 }
 
 EMSCRIPTEN_KEEPALIVE
 int image_morphology_erosion(uint8_t *buffer, int size, int kernel_size, int kernel_type) {
-    if (buffer_size_is_valid(size) != 0) {
-        return -1;
-    }     
+    if (buffer_size_is_valid(size) != 0) return INVALID_BUFFER_SIZE;
     
     // Image 
     int size_pixels_array = size / 4;
@@ -1613,19 +1521,15 @@ int image_morphology_erosion(uint8_t *buffer, int size, int kernel_size, int ker
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = morpho_erosion(&image, &result_image, kernel_size, kernel_type);
-    if (result != 0) {
-        return -1;
-    }
+    Status result = morpho_erosion(&image, &result_image, kernel_size, kernel_type);
+    if (result != OK) return result;
     
     return size;
 }
 
 EMSCRIPTEN_KEEPALIVE
 int image_morphology_opening(uint8_t *buffer, int size, int kernel_size, int kernel_type) {
-    if (buffer_size_is_valid(size) != 0) {
-        return -1;
-    }     
+    if (buffer_size_is_valid(size) != 0) return INVALID_BUFFER_SIZE;
     
     // Image 
     int size_pixels_array = size / 4;
@@ -1683,19 +1587,15 @@ int image_morphology_opening(uint8_t *buffer, int size, int kernel_size, int ker
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = morpho_opening(&image, &image_aux, &result_image, kernel_size, kernel_type);
-    if (result != 0) {
-        return -1;
-    }
+    Status result = morpho_opening(&image, &image_aux, &result_image, kernel_size, kernel_type);
+    if (result != OK) return result;
     
     return size+size;
 }
 
 EMSCRIPTEN_KEEPALIVE
 int image_morphology_closing(uint8_t *buffer, int size, int kernel_size, int kernel_type) {
-    if (buffer_size_is_valid(size) != 0) {
-        return -1;
-    }     
+    if (buffer_size_is_valid(size) != 0) return INVALID_BUFFER_SIZE;
     
     // Image 
     int size_pixels_array = size / 4;
@@ -1753,19 +1653,15 @@ int image_morphology_closing(uint8_t *buffer, int size, int kernel_size, int ker
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = morpho_closing(&image, &image_aux, &result_image, kernel_size, kernel_type);
-    if (result != 0) {
-        return -1;
-    }
+    Status result = morpho_closing(&image, &image_aux, &result_image, kernel_size, kernel_type);
+    if (result != OK) return result;
     
     return size+size;
 }
 
 EMSCRIPTEN_KEEPALIVE
 int image_morphology_outline(uint8_t *buffer, int size, int kernel_size, int kernel_type) {
-    if (buffer_size_is_valid(size) != 0) {
-        return -1;
-    }     
+    if (buffer_size_is_valid(size) != 0) return INVALID_BUFFER_SIZE;
     
     // Image 
     int size_pixels_array = size / 4;
@@ -1823,10 +1719,8 @@ int image_morphology_outline(uint8_t *buffer, int size, int kernel_size, int ker
     result_image.columns = 250;
     result_image.pixels = (Pixel *) &result_pixels;
 
-    int result = morpho_outline(&image, &image_aux, &result_image, kernel_size, kernel_type);
-    if (result != 0) {
-        return -1;
-    }
+    Status result = morpho_outline(&image, &image_aux, &result_image, kernel_size, kernel_type);
+    if (result != OK) return result;
     
     return size+size;
 }
